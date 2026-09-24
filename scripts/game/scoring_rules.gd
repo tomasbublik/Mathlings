@@ -71,7 +71,14 @@ static func load_from(path: String) -> ScoringRules:
 	var raw_text: String = file.get_as_text()
 	file = null
 
-	var parsed: Variant = JSON.parse_string(raw_text)
+	# JSON.new().parse() reports malformed input via its return value;
+	# JSON.parse_string() would also raise an engine error for it.
+	var json := JSON.new()
+	if json.parse(raw_text) != OK:
+		push_warning("ScoringRules: '%s' is malformed (line %d: %s); using defaults."
+			% [path, json.get_error_line(), json.get_error_message()])
+		return rules
+	var parsed: Variant = json.data
 	if not (parsed is Dictionary):
 		push_warning("ScoringRules: '%s' is not a JSON object; using defaults." % path)
 		return rules
@@ -108,35 +115,6 @@ func combo_for_streak(streak: int) -> float:
 ## given streak. `streak` must be ≥ 1 (the answer that just landed).
 func points_for_correct(streak: int) -> int:
 	return int(round(float(base_points) * combo_for_streak(streak)))
-
-
-## Renders the rules as a Czech human-readable string for the Pravidla scene.
-## Driven entirely from the loaded data, so editing the JSON is reflected
-## here without code changes.
-func to_human_readable_text() -> String:
-	var lines: PackedStringArray = []
-	lines.append("Skóre se počítá podle pravidel verze %d." % version)
-	lines.append("")
-	lines.append("Základ je %d bodů za správnou odpověď. Za chybnou odpověď ani"
-		% base_points)
-	lines.append("za propadlý příklad se body neodečítají, ale vynuluje se série")
-	lines.append("a kombo.")
-	lines.append("")
-	lines.append("Kombo podle série správných odpovědí:")
-	for line in _format_combo_lines():
-		lines.append(line)
-	lines.append("")
-	lines.append("Příklad: 11 správných odpovědí v řadě = %d bodů." % _eleven_streak_total())
-	lines.append("")
-	lines.append("Chybná odpověď nebo miss:")
-	lines.append("  • pokus se započte do statistik,")
-	lines.append("  • body se nepřičtou,")
-	lines.append("  • série se vynuluje,")
-	lines.append("  • kombo se vrátí na 1.0.")
-	if not combo_sound_streaks.is_empty():
-		lines.append("")
-		lines.append("Combo SFX zazní při sérii: %s." % _join_int_list(combo_sound_streaks))
-	return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -179,57 +157,3 @@ static func _normalize_tiers(raw: Array) -> Array:
 	clean.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return int(a["min_streak"]) < int(b["min_streak"]))
 	return clean
-
-
-## Builds the bullet-list lines for to_human_readable_text(). Each tier
-## gets one line summarizing the streak range and the resulting points.
-func _format_combo_lines() -> PackedStringArray:
-	var out: PackedStringArray = []
-	# Pre-tier baseline: streaks below the lowest tier all get the base points.
-	var first_min: int = (
-		int(combo_tiers[0].get("min_streak", 1)) if not combo_tiers.is_empty() else 1)
-	if first_min > 1:
-		out.append("  • Série 1–%d: násobič 1.0 → +%d bodů"
-			% [first_min - 1, base_points])
-
-	for i in range(combo_tiers.size()):
-		var tier: Dictionary = combo_tiers[i]
-		var lo: int = int(tier["min_streak"])
-		var multiplier: float = float(tier["multiplier"])
-		var points: int = int(round(float(base_points) * multiplier))
-
-		var range_text: String
-		if i + 1 < combo_tiers.size():
-			var hi: int = int(combo_tiers[i + 1]["min_streak"]) - 1
-			range_text = "Série %d–%d" % [lo, hi]
-		else:
-			range_text = "Série %d+" % lo
-
-		out.append("  • %s: násobič %s → +%d bodů"
-			% [range_text, _format_multiplier(multiplier), points])
-	return out
-
-
-## "1.5" → "1.5", "1.25" → "1.25", "2.0" → "2.0" — keeps trailing decimals
-## tidy regardless of locale rounding.
-static func _format_multiplier(multiplier: float) -> String:
-	if is_equal_approx(multiplier, round(multiplier)):
-		return "%.1f" % multiplier
-	return String.num(multiplier, 2)
-
-
-## Computes the score for 11 consecutive correct answers — the canonical
-## worked example we show readers so they can sanity-check the rules.
-func _eleven_streak_total() -> int:
-	var total: int = 0
-	for s in range(1, 12):
-		total += points_for_correct(s)
-	return total
-
-
-## Pretty-prints an integer list as "3, 5, 10".
-static func _join_int_list(values: Array[int]) -> String:
-	var parts: PackedStringArray = []
-	for v in values:
-		parts.append(str(v))
-	return ", ".join(parts)
