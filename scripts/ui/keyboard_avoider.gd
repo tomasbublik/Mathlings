@@ -48,7 +48,13 @@ func _process(delta: float) -> void:
 	_shift = lerpf(_shift, desired, minf(1.0, delta * FOLLOW_SPEED))
 	if absf(_shift - desired) < 0.5:
 		_shift = desired
-	target.position.y = _base_y - _shift
+	# _shift is in canvas units; convert to the parent's local units in case
+	# the screen root is scaled (MenuKit.fit_portrait zooms it in portrait).
+	var parent_scale: float = 1.0
+	var parent := target.get_parent() as CanvasItem
+	if parent != null:
+		parent_scale = maxf(0.01, parent.get_global_transform().get_scale().y)
+	target.position.y = _base_y - _shift / parent_scale
 
 
 func _desired_shift() -> float:
