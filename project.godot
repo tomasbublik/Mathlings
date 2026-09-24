@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Mathlings"
-config/description="Math learning arcade for kids (Czech)"
+config/description="Arcade maths game for kids with an adaptive tutor"
 config/version="1.0.0"
 run/main_scene="res://scenes/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
