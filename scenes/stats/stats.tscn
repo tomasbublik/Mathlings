@@ -21,137 +21,208 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 14.0
+offset_right = -24.0
+offset_bottom = 104.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 80)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "COMMON_BACK"
+theme_type_variation = &"IconButton"
+text = "←"
+
+[node name="Title" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "STATS_TITLE"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="HeaderBalance" type="Control" parent="Header"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 32.0
-offset_top = 32.0
-offset_right = -32.0
-offset_bottom = -110.0
+offset_top = 112.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+[node name="Column" type="MarginContainer" parent="Scroll"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 40
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="Title" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 48
-text = "Statistiky"
-
-[node name="ProfileName" type="Label" parent="ScrollContainer/VBox"]
+[node name="PlayerRow" type="HBoxContainer" parent="Scroll/Column/VBox"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 0.95, 0.6, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
-text = "Hráč 1"
+layout_mode = 2
+theme_override_constants/separation = 16
 
-[node name="TotalsRow" type="HFlowContainer" parent="ScrollContainer/VBox"]
-theme_override_constants/separation = 32
-
-[node name="SessionsLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+[node name="ProfileName" type="Label" parent="Scroll/Column/VBox/PlayerRow"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "Sezení: —"
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"StickerLabel"
+text = "Player 1"
+vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="TotalTimeLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+[node name="TilesGrid" type="GridContainer" parent="Scroll/Column/VBox"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "Odehraný čas: —"
-
-[node name="TotalScoreLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "Celkové skóre: —"
-
-[node name="MaxScoreLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "Nejlepší kolo: —"
-
-[node name="BestStreakLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "Nejdelší série: —"
-
-[node name="ErrorRateLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "Chybovost: —"
-
-[node name="PracticeTitle" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Potřebuje procvičit"
-
-[node name="PracticeList" type="VBoxContainer" parent="ScrollContainer/VBox"]
-unique_name_in_owner = true
-theme_override_constants/separation = 8
-
-[node name="SkillsTitle" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Přehled dovedností"
-
-[node name="SkillsGrid" type="GridContainer" parent="ScrollContainer/VBox"]
-unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
 columns = 3
-theme_override_constants/h_separation = 32
-theme_override_constants/v_separation = 8
 
-[node name="EmptyState" type="Label" parent="ScrollContainer/VBox"]
+[node name="PracticeCard" type="PanelContainer" parent="Scroll/Column/VBox"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
-text = "Zatím žádná data. Zahraj si kolo a vrať se!"
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/VBox/PracticeCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Head" type="HBoxContainer" parent="Scroll/Column/VBox/PracticeCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/VBox/PracticeCard/VBox/Head"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeCoral"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/VBox/PracticeCard/VBox/Head/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "💪"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/VBox/PracticeCard/VBox/Head"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "STATS_PRACTICE_TITLE"
+
+[node name="PracticeList" type="VBoxContainer" parent="Scroll/Column/VBox/PracticeCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SkillsCard" type="PanelContainer" parent="Scroll/Column/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/VBox/SkillsCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Head" type="HBoxContainer" parent="Scroll/Column/VBox/SkillsCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/VBox/SkillsCard/VBox/Head"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeGrape"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/VBox/SkillsCard/VBox/Head/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "🧠"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/VBox/SkillsCard/VBox/Head"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "STATS_SKILLS_TITLE"
+
+[node name="SkillsGrid" type="GridContainer" parent="Scroll/Column/VBox/SkillsCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 18
+columns = 2
+
+[node name="SkillsEmpty" type="Label" parent="Scroll/Column/VBox/SkillsCard/VBox"]
+unique_name_in_owner = true
 visible = false
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "STATS_SKILLS_EMPTY"
+autowrap_mode = 3
 
-[node name="FooterBar" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 32.0
-offset_top = -90.0
-offset_right = -32.0
-offset_bottom = -24.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="BackButton" type="Button" parent="FooterBar"]
+[node name="EmptyState" type="PanelContainer" parent="Scroll/Column/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 64)
-theme_override_font_sizes/font_size = 24
-text = "← Zpět"
+visible = false
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/VBox/EmptyState"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/VBox/EmptyState/VBox"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"BadgeMint"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/VBox/EmptyState/VBox/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+theme_override_font_sizes/font_size = 60
+text = "🌱"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EmptyTitle" type="Label" parent="Scroll/Column/VBox/EmptyState/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "STATS_EMPTY_TITLE"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EmptyText" type="Label" parent="Scroll/Column/VBox/EmptyState/VBox"]
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "STATS_EMPTY_STATE"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EmptyPlayButton" type="Button" parent="Scroll/Column/VBox/EmptyState/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"PlayButton"
+theme_override_font_sizes/font_size = 38
+text = "MAIN_MENU_PLAY_BUTTON"
