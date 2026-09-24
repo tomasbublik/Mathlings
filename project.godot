@@ -35,6 +35,7 @@ DB="*res://scripts/autoload/db.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 ThemeManager="*res://scripts/autoload/theme_manager.gd"
 ValidationManager="*res://scripts/autoload/validation_manager.gd"
+UiFeedback="*res://scripts/autoload/ui_feedback.gd"
 
 [display]
 
@@ -47,6 +48,10 @@ window/handheld/orientation="sensor"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[gui]
+
+theme/custom="res://assets/theme/mathlings_theme.tres"
 
 [input]
 

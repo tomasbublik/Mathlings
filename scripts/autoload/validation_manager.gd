@@ -6,6 +6,12 @@ const SCENES_TO_VISIT := [
 	"res://scenes/main_menu/main_menu.tscn",
 	"res://scenes/settings/settings.tscn",
 	"res://scenes/profiles/profile_picker.tscn",
+	"res://scenes/profiles/profile_manager.tscn",
+	"res://scenes/locale/locale_picker.tscn",
+	"res://scenes/stats/stats.tscn",
+	"res://scenes/rules/rules.tscn",
+	"res://scenes/results/results.tscn",
+	"res://scenes/game/game.tscn",
 ]
 
 var _output_dir: String

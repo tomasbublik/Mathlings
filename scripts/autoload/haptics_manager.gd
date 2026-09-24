@@ -2,7 +2,7 @@ extends Node
 ## Thin wrapper over Input.vibrate_handheld() with pattern presets.
 ## Respects SettingsStore.haptics setting and no-ops on non-mobile platforms.
 
-enum Pattern { LIGHT, MEDIUM, HEAVY, SUCCESS, ERROR }
+enum Pattern { LIGHT, MEDIUM, HEAVY, SUCCESS, ERROR, TAP }
 
 var _haptics_enabled: bool = true
 var _is_mobile: bool = false
@@ -21,6 +21,10 @@ func pulse(pattern: Pattern) -> void:
 		return
 
 	match pattern:
+		Pattern.TAP:
+			# Barely-there tick for UI presses; soft amplitude so it never
+			# feels like an error buzz.
+			_vibrate(18, 0.45)
 		Pattern.LIGHT:
 			_vibrate(30)
 		Pattern.MEDIUM:
@@ -35,8 +39,8 @@ func pulse(pattern: Pattern) -> void:
 			_vibrate(30)
 
 
-func _vibrate(duration_ms: int) -> void:
-	Input.vibrate_handheld(duration_ms)
+func _vibrate(duration_ms: int, amplitude: float = -1.0) -> void:
+	Input.vibrate_handheld(duration_ms, amplitude)
 
 
 func _on_settings_changed(key: String, value: Variant) -> void:
