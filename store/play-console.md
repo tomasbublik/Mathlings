@@ -18,10 +18,10 @@ Listing texts: `store/listing/<locale>/`. Privacy policy: `docs/privacy-policy.h
 | Free or paid | **Free** (no in-app purchases). Note: a free app can never be switched to paid later. |
 | Category | **Games → Educational** |
 | Tags (pick up to 5 in *Store settings → Tags*) | Educational, Math, Casual, Arcade, Kids (choose the closest matches Play offers) |
-| Contact email | `{{CONTACT_EMAIL}}` – **DECISION NEEDED** (shown publicly on the listing) |
+| Contact email | `tomas.bublik@gmail.com` – **DECISION NEEDED** (shown publicly on the listing) |
 | Website | GitHub Pages landing page `docs/index.html` (optional) |
 | Phone | leave empty |
-| Privacy policy URL | GitHub Pages URL of `docs/privacy-policy.html` – **DECISION NEEDED**: enable Pages (`main` / `docs`) and replace `{{DEVELOPER_NAME}}` / `{{CONTACT_EMAIL}}` first |
+| Privacy policy URL | GitHub Pages URL of `docs/privacy-policy.html` – **DECISION NEEDED**: enable Pages (`main` / `docs`) and replace `Tomáš Bublík` / `tomas.bublik@gmail.com` first |
 
 ## 2. App access
 
@@ -34,7 +34,7 @@ Listing texts: `store/listing/<locale>/`. Privacy policy: `docs/privacy-policy.h
 
 ## 4. Content rating (IARC questionnaire)
 
-- Email for the certificate: `{{CONTACT_EMAIL}}`
+- Email for the certificate: `tomas.bublik@gmail.com`
 - Category: **Game** (IARC category "Game"; not "Reference, News or Educational", which is meant for non-game apps)
 
 | Question group | Answer | Why |

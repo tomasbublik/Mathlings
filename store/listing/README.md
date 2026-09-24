@@ -101,7 +101,7 @@ or upload them once in Play Console (graphics can be shared across all languages
 ## Privacy policy URL
 
 The policy lives in `docs/privacy-policy.html` (English + Czech) and is intended for GitHub Pages
-(`Settings → Pages → Deploy from branch → main /docs`). Replace `{{DEVELOPER_NAME}}` and
-`{{CONTACT_EMAIL}}` in `docs/*.html` before publishing, then paste the resulting URL
+(`Settings → Pages → Deploy from branch → main /docs`). Replace `Tomáš Bublík` and
+`tomas.bublik@gmail.com` in `docs/*.html` before publishing, then paste the resulting URL
 (e.g. `https://<user>.github.io/<repo>/privacy-policy.html`) into Play Console → *App content →
 Privacy policy*.
