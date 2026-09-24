@@ -4,6 +4,10 @@ extends RefCounted
 ## without a scene tree; the scene wires inputs and renders via signals.
 ##
 ## State machine: IDLE → COUNTDOWN → PLAYING → ENDING → RESULT
+## A round can also be abandoned from COUNTDOWN / PLAYING (pause menu →
+## "Quit round"): abort_round() → ABORTED, with no results and no stats.
+## Pausing is orthogonal to the state: while paused the state is kept but
+## tick() / on_answer() / on_miss() are ignored.
 ## Reference: DESIGN §9, specs/P10_game_controller.md
 
 signal state_changed(new_state: int)
@@ -16,8 +20,11 @@ signal combo_changed(multiplier: float)
 signal countdown_tick(remaining_s: int)
 signal round_started(session_id: int)
 signal round_ended(summary: Dictionary)
+## The round was quit before it finished. `session_id` is the (already
+## discarded) session row, or ≤ 0 when none had been opened yet.
+signal round_aborted(session_id: int)
 
-enum State { IDLE, COUNTDOWN, PLAYING, ENDING, RESULT }
+enum State { IDLE, COUNTDOWN, PLAYING, ENDING, RESULT, ABORTED }
 
 const COUNTDOWN_SECONDS: int = 3
 const ENDING_GRACE_SECONDS: float = 1.5
@@ -54,6 +61,8 @@ var _emit_side_effects: bool = false
 
 var _state: int = State.IDLE
 var _session_id: int = -1
+var _paused: bool = false
+var _paused_at_ms: int = 0
 
 var _countdown_remaining_s: float = 0.0
 var _countdown_last_announced: int = -1
@@ -139,7 +148,11 @@ func start() -> void:
 
 
 ## Driven by the scene each frame. Advances timers and handles state transitions.
+## A paused round ignores ticks, so the countdown, the round timer and the
+## post-wrong-answer spawn delay all keep their remaining time.
 func tick(delta_s: float) -> void:
+	if _paused:
+		return
 	match _state:
 		State.COUNTDOWN:
 			_countdown_remaining_s -= delta_s
@@ -167,7 +180,7 @@ func tick(delta_s: float) -> void:
 
 ## Player pressed answer `chosen_index` after `reaction_ms` since the problem was shown.
 func on_answer(chosen_index: int, reaction_ms: int) -> void:
-	if _state != State.PLAYING or _current_problem.is_empty():
+	if _paused or _state != State.PLAYING or _current_problem.is_empty():
 		return
 
 	var problem: Dictionary = _current_problem
@@ -198,7 +211,7 @@ func on_answer(chosen_index: int, reaction_ms: int) -> void:
 
 ## Called when a falling problem crosses the floor without being answered.
 func on_miss(problem_id: int) -> void:
-	if _state != State.PLAYING:
+	if _paused or _state != State.PLAYING:
 		return
 	if _current_problem.is_empty() or int(_current_problem.get("id", -1)) != problem_id:
 		return
@@ -215,17 +228,62 @@ func on_miss(problem_id: int) -> void:
 	_spawn_next_problem()
 
 
-## No-op helpers; real pause/resume UX is owned by the scene. Here we just freeze the tick loop.
-func pause() -> void:
-	if _state == State.PLAYING:
-		_state = State.IDLE  # simple freeze; scene should stop calling tick()
-		state_changed.emit(_state)
+## True while the round can be paused / quit: during the countdown and
+## while playing. Once ENDING starts the results are already on their way.
+func can_pause() -> bool:
+	return not _paused and (_state == State.COUNTDOWN or _state == State.PLAYING)
 
 
+func is_paused() -> bool:
+	return _paused
+
+
+## Freezes the round (the pause overlay is owned by the scene). Returns true
+## when the round was actually paused.
+func pause() -> bool:
+	if not can_pause():
+		return false
+	_paused = true
+	_paused_at_ms = Time.get_ticks_msec()
+	return true
+
+
+## Unfreezes a paused round. The current problem's "shown at" time is
+## shifted by the pause length so the logged reaction time (and the Elo
+## update that uses it) doesn't count the break.
 func resume() -> void:
-	if _state == State.IDLE and _session_id > 0:
-		_state = State.PLAYING
-		state_changed.emit(_state)
+	if not _paused:
+		return
+	_paused = false
+	var paused_ms: int = maxi(0, Time.get_ticks_msec() - _paused_at_ms)
+	if not _current_problem.is_empty():
+		_current_problem_shown_at_ms += paused_ms
+
+
+## Abandons the round ("Quit round" in the pause menu). Allowed from
+## COUNTDOWN / PLAYING (paused or not); returns false otherwise.
+##
+## Contract (see DESIGN §9):
+## - no `round_ended` signal / EventBus.round_ended, no results summary in
+##   GameState, no unlock evaluation, no SessionStatsStore record;
+## - the session row and its attempts are deleted, so the round never shows
+##   up in "My progress" or in session-count based unlocks;
+## - skill ratings already updated from real answers are kept — the child
+##   did answer those problems, and the tutor should learn from them.
+func abort_round() -> bool:
+	if _state != State.COUNTDOWN and _state != State.PLAYING:
+		return false
+	_paused = false
+	_current_problem = {}
+	_spawn_delay_s = 0.0
+	var aborted_session_id: int = _session_id
+	_discard_session()
+	_session_id = -1
+	_transition(State.ABORTED)
+	round_aborted.emit(aborted_session_id)
+	if _emit_side_effects:
+		EventBus.round_aborted.emit(aborted_session_id)
+	return true
 
 
 # ---------------------------------------------------------------------------
@@ -459,6 +517,14 @@ func _close_session(summary: Dictionary) -> void:
 		int(summary.get("best_streak", 0)),
 		float(summary.get("accuracy", 0.0))
 	)
+
+
+## Deletes the open session row and its attempts (abort path).
+func _discard_session() -> void:
+	if _session_id <= 0 or not DbGuard.writable(_db):
+		return
+	AttemptsDao.delete_for_session(_db, _session_id)
+	SessionsDao.delete(_db, _session_id)
 
 
 # ---------------------------------------------------------------------------

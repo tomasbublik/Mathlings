@@ -46,6 +46,11 @@ static func for_session(db: Node, session_id: int) -> Array:
 	)
 
 
+## Smaže všechny pokusy dané session (přerušené kolo).
+static func delete_for_session(db: Node, session_id: int) -> void:
+	db.execute("DELETE FROM attempts WHERE session_id = ?;", [session_id])
+
+
 ## Vrátí Dictionary {skill_key: celkový_počet_pokusů} pro daný profil.
 ## Vyžaduje JOIN přes sessions.
 static func count_by_skill(db: Node, profile_id: int) -> Dictionary:

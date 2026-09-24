@@ -7,6 +7,8 @@ extends Node
 const AudioCatalog := preload("res://scripts/autoload/audio_catalog.gd")
 
 const SFX_POOL_SIZE := 4
+## How far the music drops while the game is paused (see set_music_ducked).
+const DUCK_DB := -12.0
 
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _sfx_current_index: int = 0
@@ -18,9 +20,15 @@ var _music_enabled: bool = true
 var _last_requested_music_key: String = ""
 var _current_music_key: String = ""
 var _target_music_volume_db: float = 0.0
+var _music_ducked: bool = false
 
 
 func _ready() -> void:
+	# Keep running while the game tree is paused: the pause menu's buttons
+	# still need their tap sound and the music keeps playing (ducked). Round
+	# SFX can't fire during a pause — the paused GameController emits none,
+	# and delayed chain entries use pausable timers (see _play_sfx_after).
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_init_sfx_pool()
 	_init_music_player()
 	_load_audio_flags()
@@ -134,7 +142,9 @@ func _play_sfx_after(key: String, delay_ms: int) -> void:
 	if delay_ms <= 0:
 		play_sfx(key)
 		return
-	get_tree().create_timer(delay_ms / 1000.0).timeout.connect(
+	# process_always = false: a chain scheduled just before the game pauses
+	# waits for the resume instead of popping over the pause menu.
+	get_tree().create_timer(delay_ms / 1000.0, false).timeout.connect(
 		func() -> void: play_sfx(key))
 
 
@@ -168,7 +178,7 @@ func play_music(key: String, fade_ms: int = 500) -> void:
 		# Ensure volume is correct if we are already playing this track
 		if _music_tween and _music_tween.is_valid():
 			_music_tween.kill()
-		_music_player.volume_db = _target_music_volume_db
+		_music_player.volume_db = _music_volume_db()
 		return
 
 	_current_music_key = key
@@ -181,10 +191,27 @@ func play_music(key: String, fade_ms: int = 500) -> void:
 		_music_tween.kill()
 
 	if fade_ms <= 0:
-		_music_player.volume_db = _target_music_volume_db
+		_music_player.volume_db = _music_volume_db()
 	else:
 		_music_tween = create_tween()
-		_music_tween.tween_property(_music_player, "volume_db", _target_music_volume_db, fade_ms / 1000.0)
+		_music_tween.tween_property(_music_player, "volume_db", _music_volume_db(), fade_ms / 1000.0)
+
+
+## Softly lowers (or restores) the music, e.g. while the game is paused.
+func set_music_ducked(on: bool, fade_ms: int = 250) -> void:
+	if on == _music_ducked:
+		return
+	_music_ducked = on
+	if _current_music_key == "" or not _music_player.playing:
+		return
+	if _music_tween and _music_tween.is_valid():
+		_music_tween.kill()
+	_music_tween = create_tween()
+	_music_tween.tween_property(_music_player, "volume_db", _music_volume_db(), fade_ms / 1000.0)
+
+
+func _music_volume_db() -> float:
+	return _target_music_volume_db + (DUCK_DB if _music_ducked else 0.0)
 
 
 ## Stop music with fade-out.

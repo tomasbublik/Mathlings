@@ -319,6 +319,8 @@ func _toggles() -> void:
 ## Variations used by the in-game HUD, falling problems and results screen:
 ##   PanelContainer: HudChip (white pill), RewardCard (white card with a
 ##                   sunny rim, for unlock toasts)
+##   Button:         HudIconButton (round white chip holding one icon —
+##                   the in-game pause button)
 ##   Label: HudValueLabel (bold number inside a HudChip), CountdownLabel
 ##          (giant 3-2-1 sticker), ProblemLabel (expression on a falling
 ##          skin), ScoreValueLabel (results count-up), StatValueLabel
@@ -341,6 +343,29 @@ func _extra_game() -> void:
 	chip.shadow_offset = Vector2(0, 4)
 	theme.set_type_variation("HudChip", "PanelContainer")
 	theme.set_stylebox("panel", "HudChip", chip)
+
+	# Round icon-only chip button, same look as HudChip so it sits quietly
+	# beside the HUD values; it sinks a little when pressed.
+	var icon_btn := chip.duplicate() as StyleBoxFlat
+	icon_btn.set_content_margin_all(10)
+	icon_btn.content_margin_bottom = 10 + 5
+	var icon_hover := icon_btn.duplicate() as StyleBoxFlat
+	icon_hover.bg_color = Palette.GRAPE_LIGHT.lerp(Color.WHITE, 0.6)
+	var icon_pressed := icon_btn.duplicate() as StyleBoxFlat
+	icon_pressed.bg_color = Palette.GRAPE_LIGHT
+	icon_pressed.border_width_bottom = 2
+	icon_pressed.expand_margin_top = -3
+	icon_pressed.content_margin_top = 13
+	icon_pressed.content_margin_bottom = 12
+	icon_pressed.shadow_size = 3
+	icon_pressed.shadow_offset = Vector2(0, 1)
+	theme.set_type_variation("HudIconButton", "Button")
+	theme.set_stylebox("normal", "HudIconButton", icon_btn)
+	theme.set_stylebox("hover", "HudIconButton", icon_hover)
+	theme.set_stylebox("pressed", "HudIconButton", icon_pressed)
+	theme.set_stylebox("hover_pressed", "HudIconButton", icon_pressed)
+	theme.set_stylebox("disabled", "HudIconButton", icon_btn)
+	theme.set_stylebox("focus", "HudIconButton", StyleBoxEmpty.new())
 
 	var reward := _card(Palette.SURFACE)
 	reward.border_color = Palette.SUNNY

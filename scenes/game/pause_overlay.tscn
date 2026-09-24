@@ -1,0 +1,97 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7mpause0vrly1"]
+
+[ext_resource type="Script" path="res://scenes/game/pause_overlay.gd" id="1_pause"]
+[ext_resource type="PackedScene" path="res://scenes/shared/mascot.tscn" id="2_mascot"]
+
+[node name="PauseOverlay" type="CanvasLayer"]
+process_mode = 3
+layer = 10
+visible = false
+script = ExtResource("1_pause")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="Scrim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.06, 0.25, 0.55)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="Root/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Body" type="VBoxContainer" parent="Root/Center/Card"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Mascot" parent="Root/Center/Card/Body" instance=ExtResource("2_mascot")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Title" type="Label" parent="Root/Center/Card/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 52
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Root/Center/Card/Body"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+theme_override_constants/line_spacing = -6
+theme_override_font_sizes/font_size = 22
+text = "Take a breather — your round will wait for you."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Gap" type="Control" parent="Root/Center/Card/Body"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Root/Center/Card/Body"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ContinueButton" type="Button" parent="Root/Center/Card/Body/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_type_variation = &"PlayButton"
+theme_override_font_sizes/font_size = 40
+text = "Continue"
+
+[node name="QuitButton" type="Button" parent="Root/Center/Card/Body/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_type_variation = &"SecondaryButton"
+theme_override_font_sizes/font_size = 28
+text = "Quit round"

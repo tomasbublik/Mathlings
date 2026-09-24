@@ -330,6 +330,18 @@ ENDING:
 
 RESULT:
   - transition to scenes/results
+
+PAUSE (orthogonal, COUNTDOWN / PLAYING only):
+  - HUD pause chip, Android back, or the app losing focus / going to background
+  - controller.pause(): tick / on_answer / on_miss are ignored; the scene sets
+    get_tree().paused = true and shows the pause overlay (PROCESS_MODE_ALWAYS)
+  - Continue → controller.resume() (reaction-time clock shifted by the pause)
+
+ABORTED (pause menu → "Quit round"):
+  - controller.abort_round(): no round_ended, no results, no unlocks,
+    no SessionStatsStore record; the sessions row + its attempts are deleted
+  - skill ratings from answers already given are kept
+  - emits round_aborted (EventBus.round_aborted), scene returns to main menu
 ```
 
 ## 10. UI wireframes (ASCII)

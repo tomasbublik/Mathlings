@@ -9,10 +9,17 @@ extends Node2D
 ## coral on the outcome. The controller already fires the SUCCESS / ERROR
 ## haptics and correct / wrong sounds, so the answer buttons opt out of the
 ## global UiFeedback (`ui_feedback_off`) and are animated here instead.
+##
+## Pause: the round-white chip at the top right, Android back, or the app
+## leaving the foreground pause the round (GameController.pause() +
+## get_tree().paused) and open the PauseOverlay (PROCESS_MODE_ALWAYS).
+## "Quit round" aborts the round (no results, no stats) and returns to the
+## main menu.
 
 const FALLING_PROBLEM_SCENE: PackedScene = preload("res://scenes/game/falling_problem.tscn")
 const FLOATING_TEXT_SCENE: PackedScene = preload("res://scenes/game/vfx/floating_text.tscn")
 const RESULTS_SCENE: String = "res://scenes/results/results.tscn"
+const MAIN_MENU_SCENE: String = "res://scenes/main_menu/main_menu.tscn"
 
 ## Pastel blend used for the "?" placeholder buttons before the first problem.
 const PLACEHOLDER_BLEND: float = 0.45
@@ -44,6 +51,8 @@ const COMBO_TEXT: Array[Color] = [Palette.INK, Color.WHITE, Color.WHITE]
 	%AnswerButton1, %AnswerButton2, %AnswerButton3
 ]
 @onready var _play_field: Node2D = %PlayField
+@onready var _pause_button: Button = %PauseButton
+@onready var _pause_overlay: PauseOverlay = %PauseOverlay
 
 var _controller: GameController
 var _current_entity: FallingProblem = null
@@ -66,6 +75,8 @@ var _countdown_tween: Tween
 ## HUD / entity scale for the current screen shape (see HudFormat.ui_scale).
 var _ui_scale: float = 1.0
 var _floor_y: float = 520.0
+var _paused_at_ms: int = 0
+var _leaving: bool = false
 
 
 func _ready() -> void:
@@ -79,11 +90,32 @@ func _ready() -> void:
 	_controller = _build_controller(config)
 	_wire_controller_signals()
 	_wire_answer_buttons()
+	_wire_pause()
 	_combo_badge.visible = false
 	_countdown_overlay.visible = false
 	_update_hud(0, 0, float(_round_duration_s))
 
 	_controller.start()
+
+
+func _exit_tree() -> void:
+	# Never leave the tree paused / back-to-quit disabled for the next scene.
+	if is_inside_tree():
+		get_tree().paused = false
+		get_tree().set_quit_on_go_back(true)
+	AudioManager.set_music_ducked(false)
+
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_WM_GO_BACK_REQUEST:
+			# Android back: pause, or — with the menu open — continue.
+			if _pause_overlay != null and _pause_overlay.is_open():
+				_resume_round()
+			else:
+				_pause_round()
+		NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT:
+			_pause_round()
 
 
 func _apply_theme() -> void:
@@ -112,6 +144,7 @@ func _update_screen_layout() -> void:
 	_top_bar.scale = Vector2(k, k)
 	_top_bar.position = Vector2(margin, 18.0 * k)
 	_top_bar.size = Vector2((size.x - 2.0 * margin) / k, 60.0)
+	_pause_button.pivot_offset = _pause_button.size / 2.0
 
 	# Chunky answer bar: full width on portrait phones, capped and centred on
 	# wide screens so the three buttons stay thumb-sized rather than huge.
@@ -177,6 +210,14 @@ func _wire_controller_signals() -> void:
 	_controller.countdown_tick.connect(_on_countdown_tick)
 	_controller.state_changed.connect(_on_state_changed)
 	_controller.problem_missed.connect(_on_problem_missed)
+
+
+func _wire_pause() -> void:
+	# Back must pause the round, not close the app (restored in _exit_tree).
+	get_tree().set_quit_on_go_back(false)
+	_pause_button.pressed.connect(_pause_round)
+	_pause_overlay.continue_requested.connect(_resume_round)
+	_pause_overlay.quit_requested.connect(_quit_round)
 
 
 func _wire_answer_buttons() -> void:
@@ -370,8 +411,55 @@ func _on_state_changed(new_state: int) -> void:
 		GameController.State.ENDING:
 			_enable_answers(false)
 			_set_timer_urgent(false)
+			# The results are on their way; nothing left to pause.
+			_pause_button.disabled = true
+			_pause_button.visible = false
 		_:
 			pass
+
+
+# ---------------------------------------------------------------------------
+# Pause / quit
+# ---------------------------------------------------------------------------
+
+## Freezes the round and opens the pause menu. No-op outside COUNTDOWN /
+## PLAYING (e.g. during the results hand-off) or when already paused.
+func _pause_round() -> void:
+	if _leaving or _controller == null or not _controller.pause():
+		return
+	_paused_at_ms = Time.get_ticks_msec()
+	# Freezes the falling problem, the HUD / answer / countdown tweens and
+	# particles; the controller itself ignores ticks and answers meanwhile.
+	get_tree().paused = true
+	AudioManager.set_music_ducked(true)
+	_pause_overlay.open()
+
+
+func _resume_round() -> void:
+	if _controller == null or not _controller.is_paused():
+		return
+	var now := Time.get_ticks_msec()
+	# Reaction time must not include the break (the controller shifts its
+	# own "shown at" clock the same way).
+	_current_entity_shown_at_ms += maxi(0, now - _paused_at_ms)
+	# Swallow a duplicate delivery of the Continue tap (see ANSWER_DEBOUNCE_MS).
+	_last_answer_ms = now
+	_pause_overlay.close()
+	_controller.resume()
+	get_tree().paused = false
+	AudioManager.set_music_ducked(false)
+
+
+## "Quit round": abort without results and go back to the main menu.
+func _quit_round() -> void:
+	if _leaving:
+		return
+	_leaving = true
+	set_process(false)
+	_controller.abort_round()
+	get_tree().paused = false
+	AudioManager.set_music_ducked(false)
+	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
 
 
 # ---------------------------------------------------------------------------

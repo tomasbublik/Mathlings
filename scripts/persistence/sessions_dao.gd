@@ -38,6 +38,13 @@ static func close_session(
 	""", [ended_at_ms, duration_ms, score, best_streak, accuracy, session_id])
 
 
+## Smaže session řádek (přerušené kolo — "Quit round" v pauze).
+## Pokusy session je nutné smazat předem (AttemptsDao.delete_for_session),
+## jinak by je zablokoval cizí klíč attempts.session_id.
+static func delete(db: Node, session_id: int) -> void:
+	db.execute("DELETE FROM sessions WHERE id = ?;", [session_id])
+
+
 ## Vrátí session dle id nebo prázdný Dictionary.
 static func get_by_id(db: Node, session_id: int) -> Dictionary:
 	var rows: Array = db.execute("SELECT * FROM sessions WHERE id = ?;", [session_id])
