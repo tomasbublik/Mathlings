@@ -1,12 +1,9 @@
 class_name SessionStatsStore
-## ConfigFile-backed fallback for per-profile session stats.
-##
-## When the godot-sqlite addon isn't installed we have nowhere to write the
-## session/attempts rows that StatsDao.profile_totals reads. The Stats screen
-## then renders permanent zeros, which is what the user sees on a fresh
-## checkout. This store mirrors the totals shape of `StatsDao.profile_totals`
-## but persists the running aggregates as ints in
-## `user://profiles/<id>/stats.cfg`.
+## ConfigFile-backed running totals of finished rounds per profile, in
+## `user://profiles/<id>/stats.cfg`. Source of the Stats screen summary tiles
+## and of the "rounds played" / "total score" unlock rules. Predates
+## ProgressStore, so it also covers rounds played before per-round history
+## was kept (existing installs keep their totals).
 ##
 ## Schema (one section, simple key/value):
 ##   [aggregates]
@@ -30,7 +27,7 @@ const AGGREGATES_SECTION: String = "aggregates"
 ## Records one finished round into the local stats file. Idempotent in the
 ## sense that calling it twice for one round will simply double-count — the
 ## caller (GameController) is responsible for invoking it exactly once per
-## ended round, mirroring how SessionsDao.close_session is called.
+## ended round (at the same point as ProgressStore.record_round).
 ##
 ## Defensive: invalid profile_id (≤ 0) is a no-op so the call site doesn't
 ## have to special-case the "no profile yet" state.
@@ -75,8 +72,8 @@ static func record_session(
 			% [path, error_string(err)])
 
 
-## Returns the same dictionary shape as StatsDao.profile_totals so the
-## Stats screen can drop in without if/else chains.
+## Returns the totals dictionary (sessions, total_duration_ms, total_score,
+## max_score, best_streak_overall, avg_error_rate).
 ##
 ## When the file is missing or unreadable, every field is 0/0.0 — the
 ## Stats screen already handles "no data yet" by hiding the table.

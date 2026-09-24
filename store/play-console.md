@@ -123,7 +123,7 @@ Resulting listing badge: **"No data collected" · "No data shared with third par
 - [x] No in-app purchases, no links out of the app, no social features → a parent gate is not required.
 - [x] No location, camera, microphone, contacts or storage permissions; only `VIBRATE` and `WAKE_LOCK`.
 - [x] No collection or transmission of personal data (child-entered names stay on device).
-- [x] No third-party SDKs (only Godot engine; `addons/gut` is a test framework; `addons/godot-sqlite` is currently a placeholder).
+- [x] No third-party SDKs (only Godot engine; `addons/gut` is a test framework).
 - [x] Content suitable for 6–12: no violence, no scary content, positive feedback, wrong answers cost no points.
 - [x] Store listing is honest (every listed feature exists in the build) and free of "best/#1/free" claims.
 - [ ] Store graphics and screenshots reviewed for age-appropriateness and no personal data (graphics workstream).
@@ -177,11 +177,11 @@ Checked against the code at commit `de8c6a3`.
 |---|---|---|
 | Only `VIBRATE` and `WAKE_LOCK` permissions | ✔ | `export_presets.cfg:197-198` true; `:129` `permissions/internet=false`; `:63` no custom permissions; all other permissions false |
 | No network code | ✔ | No `HTTPRequest`, `HTTPClient`, `StreamPeerTCP`, `WebSocket`, `PacketPeerUDP`, `ENet`, `OS.shell_open` in `scripts/`, `scenes/` |
-| No analytics / ads / third-party SDKs | ✔ | `addons/` contains only `gut` (tests) and `godot-sqlite/PLACEHOLDER.md`; no `.aar`/`.jar`/`.gdextension`; no `Engine.get_singleton`/`JavaClassWrapper` |
-| Data only in app-private storage | ✔ | `user://` paths: `scripts/autoload/db.gd:16`, `scripts/autoload/profile_service.gd:26,31,35,39`, `scripts/persistence/session_stats_store.gd:134`, `scripts/autoload/settings_store.gd:4` |
+| No analytics / ads / third-party SDKs | ✔ | `addons/` contains only `gut` (tests); no `.aar`/`.jar`/`.gdextension`; no `Engine.get_singleton`/`JavaClassWrapper` |
+| Data only in app-private storage | ✔ | `user://` paths: `scripts/persistence/progress_store.gd` (`user://progress`), `scripts/autoload/profile_service.gd:26,31,35,39`, `scripts/persistence/session_stats_store.gd:134`, `scripts/autoload/settings_store.gd:4` |
 | Excluded from Android backup | ✔ | `export_presets.cfg:58` `user_data_backup/allow=false` |
 | Deleted on uninstall | ✔ | `export_presets.cfg:41` `package/retain_data_on_uninstall=false` |
-| In-app player deletion | ✔ | `scripts/autoload/profile_service.gd:128-140` (removes profile, stats file and per-profile dir); UI `scenes/profiles/profile_manager.gd:144` |
+| In-app player deletion | ✔ | `scripts/autoload/profile_service.gd:128-140` (removes profile, per-profile dir with settings + stats, and the progress file); UI `scenes/profiles/profile_manager.gd:144` |
 | Up to 5 players | ✔ | `scripts/autoload/profile_service.gd:22` |
 | Round length 30 s – 5 min | ✔ | `scenes/settings/settings.gd:10` `[30, 60, 120, 180, 300]` |
 | Speed Slow / Normal / Fast / Auto | ✔ | `assets/translations/strings.csv` `SETTINGS_SPEED_*`; DESIGN.md §6.3 |
@@ -195,23 +195,14 @@ Checked against the code at commit `de8c6a3`.
 
 ### Discrepancies found (not papered over)
 
-1. **SQLite addon is missing – long-term per-skill progress is not persisted.**
-   `addons/godot-sqlite/` contains only `PLACEHOLDER.md`, so `DbGuard.writable(DB)` is false in a
-   build made from this repo. Consequences: per-skill Elo ratings (`scripts/tutor/skill_model.gd:147,172`),
-   earned badges/unlocks (`scripts/game/unlock_system.gd:93-99`), the "10 games" / "addition master"
-   badges and the per-skill breakdown on *My progress* (`scenes/stats/stats.gd:68-75`) work only
-   within an app session or not at all. What *does* persist: players, settings and round totals
-   (`SessionStatsStore`). The adaptive tutor still adapts during play (in-memory).
-   The store texts were written to be true either way ("notices which skills need more work",
-   "rounds played, best round, longest streak and accuracy"); the privacy policy lists per-skill
-   levels as data that *may* be stored on the device. **DECISION NEEDED:** install the addon before
-   release (build workstream) or accept the reduced persistence.
-2. **Latent bug if the SQLite addon is installed:** `ProfilesDao.delete`
-   (`scripts/persistence/profiles_dao.gd:45-46`) deletes only the `profiles` row; with
-   `PRAGMA foreign_keys = ON` (`scripts/autoload/db.gd`) and no `ON DELETE CASCADE` in
-   `scripts/persistence/migrations.gd`, deleting a player who has sessions/skills/unlocks would
-   fail or leave rows behind. The privacy policy promises that deleting a player deletes their
-   progress – fix before enabling SQLite.
+1. ~~**SQLite addon is missing – long-term per-skill progress is not persisted.**~~ **Resolved:**
+   SQLite was dropped; per-skill ratings, badges/unlocks, round history and recent attempts are now
+   stored per player in `user://progress/profile_<id>.json` (`scripts/persistence/progress_store.gd`,
+   DESIGN.md §6.1). The "10 rounds" / "addition master" badges and the per-skill part of
+   *My progress* work across restarts.
+2. ~~**Latent bug if the SQLite addon is installed:** deleting a player could leave rows behind.~~
+   **Resolved:** no database any more; `ProfileService.delete` removes the profile entry, its
+   settings/stats directory and its progress file (incl. backups).
 3. **Orientation:** README says "locked to `sensor_landscape`", but `project.godot:46` is
    `"sensor"` and `export_presets.cfg:52` `screen/orientation=6` (sensor) – the app rotates to portrait
    too. Not a listing problem; screenshots can be landscape or portrait.

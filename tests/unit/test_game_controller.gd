@@ -2,7 +2,7 @@
 ##
 ## Focus on pure state-machine and scoring behavior. Because GameController tracks
 ## timing via `tick(delta_s)`, tests simulate frames by calling tick() with fixed deltas.
-## Audio/Haptics side-effects are elided by passing db=null (controller guards those).
+## Audio/Haptics side-effects and persistence are elided by passing live = false.
 
 extends GutTest
 
@@ -10,15 +10,15 @@ extends GutTest
 func _make_controller(duration_s: int = 10, enabled: Array = ["add_0_10"], rng_seed: int = 1) -> GameController:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = rng_seed
-	var skill_model := SkillModel.new(1, null)
-	var logger := AttemptLogger.new(-1, null)
+	var skill_model := SkillModel.new(1)
+	var logger := AttemptLogger.new()
 	var diff := DifficultyController.new()
 	var config := {
 		"duration_s": duration_s,
 		"speed_preset": "normal",
 		"enabled_skills": enabled,
 	}
-	return GameController.new(1, config, null, skill_model, logger, diff, rng)
+	return GameController.new(1, config, false, skill_model, logger, diff, rng)
 
 
 func _advance(controller: GameController, seconds: float, step: float = 0.05) -> void:
@@ -149,7 +149,7 @@ func test_no_spawn_requests_after_ending() -> void:
 	assert_eq(spawn_count[0], 1, "Exactly one spawn at start of PLAYING")
 	_advance(c, 1.1)     # duration elapses
 	assert_eq(c.state(), GameController.State.ENDING)
-	var before := spawn_count[0]
+	var before: int = spawn_count[0]
 	_advance(c, 2.0)     # grace + result
 	assert_eq(spawn_count[0], before,
 		"No new spawn after ENDING (was %d, now %d)" % [before, spawn_count[0]])

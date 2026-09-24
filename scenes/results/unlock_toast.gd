@@ -9,9 +9,8 @@ extends PanelContainer
 func setup(unlock: Dictionary) -> void:
 	if not is_node_ready():
 		await ready
-	var label: String = String(unlock.get("label", unlock.get("key", "?")))
 	$HBox/Text/Caption.text = tr("RESULTS_UNLOCK_NEW")
-	$HBox/Text/Label.text = tr(label)
+	$HBox/Text/Label.text = UnlockSystem.display_name(unlock)
 
 
 func _ready() -> void:

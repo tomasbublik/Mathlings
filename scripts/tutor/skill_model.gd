@@ -1,6 +1,7 @@
 class_name SkillModel
 ## Adaptive tutor: tracks per-skill Elo rating for one profile.
-## - Persists to DB via SkillsDao.
+## - Persists through ProgressStore (kept in memory during a round, written
+##   to disk at round end / abort / app pause).
 ## - Updates rating after each attempt.
 ## - Chooses the next skill from enabled set (weakness-biased with easy/hard injection).
 ## Reference: DESIGN §6.2, §8.1-§8.2, specs/P9_skill_model.md
@@ -37,16 +38,16 @@ const FAMILIES: Dictionary = {
 
 
 var _profile_id: int
-var _db: Node
+var _persist: bool
 var _cache: Dictionary = {}  ## skill_key -> {rating: float, attempts: int, correct: int}
 
 
-## Loads existing ratings for `profile_id` from DB. `db` is the DB autoload (or compatible).
-## When `db` is null (pure-unit tests) the model operates in-memory only.
-func _init(profile_id: int, db: Node) -> void:
+## Loads existing ratings for `profile_id` from ProgressStore when `persist`
+## is true. With `persist` false (pure-unit tests) the model is in-memory only.
+func _init(profile_id: int, persist: bool = false) -> void:
 	_profile_id = profile_id
-	_db = db
-	_load_from_db()
+	_persist = persist and profile_id > 0
+	_load_from_store()
 
 
 ## Returns the current rating for `skill_key`. Unknown keys default to 1000.
@@ -103,9 +104,9 @@ func on_attempt(skill_key: String, difficulty: float, correct: bool, reaction_ms
 
 	_persist_entry(skill_key, entry)
 
-	# Emit only when running inside the game; unit tests construct with db = null
-	# and there's nothing to broadcast to.
-	if _db != null:
+	# Emit only when running inside the game; unit tests construct with
+	# persist = false and there's nothing to broadcast to.
+	if _persist:
 		EventBus.skill_rating_changed.emit(skill_key, r, new_rating)
 
 	return new_rating
@@ -140,17 +141,15 @@ func choose_next(enabled_keys: PackedStringArray, rng: RandomNumberGenerator = n
 
 
 # ---------------------------------------------------------------------------
-# DB <-> cache
+# ProgressStore <-> cache
 # ---------------------------------------------------------------------------
 
-func _load_from_db() -> void:
-	if not DbGuard.writable(_db):
+func _load_from_store() -> void:
+	if not _persist:
 		return
-	var rows: Array = SkillsDao.get_for_profile(_db, _profile_id)
-	for row: Dictionary in rows:
-		var key: String = String(row.get("skill_key", ""))
-		if key == "":
-			continue
+	var rows: Dictionary = ProgressStore.skills(_profile_id)
+	for key: String in rows.keys():
+		var row: Dictionary = rows[key]
 		_cache[key] = {
 			"rating": float(row.get("rating", DEFAULT_RATING)),
 			"attempts": int(row.get("attempts", 0)),
@@ -169,17 +168,14 @@ func _ensure_entry(skill_key: String) -> Dictionary:
 
 
 func _persist_entry(skill_key: String, entry: Dictionary) -> void:
-	if not DbGuard.writable(_db):
+	if not _persist:
 		return
-	var now_ms: int = int(Time.get_unix_time_from_system() * 1000.0)
-	SkillsDao.upsert(
-		_db,
+	ProgressStore.set_skill(
 		_profile_id,
 		skill_key,
 		float(entry["rating"]),
 		int(entry["attempts"]),
-		int(entry["correct"]),
-		now_ms
+		int(entry["correct"])
 	)
 
 

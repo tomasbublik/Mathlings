@@ -1,8 +1,8 @@
 extends Control
 ## Player stats: summary tiles, "needs practice" list and a per-skill table
-## with accuracy meters. Aggregates come from StatsDao (or the local
-## SessionStatsStore fallback when SQLite isn't available).
-## Loads synchronously in `_ready` (MVP). Handles missing DB gracefully.
+## with accuracy meters. Totals come from SessionStatsStore, per-skill data
+## from ProgressStore (see DESIGN §6).
+## Loads synchronously in `_ready` (MVP). Handles "no data yet" gracefully.
 ## Reference: specs/P13_parent_dashboard.md
 
 const MAIN_MENU_SCENE: String = "res://scenes/main_menu/main_menu.tscn"
@@ -54,26 +54,18 @@ func _apply_theme() -> void:
 
 
 func _profile_name_for(profile_id: int) -> String:
-	# DB has the authoritative name when the addon is installed; otherwise
-	# fall back to ProfileService's local backend.
-	if DB.is_open():
-		var p: Dictionary = ProfilesDao.get_by_id(DB, profile_id)
-		if not p.is_empty():
+	for p: Dictionary in ProfileService.list():
+		if int(p.get("id", 0)) == profile_id:
 			return String(p.get("name", tr("COMMON_DEFAULT_PLAYER")))
-	return MenuKit.active_profile_name() if profile_id == ProfileService.active_id() \
-		else tr("COMMON_DEFAULT_PLAYER")
+	return tr("COMMON_DEFAULT_PLAYER")
 
 
 func _load_data(profile_id: int) -> void:
-	# Prefer DB-backed totals; fall back to the local SessionStatsStore so a
-	# fresh checkout (no SQLite addon) still shows aggregates after a few
-	# rounds. Skill-level breakdowns remain DB-only — they need per-attempt
-	# rows the local fallback doesn't track.
-	var totals: Dictionary = StatsDao.profile_totals(DB, profile_id)
-	if int(totals.get("sessions", 0)) == 0 and not DbGuard.writable(DB):
-		totals = SessionStatsStore.totals_for(profile_id)
-	var skills: Array = StatsDao.skill_overview(DB, profile_id)
-	var practice: Array = StatsDao.skills_needing_practice(DB, profile_id)
+	# Round totals: SessionStatsStore (running aggregates, incl. rounds played
+	# before ProgressStore existed). Per-skill data: ProgressStore aggregates.
+	var totals: Dictionary = SessionStatsStore.totals_for(profile_id)
+	var skills: Array = ProgressStore.skill_overview(profile_id)
+	var practice: Array = ProgressStore.skills_needing_practice(profile_id)
 
 	var sessions: int = int(totals.get("sessions", 0))
 	var has_any_data: bool = not skills.is_empty() or sessions > 0

@@ -1,36 +1,30 @@
-## GUT integration tests for UnlockSystem.
+## GUT tests for UnlockSystem against a real ProgressStore in a temp dir.
 ## Each rule has a happy path and at least one negative case.
-## Uses TestInMemoryDb so we exercise SQL counts (sessions, distinct days).
 
 extends GutTest
 
+const ROOT := "user://test_unlocks"
+const PID := 910001
 
-var _db: TestInMemoryDb = null
-var _profile_id: int = 0
+var _saved_locale: String = ""
 
 
 func before_each() -> void:
-	_db = TestInMemoryDb.new()
-	if not _db.open():
-		_db = null
-		return
-	_profile_id = ProfilesDao.insert(_db, "Hráč X", "", 1700000000000)
+	ProgressStore.set_root(ROOT)
+	SessionStatsStore.clear(PID)
+	_saved_locale = TranslationServer.get_locale()
 
 
 func after_each() -> void:
-	if _db != null:
-		_db.close()
-		_db = null
+	ProgressStore.delete_profile(PID)
+	SessionStatsStore.clear(PID)
+	DirAccess.remove_absolute(ROOT)
+	DirAccess.remove_absolute("user://profiles/%d" % PID)
+	ProgressStore.set_root(ProgressStore.DEFAULT_ROOT)
+	TranslationServer.set_locale(_saved_locale)
 
 
-func _skip_unless_db() -> bool:
-	if _db == null:
-		pending("godot-sqlite addon není dostupný")
-		return true
-	return false
-
-
-func _summary(score: int = 0, best_streak: int = 0) -> Dictionary:
+func _round_summary(score: int = 0, best_streak: int = 0) -> Dictionary:
 	return {
 		"score": score,
 		"best_streak": best_streak,
@@ -40,123 +34,163 @@ func _summary(score: int = 0, best_streak: int = 0) -> Dictionary:
 	}
 
 
-# ---------------------------------------------------------------------------
-# Profile guard + DB guard
-# ---------------------------------------------------------------------------
+## Records a finished round the way GameController does (both stores).
+func _play_round(score: int = 10, started_at_ms: int = 1700000000000) -> void:
+	ProgressStore.record_round(PID, {
+		"started_at": started_at_ms, "ended_at": started_at_ms + 60000,
+		"duration_ms": 60000, "score": score, "best_streak": 1, "accuracy": 0.5,
+	}, [])
+	SessionStatsStore.record_session(PID, score, 60000, 1, 0.5)
 
-func test_invalid_profile_id_returns_empty_list() -> void:
-	if _skip_unless_db(): return
-	assert_eq(UnlockSystem.evaluate(0, _summary(), _db), [],
-		"profile_id <= 0 must short-circuit with no unlocks")
-	assert_eq(UnlockSystem.evaluate(-1, _summary(), _db), [])
-
-
-func test_null_db_returns_only_db_independent_unlocks() -> void:
-	if _skip_unless_db(): return
-	# best_streak rule does not touch DB → still unlocks; DB-bound rules silently fail.
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(0, 10), null)
-	var keys: Array = unlocks.map(func(u: Dictionary) -> String: return String(u["key"]))
-	assert_true(keys.has("streak_10"),
-		"streak_10 must unlock even without a DB (rule is pure)")
-
-
-# ---------------------------------------------------------------------------
-# streak_10 badge
-# ---------------------------------------------------------------------------
-
-func test_streak_10_unlocks_at_target() -> void:
-	if _skip_unless_db(): return
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(0, 10), _db)
-	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "streak_10"))
-
-
-func test_streak_10_does_not_unlock_below_target() -> void:
-	if _skip_unless_db(): return
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(0, 9), _db)
-	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "streak_10"))
-
-
-func test_unlock_persisted_only_once() -> void:
-	if _skip_unless_db(): return
-	# First evaluation writes the row.
-	UnlockSystem.evaluate(_profile_id, _summary(0, 10), _db)
-	# Second evaluation must skip already-persisted unlocks.
-	var second: Array = UnlockSystem.evaluate(_profile_id, _summary(0, 10), _db)
-	assert_false(_has_unlock(second, UnlockSystem.KIND_BADGE, "streak_10"),
-		"streak_10 must not appear in the result list twice")
-	assert_true(UnlocksDao.is_unlocked(_db, _profile_id, UnlockSystem.KIND_BADGE, "streak_10"))
-
-
-# ---------------------------------------------------------------------------
-# ten_games badge
-# ---------------------------------------------------------------------------
-
-func test_ten_games_unlocks_after_ten_finished_sessions() -> void:
-	if _skip_unless_db(): return
-	for i in range(UnlockSystem.TEN_GAMES_BADGE_TARGET):
-		var sid := SessionsDao.insert(_db, _profile_id, 1700000000000 + i * 1000, "{}")
-		SessionsDao.close_session(_db, sid, 1700000060000 + i * 1000, 60000, 0, 0, 0.5)
-
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(), _db)
-	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "ten_games"))
-
-
-func test_ten_games_does_not_unlock_with_nine_sessions() -> void:
-	if _skip_unless_db(): return
-	for i in range(9):
-		var sid := SessionsDao.insert(_db, _profile_id, 1700000000000 + i * 1000, "{}")
-		SessionsDao.close_session(_db, sid, 1700000060000 + i * 1000, 60000, 0, 0, 0.5)
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(), _db)
-	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "ten_games"))
-
-
-# ---------------------------------------------------------------------------
-# addition_master badge
-# ---------------------------------------------------------------------------
-
-func test_addition_master_unlocks_when_all_three_add_skills_are_above_threshold() -> void:
-	if _skip_unless_db(): return
-	for k in ["add_0_10", "add_0_20", "add_0_100"]:
-		SkillsDao.upsert(_db, _profile_id, k, UnlockSystem.ADDITION_MASTERY_RATING + 1, 5, 5, 0)
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(), _db)
-	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "addition_master"))
-
-
-func test_addition_master_skips_when_any_skill_is_below_threshold() -> void:
-	if _skip_unless_db(): return
-	SkillsDao.upsert(_db, _profile_id, "add_0_10", 1500.0, 5, 5, 0)
-	SkillsDao.upsert(_db, _profile_id, "add_0_20", 1500.0, 5, 5, 0)
-	SkillsDao.upsert(_db, _profile_id, "add_0_100", 1399.0, 5, 5, 0)  # one below
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(), _db)
-	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "addition_master"))
-
-
-# ---------------------------------------------------------------------------
-# space theme
-# ---------------------------------------------------------------------------
-
-func test_space_theme_unlocks_when_total_plus_round_score_reaches_threshold() -> void:
-	if _skip_unless_db(): return
-	# 800 from previous sessions + 200 in summary = 1000 (threshold).
-	var sid := SessionsDao.insert(_db, _profile_id, 1700000000000, "{}")
-	SessionsDao.close_session(_db, sid, 1700000060000, 60000, 800, 0, 1.0)
-	var unlocks: Array = UnlockSystem.evaluate(
-		_profile_id, _summary(UnlockSystem.SPACE_THEME_TOTAL_SCORE - 800), _db)
-	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_THEME, "space"))
-
-
-func test_space_theme_does_not_unlock_below_threshold() -> void:
-	if _skip_unless_db(): return
-	var unlocks: Array = UnlockSystem.evaluate(_profile_id, _summary(500), _db)
-	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_THEME, "space"))
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
 
 func _has_unlock(unlocks: Array, kind: String, key: String) -> bool:
 	for u: Dictionary in unlocks:
 		if String(u.get("kind", "")) == kind and String(u.get("key", "")) == key:
 			return true
 	return false
+
+
+# ---------------------------------------------------------------------------
+# Guards + idempotency
+# ---------------------------------------------------------------------------
+
+func test_invalid_profile_id_returns_empty_list() -> void:
+	assert_eq(UnlockSystem.evaluate(0, _round_summary(0, 10)), [])
+	assert_eq(UnlockSystem.evaluate(-1, _round_summary(0, 10)), [])
+
+
+func test_unlock_persisted_only_once() -> void:
+	var first: Array = UnlockSystem.evaluate(PID, _round_summary(0, 10))
+	assert_true(_has_unlock(first, UnlockSystem.KIND_BADGE, "streak_10"))
+	var second: Array = UnlockSystem.evaluate(PID, _round_summary(0, 10))
+	assert_false(_has_unlock(second, UnlockSystem.KIND_BADGE, "streak_10"),
+		"an unlock is reported only the first time")
+	assert_eq(ProgressStore.unlocks(PID, UnlockSystem.KIND_BADGE).size(), 1)
+	ProgressStore.reset_cache()
+	assert_true(ProgressStore.is_unlocked(PID, UnlockSystem.KIND_BADGE, "streak_10"),
+		"the unlock survives a restart")
+
+
+# ---------------------------------------------------------------------------
+# streak_10
+# ---------------------------------------------------------------------------
+
+func test_streak_10_unlocks_at_target() -> void:
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary(0, UnlockSystem.STREAK_BADGE_TARGET))
+	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "streak_10"))
+
+
+func test_streak_10_does_not_unlock_below_target() -> void:
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary(0, 9))
+	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "streak_10"))
+
+
+# ---------------------------------------------------------------------------
+# ten_games
+# ---------------------------------------------------------------------------
+
+func test_ten_games_unlocks_after_ten_finished_rounds() -> void:
+	for i in range(UnlockSystem.TEN_GAMES_BADGE_TARGET):
+		_play_round(10, 1700000000000 + i * 1000)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "ten_games"))
+
+
+func test_ten_games_does_not_unlock_with_nine_rounds() -> void:
+	for i in range(9):
+		_play_round(10, 1700000000000 + i * 1000)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "ten_games"))
+
+
+func test_ten_games_counts_rounds_from_legacy_totals() -> void:
+	# Installs that played before ProgressStore existed only have stats.cfg.
+	for i in range(UnlockSystem.TEN_GAMES_BADGE_TARGET):
+		SessionStatsStore.record_session(PID, 10, 60000, 1, 0.5)
+	assert_eq(ProgressStore.session_count(PID), 0)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "ten_games"))
+
+
+# ---------------------------------------------------------------------------
+# addition_master
+# ---------------------------------------------------------------------------
+
+func test_addition_master_unlocks_when_all_add_skills_are_above_threshold() -> void:
+	for k: String in UnlockSystem.ADDITION_SKILLS:
+		ProgressStore.set_skill(PID, k, UnlockSystem.ADDITION_MASTERY_RATING + 1.0, 30, 28)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "addition_master"))
+
+
+func test_addition_master_skips_when_any_skill_is_below_threshold() -> void:
+	ProgressStore.set_skill(PID, "add_0_10", 1500.0, 30, 28)
+	ProgressStore.set_skill(PID, "add_0_20", 1500.0, 30, 28)
+	ProgressStore.set_skill(PID, "add_0_100", 1399.0, 30, 28)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "addition_master"))
+
+
+func test_addition_master_skips_when_a_skill_was_never_practised() -> void:
+	ProgressStore.set_skill(PID, "add_0_10", 1500.0, 30, 28)
+	ProgressStore.set_skill(PID, "add_0_20", 1500.0, 30, 28)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_BADGE, "addition_master"))
+
+
+# ---------------------------------------------------------------------------
+# Themes
+# ---------------------------------------------------------------------------
+
+func test_space_theme_unlocks_when_total_score_reaches_threshold() -> void:
+	_play_round(800)
+	_play_round(UnlockSystem.SPACE_THEME_TOTAL_SCORE - 800)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary())
+	assert_true(_has_unlock(unlocks, UnlockSystem.KIND_THEME, "space"))
+
+
+func test_space_theme_does_not_unlock_below_threshold() -> void:
+	_play_round(500)
+	var unlocks: Array = UnlockSystem.evaluate(PID, _round_summary(500))
+	assert_false(_has_unlock(unlocks, UnlockSystem.KIND_THEME, "space"),
+		"the round score is already in the totals — no double counting")
+
+
+func test_balloons_theme_needs_distinct_play_days() -> void:
+	var day_ms := 24 * 3600 * 1000
+	for i in range(UnlockSystem.BALLOONS_THEME_DISTINCT_DAYS - 1):
+		_play_round(10, 1700000000000 + i * day_ms)
+	_play_round(10, 1700000000000 + 1000)  # same day as the first one
+	assert_false(_has_unlock(UnlockSystem.evaluate(PID, _round_summary()),
+		UnlockSystem.KIND_THEME, "balloons"))
+	_play_round(10, 1700000000000 + 10 * day_ms)
+	assert_true(_has_unlock(UnlockSystem.evaluate(PID, _round_summary()),
+		UnlockSystem.KIND_THEME, "balloons"))
+
+
+# ---------------------------------------------------------------------------
+# Display names are translated at display time
+# ---------------------------------------------------------------------------
+
+func test_display_name_follows_the_current_locale() -> void:
+	var streak := {"kind": UnlockSystem.KIND_BADGE, "key": "streak_10"}
+	var space := {"kind": UnlockSystem.KIND_THEME, "key": "space"}
+	TranslationServer.set_locale("en")
+	assert_eq(UnlockSystem.display_name(streak), "10 in a row, no mistakes!")
+	assert_eq(UnlockSystem.display_name(space), "Theme: Space")
+	assert_eq(UnlockSystem.display_name({"kind": "badge", "key": "ten_games"}),
+		"10 rounds played")
+	assert_eq(UnlockSystem.display_name({"kind": "badge", "key": "addition_master"}),
+		"Addition master")
+	TranslationServer.set_locale("cs")
+	assert_eq(UnlockSystem.display_name(streak), "10 v řadě bez chyby!")
+	assert_eq(UnlockSystem.display_name(space), "Téma: Vesmír")
+
+
+func test_every_unlock_has_a_translated_name() -> void:
+	TranslationServer.set_locale("en")
+	for rule: Dictionary in UnlockSystem._rules():
+		var name := UnlockSystem.display_name(rule)
+		assert_false(name.begins_with("UNLOCK_") or name.contains("THEME_"),
+			"'%s' must resolve to a translated name, got '%s'" % [rule["key"], name])
+		assert_ne(name, String(rule["key"]))

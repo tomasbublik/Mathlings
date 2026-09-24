@@ -47,20 +47,21 @@ const SPEED_PRESET_MULTIPLIERS: Dictionary = {
 
 var _profile_id: int
 var _config: Dictionary
-var _db: Node
 var _skill_model: SkillModel
 var _attempt_logger: AttemptLogger
 var _difficulty: DifficultyController
 var _rng: RandomNumberGenerator
 var _rules: ScoringRules
 
-## True when this controller may invoke the autoload services (AudioManager,
-## HapticsManager, EventBus, GameState). Unit tests pass `db=null` and we treat
-## that as "headless mode" — no autoload side effects.
-var _emit_side_effects: bool = false
+## True when this controller runs inside the game: it may invoke the autoload
+## services (AudioManager, HapticsManager, EventBus, GameState) and persists
+## the round (ProgressStore, SessionStatsStore, unlocks). Unit tests pass
+## `live = false` — "headless mode", no side effects and no files written.
+var _live: bool = false
 
 var _state: int = State.IDLE
 var _session_id: int = -1
+var _session_started_ms: int = 0
 var _paused: bool = false
 var _paused_at_ms: int = 0
 
@@ -85,7 +86,8 @@ var _current_problem: Dictionary = {}
 var _current_problem_shown_at_ms: int = 0
 
 
-## `db` may be null for unit tests; in that case DB-bound side effects are skipped.
+## `live` = false for unit tests: no autoload side effects, nothing persisted.
+## `attempt_logger` may be null (attempts are then not recorded).
 ## `rng` is injectable for deterministic tests.
 ## `rules` is injectable so tests can pin GameController against synthetic rule
 ## sets without round-tripping through the JSON file. When `null`, loads the
@@ -93,7 +95,7 @@ var _current_problem_shown_at_ms: int = 0
 func _init(
 	profile_id: int,
 	config: Dictionary,
-	db: Node,
+	live: bool,
 	skill_model: SkillModel,
 	attempt_logger: AttemptLogger,
 	difficulty: DifficultyController,
@@ -102,7 +104,7 @@ func _init(
 ) -> void:
 	_profile_id = profile_id
 	_config = config
-	_db = db
+	_live = live
 	_skill_model = skill_model
 	_attempt_logger = attempt_logger
 	_difficulty = difficulty
@@ -110,8 +112,6 @@ func _init(
 	if rng == null:
 		_rng.randomize()
 	_rules = rules if rules != null else ScoringRules.load_default()
-
-	_emit_side_effects = db != null
 	_duration_total_s = int(_config.get("duration_s", 120))
 
 
@@ -266,10 +266,11 @@ func resume() -> void:
 ## Contract (see DESIGN §9):
 ## - no `round_ended` signal / EventBus.round_ended, no results summary in
 ##   GameState, no unlock evaluation, no SessionStatsStore record;
-## - the session row and its attempts are deleted, so the round never shows
-##   up in "My progress" or in session-count based unlocks;
-## - skill ratings already updated from real answers are kept — the child
-##   did answer those problems, and the tutor should learn from them.
+## - the buffered attempts are dropped and no session is recorded, so the
+##   round never shows up in "My progress" or in session-count based unlocks;
+## - skill ratings already updated from real answers are kept (and flushed
+##   to disk) — the child did answer those problems, and the tutor should
+##   learn from them.
 func abort_round() -> bool:
 	if _state != State.COUNTDOWN and _state != State.PLAYING:
 		return false
@@ -281,7 +282,7 @@ func abort_round() -> bool:
 	_session_id = -1
 	_transition(State.ABORTED)
 	round_aborted.emit(aborted_session_id)
-	if _emit_side_effects:
+	if _live:
 		EventBus.round_aborted.emit(aborted_session_id)
 	return true
 
@@ -316,7 +317,7 @@ func _begin_playing() -> void:
 	_duration_remaining_s = float(_duration_total_s)
 	_transition(State.PLAYING)
 	round_started.emit(_session_id)
-	if _emit_side_effects:
+	if _live:
 		EventBus.round_started.emit(_session_id, _config)
 	_spawn_next_problem()
 
@@ -325,21 +326,11 @@ func _begin_ending() -> void:
 	_ending_grace_s = ENDING_GRACE_SECONDS
 	_transition(State.ENDING)
 	var summary := _build_summary()
+	# Persist first so the unlock rules below already count this round.
 	_close_session(summary)
-	# Mirror the round into the local stats store so the Stats screen has
-	# numbers to show even when the SQLite addon isn't installed. Cheap, and
-	# idempotent re-running this path with a DB present is harmless (the DB
-	# remains the canonical source — Stats prefers it when available).
-	if _profile_id > 0:
-		SessionStatsStore.record_session(
-			_profile_id,
-			int(summary.get("score", 0)),
-			_duration_total_s * 1000,
-			int(summary.get("best_streak", 0)),
-			float(summary.get("accuracy", 0.0))
-		)
-	summary["new_unlocks"] = UnlockSystem.evaluate(_profile_id, summary, _db)
-	if _emit_side_effects:
+	if _live and _profile_id > 0:
+		summary["new_unlocks"] = UnlockSystem.evaluate(_profile_id, summary)
+	if _live:
 		GameState.last_result = summary
 		EventBus.round_ended.emit(_session_id, summary)
 	round_ended.emit(summary)
@@ -438,7 +429,7 @@ func _spawn_next_problem() -> void:
 	var speed: float = _speed_for_current_state(enabled_keys)
 	spawn_requested.emit(problem, speed)
 
-	if _emit_side_effects:
+	if _live:
 		EventBus.problem_spawned.emit(
 			int(problem["id"]),
 			String(problem["skill_key"]),
@@ -484,47 +475,59 @@ func _log_and_update_skill(
 		is_correct,
 		reaction_ms
 	)
-	if _emit_side_effects:
+	if _live:
 		EventBus.answer_chosen.emit(
 			int(problem.get("id", 0)), chosen_index, is_correct, reaction_ms
 		)
 
 
 # ---------------------------------------------------------------------------
-# DB
+# Persistence (ProgressStore + SessionStatsStore)
 # ---------------------------------------------------------------------------
 
+## Starts buffering a new round. Nothing is written until the round ends;
+## the id is the one ProgressStore will assign on record_round().
 func _open_session() -> int:
-	if not DbGuard.writable(_db):
-		return 0
-	var started_ms: int = int(Time.get_unix_time_from_system() * 1000.0)
-	var config_json: String = JSON.stringify(_config)
-	var id: int = SessionsDao.insert(_db, _profile_id, started_ms, config_json)
+	_session_started_ms = ProgressStore.now_ms()
 	if _attempt_logger != null:
-		_attempt_logger = AttemptLogger.new(id, _db)
-	return id
+		_attempt_logger.clear()
+	if not _live or _profile_id <= 0:
+		return 0
+	return ProgressStore.peek_next_session_id(_profile_id)
 
 
+## Records the finished round: session + buffered attempts + skill ratings
+## (one ProgressStore write) and the running totals in SessionStatsStore.
 func _close_session(summary: Dictionary) -> void:
-	if _session_id <= 0 or not DbGuard.writable(_db):
+	var attempts: Array = _attempt_logger.take() if _attempt_logger != null else []
+	if not _live or _profile_id <= 0:
 		return
-	var ended_ms: int = int(Time.get_unix_time_from_system() * 1000.0)
 	var duration_ms: int = _duration_total_s * 1000
-	SessionsDao.close_session(
-		_db, _session_id,
-		ended_ms, duration_ms,
+	ProgressStore.record_round(_profile_id, {
+		"started_at": _session_started_ms,
+		"ended_at": ProgressStore.now_ms(),
+		"duration_ms": duration_ms,
+		"score": int(summary.get("score", 0)),
+		"best_streak": int(summary.get("best_streak", 0)),
+		"accuracy": float(summary.get("accuracy", 0.0)),
+		"config": _config.duplicate(true),
+	}, attempts)
+	SessionStatsStore.record_session(
+		_profile_id,
 		int(summary.get("score", 0)),
+		duration_ms,
 		int(summary.get("best_streak", 0)),
 		float(summary.get("accuracy", 0.0))
 	)
 
 
-## Deletes the open session row and its attempts (abort path).
+## Abort path: drop the buffered attempts, record no session, but keep (and
+## flush) the skill ratings already learned from real answers.
 func _discard_session() -> void:
-	if _session_id <= 0 or not DbGuard.writable(_db):
-		return
-	AttemptsDao.delete_for_session(_db, _session_id)
-	SessionsDao.delete(_db, _session_id)
+	if _attempt_logger != null:
+		_attempt_logger.clear()
+	if _live and _profile_id > 0:
+		ProgressStore.flush(_profile_id)
 
 
 # ---------------------------------------------------------------------------
@@ -547,20 +550,20 @@ func _maybe_tick_sfx() -> void:
 
 
 func _play_sfx(key: String) -> void:
-	if not _emit_side_effects:
+	if not _live:
 		return
 	AudioManager.play_sfx(key)
 
 
 ## Theme-aware multi-SFX delegate used by `_apply_correct`. Skips when
-## headless (no DB) so unit tests don't need AudioManager.
+## headless (live = false) so unit tests don't need AudioManager.
 func _play_sfx_chain(chain: Array) -> void:
-	if not _emit_side_effects:
+	if not _live:
 		return
 	AudioManager.play_sfx_chain(chain)
 
 
 func _pulse_haptics(pattern: int) -> void:
-	if not _emit_side_effects:
+	if not _live:
 		return
 	HapticsManager.pulse(pattern)

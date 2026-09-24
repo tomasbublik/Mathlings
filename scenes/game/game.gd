@@ -187,10 +187,10 @@ func _process(delta: float) -> void:
 
 func _build_controller(config: Dictionary) -> GameController:
 	var profile_id: int = ProfileService.active_id()
-	var skill_model := SkillModel.new(profile_id, DB)
-	var logger := AttemptLogger.new(-1, DB)  # real session_id set when round starts
+	var skill_model := SkillModel.new(profile_id, true)
+	var logger := AttemptLogger.new()
 	var diff := DifficultyController.new()
-	return GameController.new(profile_id, config, DB, skill_model, logger, diff)
+	return GameController.new(profile_id, config, true, skill_model, logger, diff)
 
 
 func _snapshot_config() -> Dictionary:

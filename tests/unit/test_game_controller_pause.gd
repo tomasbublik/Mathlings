@@ -1,42 +1,13 @@
 ## GUT unit tests for GameController pause / resume / abort_round().
 ##
-## Headless controllers (db = null) cover the timing and input guards. The
-## abort DB contract is checked against a tiny Node-based fake that records
-## every SQL statement (the godot-sqlite addon isn't available in CI).
+## Headless controllers (live = false) cover the timing and input guards.
+## What an aborted round persists (nothing but skill ratings) is covered in
+## test_round_persistence.gd against a real ProgressStore in a temp dir.
 
 extends GutTest
 
 
-## Records executed SQL; answers `last_insert_rowid()` with a fixed id.
-class RecordingDb:
-	extends Node
-	const SESSION_ID := 7
-	var statements: Array = []  # [{sql, params}]
-
-	func is_open() -> bool:
-		return true
-
-	func execute(sql: String, params: Array = []) -> Array:
-		statements.append({"sql": sql, "params": params})
-		if sql.contains("last_insert_rowid"):
-			return [{"id": SESSION_ID}]
-		return []
-
-	func transaction(body: Callable) -> void:
-		body.call()
-
-	func count_matching(fragment: String) -> int:
-		var n := 0
-		for st: Dictionary in statements:
-			if String(st["sql"]).contains(fragment):
-				n += 1
-		return n
-
-
-const ABORT_PROFILE_ID := 987654
-
-
-func _make_controller(duration_s: int = 30, db: Node = null, profile_id: int = 1) -> GameController:
+func _make_controller(duration_s: int = 30) -> GameController:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1
 	var config := {
@@ -44,8 +15,8 @@ func _make_controller(duration_s: int = 30, db: Node = null, profile_id: int = 1
 		"speed_preset": "normal",
 		"enabled_skills": ["add_0_10"],
 	}
-	return GameController.new(profile_id, config, db, SkillModel.new(profile_id, null),
-		AttemptLogger.new(-1, db), DifficultyController.new(), rng)
+	return GameController.new(1, config, false, SkillModel.new(1),
+		AttemptLogger.new(), DifficultyController.new(), rng)
 
 
 func _advance(c: GameController, seconds: float, step: float = 0.05) -> void:
@@ -194,42 +165,3 @@ func test_abort_not_allowed_after_round_ended() -> void:
 	assert_eq(c.state(), GameController.State.ENDING)
 	assert_false(c.abort_round(), "Finished rounds keep their results")
 	assert_eq(c.state(), GameController.State.ENDING)
-
-
-func test_abort_discards_session_and_skips_stats_and_unlocks() -> void:
-	SessionStatsStore.clear(ABORT_PROFILE_ID)
-	var db: RecordingDb = autofree(RecordingDb.new())
-	var c := _make_controller(30, db, ABORT_PROFILE_ID)
-	var last_result_before: Dictionary = GameState.last_result
-	var bus_ended := [0]
-	var bus_aborted := [-1]
-	var on_bus_ended := func(_id: int, _s: Dictionary) -> void: bus_ended[0] += 1
-	var on_bus_aborted := func(id: int) -> void: bus_aborted[0] = id
-	EventBus.round_ended.connect(on_bus_ended)
-	EventBus.round_aborted.connect(on_bus_aborted)
-
-	c.start()
-	_advance(c, 3.0)
-	c.on_answer(int(c.current_problem()["correct_index"]), 500)
-	assert_eq(db.count_matching("INSERT INTO sessions"), 1, "Session opened at PLAYING")
-	assert_eq(db.count_matching("INSERT INTO attempts"), 1, "Attempt logged for the answer")
-
-	assert_true(c.abort_round())
-	EventBus.round_ended.disconnect(on_bus_ended)
-	EventBus.round_aborted.disconnect(on_bus_aborted)
-
-	var deletes: Array = db.statements.filter(func(st: Dictionary) -> bool:
-		return String(st["sql"]).begins_with("DELETE"))
-	assert_eq(deletes.size(), 2, "Attempts + session row deleted")
-	assert_string_contains(String(deletes[0]["sql"]), "DELETE FROM attempts")
-	assert_eq(deletes[0]["params"], [RecordingDb.SESSION_ID])
-	assert_string_contains(String(deletes[1]["sql"]), "DELETE FROM sessions")
-	assert_eq(deletes[1]["params"], [RecordingDb.SESSION_ID])
-	assert_eq(db.count_matching("UPDATE sessions"), 0, "Aborted session is never closed")
-	assert_eq(db.count_matching("unlocks"), 0, "No unlock evaluation for an aborted round")
-	assert_eq(bus_ended[0], 0, "No EventBus.round_ended")
-	assert_eq(bus_aborted[0], RecordingDb.SESSION_ID, "EventBus.round_aborted carries the session id")
-	assert_eq(GameState.last_result, last_result_before, "No results summary published")
-	assert_eq(int(SessionStatsStore.totals_for(ABORT_PROFILE_ID)["sessions"]), 0,
-		"Local stats store ignores the aborted round")
-	SessionStatsStore.clear(ABORT_PROFILE_ID)

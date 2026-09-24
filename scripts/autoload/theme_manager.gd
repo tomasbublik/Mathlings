@@ -34,7 +34,7 @@ const DEFAULT_EXPLOSION_SCENE: String = "res://scenes/game/vfx/fruit_explosion.t
 
 const THEMES: Dictionary = {
 	"fruit": {
-		"label": "Ovoce",
+		"label_key": "THEME_FRUIT",
 		"background": "res://assets/images/backgrounds/bg_sky.svg",
 		"skins": [
 			# Each entry: { texture: res://, splash: Color (interior flesh hue) }.
@@ -66,7 +66,7 @@ const THEMES: Dictionary = {
 		"default_unlocked": true,
 	},
 	"space": {
-		"label": "Vesmír",
+		"label_key": "THEME_SPACE",
 		"background": "res://assets/images/backgrounds/bg_space.svg",
 		"skins": [
 			{"texture": "res://assets/images/skins/skin_meteor.svg",
@@ -94,7 +94,7 @@ const THEMES: Dictionary = {
 		"default_unlocked": true,
 	},
 	"balloons": {
-		"label": "Oslava",
+		"label_key": "THEME_BALLOONS",
 		"background": "res://assets/images/backgrounds/bg_party.svg",
 		"skins": [
 			{"texture": "res://assets/images/skins/skin_balloon.svg",
@@ -117,6 +117,14 @@ func _ready() -> void:
 func current_key() -> String:
 	var key := String(SettingsStore.get_value("appearance/theme", DEFAULT_THEME))
 	return key if THEMES.has(key) else DEFAULT_THEME
+
+
+## Translation key of a theme's display name (e.g. "THEME_SPACE"); translate
+## with tr() at display time.
+func label_key(theme_key: String) -> String:
+	if THEMES.has(theme_key):
+		return String(THEMES[theme_key].get("label_key", ""))
+	return "THEME_" + theme_key.to_upper()
 
 
 ## Full theme metadata Dictionary (see `THEMES` schema).
@@ -225,8 +233,8 @@ func set_theme(theme_key: String) -> void:
 func available_keys(profile_id: int) -> PackedStringArray:
 	var result: PackedStringArray = []
 	var unlocked_set: Dictionary = {}
-	if profile_id > 0 and DB.is_open():
-		for row: Dictionary in UnlocksDao.get_by_kind(DB, profile_id, "theme"):
+	if profile_id > 0:
+		for row: Dictionary in ProgressStore.unlocks(profile_id, UnlockSystem.KIND_THEME):
 			unlocked_set[String(row.get("key", ""))] = true
 	for key: String in THEMES.keys():
 		var t: Dictionary = THEMES[key]
@@ -241,9 +249,7 @@ func is_available(theme_key: String, profile_id: int) -> bool:
 		return false
 	if bool(THEMES[theme_key].get("default_unlocked", false)):
 		return true
-	if profile_id <= 0 or not DB.is_open():
-		return false
-	return UnlocksDao.is_unlocked(DB, profile_id, "theme", theme_key)
+	return ProgressStore.is_unlocked(profile_id, UnlockSystem.KIND_THEME, theme_key)
 
 
 # ---------------------------------------------------------------------------
