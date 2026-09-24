@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cr5ttzzrdresu1"]
+[gd_scene load_steps=6 format=3 uid="uid://cr5ttzzrdresu1"]
 
 [ext_resource type="Script" path="res://scenes/results/results.gd" id="1_results"]
 [ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_space.svg" id="2_bg"]
+[ext_resource type="Texture2D" path="res://scenes/results/icons/star_empty.svg" id="3_star"]
+[ext_resource type="Texture2D" path="res://scenes/results/icons/target.svg" id="4_target"]
+[ext_resource type="Texture2D" path="res://scenes/results/icons/flame.svg" id="5_flame"]
 
 [node name="Results" type="Control"]
 layout_mode = 3
@@ -13,137 +16,243 @@ grow_vertical = 2
 script = ExtResource("1_results")
 
 [node name="Background" type="TextureRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CenterBox" type="VBoxContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -420.0
-offset_top = -260.0
-offset_right = 420.0
-offset_bottom = 220.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 16
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="CenterBox"]
+[node name="TitleLabel" type="Label" parent="Margin/Layout"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 56
-text = "Super práce! 🎉"
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "Great job!"
 horizontal_alignment = 1
 
-[node name="ScoreLabel" type="Label" parent="CenterBox"]
+[node name="Card" type="PanelContainer" parent="Margin/Layout"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 96
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Body" type="BoxContainer" parent="Margin/Layout/Card"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 36
+alignment = 1
+
+[node name="ScoreColumn" type="VBoxContainer" parent="Margin/Layout/Card/Body"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Stars" type="HBoxContainer" parent="Margin/Layout/Card/Body/ScoreColumn"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Star1" type="TextureRect" parent="Margin/Layout/Card/Body/ScoreColumn/Stars"]
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+size_flags_vertical = 8
+texture = ExtResource("3_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star2" type="TextureRect" parent="Margin/Layout/Card/Body/ScoreColumn/Stars"]
+custom_minimum_size = Vector2(108, 108)
+layout_mode = 2
+texture = ExtResource("3_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star3" type="TextureRect" parent="Margin/Layout/Card/Body/ScoreColumn/Stars"]
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+size_flags_vertical = 8
+texture = ExtResource("3_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScoreBlock" type="VBoxContainer" parent="Margin/Layout/Card/Body/ScoreColumn"]
+layout_mode = 2
+theme_override_constants/separation = -30
+
+[node name="ScoreLabel" type="Label" parent="Margin/Layout/Card/Body/ScoreColumn/ScoreBlock"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ScoreValueLabel"
 text = "0"
 horizontal_alignment = 1
 
-[node name="StarsLabel" type="Label" parent="CenterBox"]
+[node name="PointsCaption" type="Label" parent="Margin/Layout/Card/Body/ScoreColumn/ScoreBlock"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 72
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "points"
 horizontal_alignment = 1
 
-[node name="AccuracyLabel" type="Label" parent="CenterBox"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
-horizontal_alignment = 1
-text = "Přesnost: —"
-
-[node name="StreakLabel" type="Label" parent="CenterBox"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
-horizontal_alignment = 1
-text = "Nejdelší série: —"
-
-[node name="UnlocksContainer" type="VBoxContainer" parent="CenterBox"]
-unique_name_in_owner = true
+[node name="StatsColumn" type="VBoxContainer" parent="Margin/Layout/Card/Body"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 14
 alignment = 1
-theme_override_constants/separation = 8
 
-[node name="PlaceholderNotice" type="Label" parent="CenterBox"]
+[node name="Tiles" type="HBoxContainer" parent="Margin/Layout/Card/Body/StatsColumn"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="AccuracyTile" type="PanelContainer" parent="Margin/Layout/Card/Body/StatsColumn/Tiles"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
-theme_override_font_sizes/font_size = 20
-text = "⚠ Bez dat z herního kola — zobrazeno v režimu náhledu."
-horizontal_alignment = 1
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CardTint"
+
+[node name="Row" type="HBoxContainer" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/AccuracyTile"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/AccuracyTile/Row"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_target")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="VBoxContainer" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/AccuracyTile/Row"]
+layout_mode = 2
+theme_override_constants/separation = -8
+
+[node name="Caption" type="Label" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/AccuracyTile/Row/Text"]
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "Accuracy"
+
+[node name="AccuracyLabel" type="Label" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/AccuracyTile/Row/Text"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatValueLabel"
+text = "—"
+
+[node name="StreakTile" type="PanelContainer" parent="Margin/Layout/Card/Body/StatsColumn/Tiles"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CardTint"
+
+[node name="Row" type="HBoxContainer" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/StreakTile"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/StreakTile/Row"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_flame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="VBoxContainer" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/StreakTile/Row"]
+layout_mode = 2
+theme_override_constants/separation = -8
+
+[node name="Caption" type="Label" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/StreakTile/Row/Text"]
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "Best streak"
+
+[node name="StreakLabel" type="Label" parent="Margin/Layout/Card/Body/StatsColumn/Tiles/StreakTile/Row/Text"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatValueLabel"
+text = "—"
+
+[node name="UnlocksContainer" type="VBoxContainer" parent="Margin/Layout/Card/Body/StatsColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlaceholderNotice" type="Label" parent="Margin/Layout/Card/Body/StatsColumn"]
+unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "No round data — preview mode."
+horizontal_alignment = 1
+autowrap_mode = 3
 
-[node name="ButtonsRow" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -540.0
-offset_top = -120.0
-offset_right = 540.0
-offset_bottom = -40.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="Buttons" type="BoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 20
 alignment = 1
-theme_override_constants/separation = 32
 
-[node name="PlayAgainButton" type="Button" parent="ButtonsRow"]
+[node name="PlayAgainButton" type="Button" parent="Margin/Layout/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 72)
-theme_override_font_sizes/font_size = 28
-text = "Hrát znovu"
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+theme_type_variation = &"PlayButton"
+text = "Play again"
 
-[node name="StatsButton" type="Button" parent="ButtonsRow"]
+[node name="StatsButton" type="Button" parent="Margin/Layout/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 72)
-theme_override_font_sizes/font_size = 28
-text = "Statistiky"
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "Statistics"
 
-[node name="MenuButton" type="Button" parent="ButtonsRow"]
+[node name="MenuButton" type="Button" parent="Margin/Layout/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 72)
-theme_override_font_sizes/font_size = 28
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
 text = "Menu"
 
 [node name="Toast" type="Label" parent="."]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 200.0
-offset_bottom = -150.0
+offset_left = -300.0
+offset_top = -210.0
+offset_right = 300.0
+offset_bottom = -140.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 36
+mouse_filter = 2
+theme_type_variation = &"StickerLabel"
 horizontal_alignment = 1
+vertical_alignment = 1

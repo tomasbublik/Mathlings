@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgm4wzzrdgame1"]
+[gd_scene load_steps=6 format=3 uid="uid://dgm4wzzrdgame1"]
 
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_game"]
 [ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_space.svg" id="2_bg"]
+[ext_resource type="Texture2D" path="res://scenes/game/icons/star.svg" id="3_star"]
+[ext_resource type="Texture2D" path="res://scenes/game/icons/flame.svg" id="4_flame"]
+[ext_resource type="Texture2D" path="res://scenes/game/icons/clock.svg" id="5_clock"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
@@ -29,61 +32,131 @@ layer = 2
 [node name="TopBar" type="HBoxContainer" parent="HUD"]
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 32.0
-offset_top = 24.0
-offset_right = -32.0
-offset_bottom = 80.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = -24.0
+offset_bottom = 78.0
 grow_horizontal = 2
-theme_override_constants/separation = 24
+mouse_filter = 2
+theme_override_constants/separation = 16
 
-[node name="ScoreLabel" type="Label" parent="HUD/TopBar"]
-unique_name_in_owner = true
+[node name="Left" type="HBoxContainer" parent="HUD/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-text = "🏆 Skóre: 0"
+mouse_filter = 2
+
+[node name="ScoreChip" type="PanelContainer" parent="HUD/TopBar/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HudChip"
+
+[node name="Row" type="HBoxContainer" parent="HUD/TopBar/Left/ScoreChip"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="HUD/TopBar/Left/ScoreChip/Row"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("3_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScoreLabel" type="Label" parent="HUD/TopBar/Left/ScoreChip/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"HudValueLabel"
+text = "0"
 vertical_alignment = 1
 
-[node name="StreakLabel" type="Label" parent="HUD/TopBar"]
+[node name="Center" type="HBoxContainer" parent="HUD/TopBar"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="StreakChip" type="PanelContainer" parent="HUD/TopBar/Center"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 28
+mouse_filter = 2
+theme_type_variation = &"HudChip"
+
+[node name="Row" type="HBoxContainer" parent="HUD/TopBar/Center/StreakChip"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="HUD/TopBar/Center/StreakChip/Row"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("4_flame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StreakLabel" type="Label" parent="HUD/TopBar/Center/StreakChip/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(36, 0)
+layout_mode = 2
+theme_type_variation = &"HudValueLabel"
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TimerLabel" type="Label" parent="HUD/TopBar"]
-unique_name_in_owner = true
+[node name="Right" type="HBoxContainer" parent="HUD/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 30
-horizontal_alignment = 2
-text = "⏱ 0:00"
+mouse_filter = 2
+alignment = 2
+
+[node name="TimerChip" type="PanelContainer" parent="HUD/TopBar/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HudChip"
+
+[node name="Row" type="HBoxContainer" parent="HUD/TopBar/Right/TimerChip"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="HUD/TopBar/Right/TimerChip/Row"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("5_clock")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TimerLabel" type="Label" parent="HUD/TopBar/Right/TimerChip/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_type_variation = &"HudValueLabel"
+text = "0:00"
+horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ComboBadge" type="Label" parent="HUD"]
+[node name="ComboBadge" type="PanelContainer" parent="HUD"]
 unique_name_in_owner = true
-anchors_preset = 2
-anchor_top = 0.0
-offset_left = 40.0
-offset_top = 96.0
-offset_right = 220.0
-offset_bottom = 140.0
-theme_override_colors/font_color = Color(1, 0.5, 0.2, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 32
-text = "x1.5"
 visible = false
+offset_right = 90.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_type_variation = &"HudChip"
+
+[node name="ComboLabel" type="Label" parent="HUD/ComboBadge"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HudValueLabel"
+theme_override_font_sizes/font_size = 30
+text = "×1.5"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="AnswerBar" type="HBoxContainer" parent="HUD"]
 anchors_preset = 12
@@ -93,28 +166,34 @@ anchor_bottom = 1.0
 offset_left = 64.0
 offset_top = -150.0
 offset_right = -64.0
-offset_bottom = -32.0
+offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
-theme_override_constants/separation = 32
+theme_override_constants/separation = 28
 
 [node name="AnswerButton1" type="Button" parent="HUD/AnswerBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(260, 110)
-theme_override_font_sizes/font_size = 56
+custom_minimum_size = Vector2(0, 118)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"AnswerButton"
 text = "?"
 
 [node name="AnswerButton2" type="Button" parent="HUD/AnswerBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(260, 110)
-theme_override_font_sizes/font_size = 56
+custom_minimum_size = Vector2(0, 118)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"AnswerButton"
 text = "?"
 
 [node name="AnswerButton3" type="Button" parent="HUD/AnswerBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(260, 110)
-theme_override_font_sizes/font_size = 56
+custom_minimum_size = Vector2(0, 118)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"AnswerButton"
 text = "?"
 
 [node name="CountdownOverlay" type="CanvasLayer" parent="."]
@@ -128,7 +207,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0, 0, 0, 0.35)
+mouse_filter = 2
+color = Color(0.1, 0.06, 0.25, 0.25)
 
 [node name="CountdownLabel" type="Label" parent="CountdownOverlay"]
 unique_name_in_owner = true
@@ -137,16 +217,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -120.0
-offset_right = 200.0
-offset_bottom = 120.0
+offset_left = -400.0
+offset_top = -160.0
+offset_right = 400.0
+offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 160
+theme_type_variation = &"CountdownLabel"
 text = "3"
 horizontal_alignment = 1
 vertical_alignment = 1

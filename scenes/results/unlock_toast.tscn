@@ -1,23 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7ulockttoast1"]
+[gd_scene load_steps=3 format=3 uid="uid://c7ulockttoast1"]
 
 [ext_resource type="Script" path="res://scenes/results/unlock_toast.gd" id="1_toast"]
+[ext_resource type="Texture2D" path="res://scenes/results/icons/gift.svg" id="2_gift"]
 
 [node name="UnlockToast" type="PanelContainer"]
-custom_minimum_size = Vector2(480, 72)
+custom_minimum_size = Vector2(360, 0)
+theme_type_variation = &"RewardCard"
 script = ExtResource("1_toast")
 
 [node name="HBox" type="HBoxContainer" parent="."]
-theme_override_constants/separation = 16
+layout_mode = 2
+theme_override_constants/separation = 14
 
-[node name="Icon" type="Label" parent="HBox"]
-theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
-theme_override_font_sizes/font_size = 36
-text = "🏆"
-vertical_alignment = 1
+[node name="Icon" type="TextureRect" parent="HBox"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_gift")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="Label" type="Label" parent="HBox"]
+[node name="Text" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "Odemkl jsi: …"
-vertical_alignment = 1
+theme_override_constants/separation = -6
+alignment = 1
+
+[node name="Caption" type="Label" parent="HBox/Text"]
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "New reward!"
+
+[node name="Label" type="Label" parent="HBox/Text"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 28
+text = "…"
+text_overrun_behavior = 3
