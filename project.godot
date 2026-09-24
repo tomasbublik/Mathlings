@@ -1,0 +1,66 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="Mathlings"
+config/description="Math learning arcade for kids (Czech)"
+config/version="1.0.0"
+run/main_scene="res://scenes/main_menu/main_menu.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+boot_splash/bg_color=Color(0.2, 0.4, 0.8, 1)
+boot_splash/stretch_mode=0
+config/icon="res://assets/images/icon/ic_launcher.svg"
+
+[autoload]
+
+EventBus="*res://scripts/autoload/event_bus.gd"
+ProfileService="*res://scripts/autoload/profile_service.gd"
+SettingsStore="*res://scripts/autoload/settings_store.gd"
+LocaleService="*res://scripts/autoload/locale_service.gd"
+AudioManager="*res://scripts/autoload/audio_manager.gd"
+HapticsManager="*res://scripts/autoload/haptics_manager.gd"
+DB="*res://scripts/autoload/db.gd"
+GameState="*res://scripts/autoload/game_state.gd"
+ThemeManager="*res://scripts/autoload/theme_manager.gd"
+ValidationManager="*res://scripts/autoload/validation_manager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation="sensor"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[input]
+
+ui_touch={
+"deadzone": 0.5,
+"events": []
+}
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://assets/translations/strings.en.translation", "res://assets/translations/strings.cs.translation", "res://assets/translations/strings.zh.translation", "res://assets/translations/strings.hi.translation", "res://assets/translations/strings.es.translation", "res://assets/translations/strings.fr.translation", "res://assets/translations/strings.ar.translation", "res://assets/translations/strings.bn.translation", "res://assets/translations/strings.ru.translation", "res://assets/translations/strings.pt.translation", "res://assets/translations/strings.ur.translation", "res://assets/translations/strings.id.translation")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

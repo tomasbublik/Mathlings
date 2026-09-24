@@ -1,0 +1,86 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpg8wzzrdparg"]
+
+[ext_resource type="Script" path="res://scenes/shared/parent_gate.gd" id="1_gate"]
+
+[node name="ParentGate" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_gate")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+mouse_filter = 0
+
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -180.0
+offset_right = 280.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 34
+text = "Pouze pro rodiče"
+horizontal_alignment = 1
+
+[node name="QuestionLabel" type="Label" parent="Panel/Margin/VBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 46
+text = "Kolik je 13 × 17?"
+horizontal_alignment = 1
+
+[node name="AnswerInput" type="LineEdit" parent="Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 82)
+theme_override_font_sizes/font_size = 40
+alignment = 1
+max_length = 5
+placeholder_text = "odpověď"
+
+[node name="FeedbackLabel" type="Label" parent="Panel/Margin/VBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(0.95, 0.35, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/Margin/VBox"]
+alignment = 1
+theme_override_constants/separation = 24
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 72)
+theme_override_font_sizes/font_size = 28
+text = "Zrušit"
+
+[node name="ConfirmButton" type="Button" parent="Panel/Margin/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 72)
+theme_override_font_sizes/font_size = 28
+text = "Potvrdit"

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Watermelon slice — classic half-moon: red flesh with seeds, green rind. -->
+  <!-- Green outer rind. -->
+  <path d="M14 70 A 50 50 0 0 1 114 70 L 114 78 A 50 50 0 0 0 14 78 Z"
+        fill="#3F7A33" stroke="#1F4F1A" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Light-green inner band between rind and flesh. -->
+  <path d="M22 70 A 42 42 0 0 1 106 70 L 106 70 A 42 42 0 0 0 22 70 Z"
+        fill="#9DCB46" stroke="#3F7A33" stroke-width="1"/>
+  <!-- Red flesh. -->
+  <path d="M28 70 A 36 36 0 0 1 100 70 Z"
+        fill="#E63946" stroke="#9B1C2A" stroke-width="2"/>
+  <!-- Black seeds scattered across the flesh. -->
+  <g fill="#2A1A0A">
+    <ellipse cx="46" cy="58" rx="2" ry="3" transform="rotate(-15 46 58)"/>
+    <ellipse cx="58" cy="50" rx="2" ry="3" transform="rotate(5 58 50)"/>
+    <ellipse cx="70" cy="48" rx="2" ry="3" transform="rotate(-20 70 48)"/>
+    <ellipse cx="82" cy="54" rx="2" ry="3" transform="rotate(15 82 54)"/>
+    <ellipse cx="50" cy="64" rx="2" ry="3" transform="rotate(0 50 64)"/>
+    <ellipse cx="76" cy="64" rx="2" ry="3" transform="rotate(20 76 64)"/>
+    <ellipse cx="64" cy="62" rx="2" ry="3" transform="rotate(-5 64 62)"/>
+  </g>
+</svg>

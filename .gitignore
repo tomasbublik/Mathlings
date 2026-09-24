@@ -1,0 +1,58 @@
+# Godot 4+ specific ignores
+.godot/
+.import/
+export.cfg
+# export_presets.cfg is committed — contains non-secret export profile config.
+# Secrets (keystore paths + passwords) live in export_credentials.cfg (below).
+export_credentials.cfg
+.android/
+release.keystore
+*.jks
+
+# Translation binaries are committed alongside the .csv source so headless
+# builds (CI / Android export) don't have to re-run the editor importer.
+
+# Mono-specific
+.mono/
+data_*/
+mono_crash.*.json
+
+# System / IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# Build artifacts
+builds/
+exports/
+*.apk
+*.aab
+*.ipa
+*.dmg
+*.pck
+*.zip
+
+# Validation artifacts
+.validation/
+
+# Local secrets / local overrides
+.env
+.env.local
+local_settings.json
+
+# Local build output (APK/AAB + signatures)
+build/
+
+# Generated Godot Android build templates (re-install via Project → Install Android Build Template)
+android/
+android_build/
+
+# Claude Code local config
+.claude/
+
+# Re-include app icons (a global "Icon" ignore rule matches icon/ on case-insensitive FS)
+!/assets/images/icon/

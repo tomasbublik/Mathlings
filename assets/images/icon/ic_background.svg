@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432">
+  <!-- Adaptive icon background layer (432x432).
+       Sky gradient on top half, grassy meadow on bottom — matches the
+       in-game "fruit" theme palette so the launcher icon feels continuous
+       with the menu background. -->
+
+  <defs>
+    <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#E0F6FF"/>
+    </linearGradient>
+    <linearGradient id="grassGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7BC95C"/>
+      <stop offset="100%" stop-color="#4A8B3D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="432" height="432" fill="url(#skyGradient)"/>
+
+  <!-- Distant clouds -->
+  <g fill="#FFFFFF" opacity="0.85">
+    <ellipse cx="78"  cy="92"  rx="36" ry="14"/>
+    <ellipse cx="108" cy="86"  rx="28" ry="12"/>
+    <ellipse cx="334" cy="120" rx="42" ry="16"/>
+    <ellipse cx="368" cy="112" rx="30" ry="13"/>
+  </g>
+
+  <!-- Sun -->
+  <circle cx="362" cy="62" r="30" fill="#FFE57B" opacity="0.85"/>
+  <circle cx="362" cy="62" r="22" fill="#FFD24A"/>
+
+  <!-- Grass -->
+  <path d="M0 296 Q108 270 216 282 T432 296 L432 432 L0 432 Z" fill="url(#grassGradient)"/>
+
+  <!-- Grass blades for texture -->
+  <g fill="#3F7A33" opacity="0.55">
+    <path d="M40 328  l4 -16 l4 16 z"/>
+    <path d="M88 318  l4 -18 l4 18 z"/>
+    <path d="M156 332 l4 -16 l4 16 z"/>
+    <path d="M268 322 l4 -18 l4 18 z"/>
+    <path d="M340 330 l4 -16 l4 16 z"/>
+    <path d="M392 318 l4 -18 l4 18 z"/>
+  </g>
+</svg>

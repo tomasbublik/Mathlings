@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Lemon: tilted ellipse with pointy ends ("nipples"). -->
+  <g transform="rotate(-15 64 64)">
+    <ellipse cx="64" cy="64" rx="46" ry="32"
+             fill="#F4D03F" stroke="#A88813" stroke-width="3"/>
+    <!-- Pointy tips at both poles. -->
+    <path d="M18 64 L8 64" stroke="#A88813" stroke-width="6" stroke-linecap="round"/>
+    <path d="M110 64 L120 64" stroke="#A88813" stroke-width="6" stroke-linecap="round"/>
+    <!-- Highlight curve. -->
+    <ellipse cx="48" cy="48" rx="14" ry="8" fill="#FFEFA0" opacity="0.7"/>
+  </g>
+  <!-- Single leaf. -->
+  <ellipse cx="80" cy="32" rx="14" ry="7" fill="#3F7A33" stroke="#1F4F1A"
+           stroke-width="1.5" transform="rotate(35 80 32)"/>
+</svg>

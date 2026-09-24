@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Grape cluster — overlapping circles in two rows form a triangular bunch. -->
+  <g fill="#7B3FA0" stroke="#3D1854" stroke-width="2">
+    <circle cx="36" cy="46" r="14"/>
+    <circle cx="62" cy="42" r="14"/>
+    <circle cx="88" cy="46" r="14"/>
+    <circle cx="50" cy="68" r="14"/>
+    <circle cx="74" cy="68" r="14"/>
+    <circle cx="62" cy="92" r="14"/>
+  </g>
+  <!-- Highlights on a few grapes for sheen. -->
+  <g fill="#B884D6" opacity="0.7">
+    <circle cx="32" cy="42" r="4"/>
+    <circle cx="58" cy="38" r="4"/>
+    <circle cx="84" cy="42" r="4"/>
+    <circle cx="46" cy="64" r="4"/>
+  </g>
+  <!-- Stem + a leaf. -->
+  <path d="M62 30 Q60 18 70 12" stroke="#5A3A14" stroke-width="3"
+        fill="none" stroke-linecap="round"/>
+  <ellipse cx="80" cy="14" rx="12" ry="6" fill="#3F7A33"
+           stroke="#1F4F1A" stroke-width="1.5" transform="rotate(-15 80 14)"/>
+</svg>

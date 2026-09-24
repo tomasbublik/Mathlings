@@ -1,0 +1,114 @@
+keys,en,cs,zh,hi,es,fr,ar,bn,ru,pt,ur,id
+APP_TITLE,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings,Mathlings
+COMMON_BACK,← Back,← Zpět,← 返回,← वापस,← Atrás,← Retour,← رجوع,← ফিরে যান,← Назад,← Voltar,← واپس,← Kembali
+COMMON_OK,OK,OK,确定,ठीक है,Aceptar,OK,موافق,ঠিক আছে,ОК,OK,ٹھیک ہے,OK
+COMMON_CANCEL,Cancel,Zrušit,取消,रद्द करें,Cancelar,Annuler,إلغاء,বাতিল,Отмена,Cancelar,منسوخ کریں,Batal
+COMMON_CONFIRM,Confirm,Potvrdit,确认,पुष्टि करें,Confirmar,Confirmer,تأكيد,নিশ্চিত করুন,Подтвердить,Confirmar,تصدیق کریں,Konfirmasi
+COMMON_COMING_SOON,Coming soon!,Brzy!,即将推出!,जल्द आ रहा है!,¡Próximamente!,Bientôt !,قريباً!,শীঘ্রই আসছে!,Скоро!,Em breve!,جلد آرہا ہے!,Segera hadir!
+COMMON_PROFILE_PREFIX,profile: %s,profil: %s,玩家: %s,खिलाड़ी: %s,perfil: %s,profil : %s,اللاعب: %s,প্রোফাইল: %s,профиль: %s,perfil: %s,پروفائل: %s,profil: %s
+MAIN_MENU_PLAY_BUTTON,PLAY! ▶,HRÁT! ▶,玩! ▶,खेलें! ▶,¡JUGAR! ▶,JOUER ! ▶,العب! ▶,খেলুন! ▶,ИГРАТЬ! ▶,JOGAR! ▶,کھیلیں! ▶,MAIN! ▶
+MAIN_MENU_STATS_BUTTON,Statistics 📊,Statistiky 📊,统计 📊,आँकड़े 📊,Estadísticas 📊,Statistiques 📊,الإحصائيات 📊,পরিসংখ্যান 📊,Статистика 📊,Estatísticas 📊,اعداد و شمار 📊,Statistik 📊
+MAIN_MENU_PROFILES_BUTTON,Profiles 👥,Profily 👥,玩家 👥,खिलाड़ी 👥,Perfiles 👥,Profils 👥,اللاعبون 👥,প্রোফাইল 👥,Профили 👥,Perfis 👥,پروفائلز 👥,Profil 👥
+MAIN_MENU_RULES_BUTTON,Rules 📋,Pravidla 📋,规则 📋,नियम 📋,Reglas 📋,Règles 📋,القواعد 📋,নিয়মাবলী 📋,Правила 📋,Regras 📋,قواعد 📋,Aturan 📋
+MAIN_MENU_SETTINGS_BUTTON,Settings ⚙,Nastavení ⚙,设置 ⚙,सेटिंग्स ⚙,Ajustes ⚙,Réglages ⚙,الإعدادات ⚙,সেটিংস ⚙,Настройки ⚙,Ajustes ⚙,ترتیبات ⚙,Pengaturan ⚙
+GAME_SCORE_PREFIX,🏆 Score: %d,🏆 Skóre: %d,🏆 得分: %d,🏆 अंक: %d,🏆 Puntos: %d,🏆 Score : %d,🏆 النتيجة: %d,🏆 স্কোর: %d,🏆 Очки: %d,🏆 Pontos: %d,🏆 اسکور: %d,🏆 Skor: %d
+GAME_STREAK_PREFIX,streak: 🔥x%d,série: 🔥x%d,连击: 🔥x%d,लगातार: 🔥x%d,racha: 🔥x%d,série : 🔥x%d,سلسلة: 🔥x%d,ধারা: 🔥x%d,серия: 🔥x%d,sequência: 🔥x%d,سلسلہ: 🔥x%d,beruntun: 🔥x%d
+GAME_TIMER_PREFIX,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d,⏱ %d:%02d
+GAME_COUNTDOWN_GO,START!,START!,开始!,शुरू!,¡START!,DÉPART !,ابدأ!,শুরু!,СТАРТ!,COMEÇAR!,شروع!,MULAI!
+SETTINGS_TITLE,Settings,Nastavení,设置,सेटिंग्स,Ajustes,Réglages,الإعدادات,সেটিংস,Настройки,Ajustes,ترتیبات,Pengaturan
+SETTINGS_DURATION_LABEL,Round duration,Délka kola,回合时长,राउंड समय,Duración de la ronda,Durée de la manche,مدة الجولة,রাউন্ডের সময়,Длительность раунда,Duração da rodada,راؤنڈ کا دورانیہ,Durasi ronde
+SETTINGS_SPEED_LABEL,Falling speed,Rychlost pádu,下落速度,गिरने की गति,Velocidad de caída,Vitesse de chute,سرعة السقوط,পতনের গতি,Скорость падения,Velocidade de queda,گرنے کی رفتار,Kecepatan jatuh
+SETTINGS_SPEED_SLOW,Slow,Pomalu,慢,धीमा,Lenta,Lente,بطيء,ধীর,Медленно,Lenta,آہستہ,Lambat
+SETTINGS_SPEED_NORMAL,Normal,Normálně,正常,सामान्य,Normal,Normale,عادي,স্বাভাবিক,Нормально,Normal,معمول,Normal
+SETTINGS_SPEED_FAST,Fast,Rychle,快,तेज़,Rápida,Rapide,سريع,দ্রুত,Быстро,Rápida,تیز,Cepat
+SETTINGS_SPEED_ADAPTIVE,Adaptive,Adaptivní,自适应,अनुकूली,Adaptativa,Adaptative,تكيفي,অভিযোজিত,Адаптивно,Adaptativa,موافق,Adaptif
+SETTINGS_THEME_LABEL,Appearance,Vzhled,主题,दिखावट,Apariencia,Apparence,المظهر,উপস্থিতি,Тема,Aparência,شکل,Tampilan
+SETTINGS_SKILLS_LABEL,Active skills,Aktivní dovednosti,启用的技能,सक्रिय कौशल,Habilidades activas,Compétences actives,المهارات النشطة,সক্রিয় দক্ষতা,Активные навыки,Habilidades ativas,فعال مہارتیں,Keterampilan aktif
+SETTINGS_AUDIO_LABEL,Sound and haptics,Zvuk a haptika,声音和振动,ध्वनि और कंपन,Sonido y vibración,Son et haptique,الصوت والاهتزاز,শব্দ ও কম্পন,Звук и вибрация,Som e vibração,آواز اور وائبریشن,Suara dan getaran
+SETTINGS_SFX_TOGGLE,SFX,SFX,音效,ध्वनि प्रभाव,SFX,SFX,المؤثرات,সাউন্ড,Звуки,SFX,SFX,SFX
+SETTINGS_MUSIC_TOGGLE,Music,Hudba,音乐,संगीत,Música,Musique,الموسيقى,সংগীত,Музыка,Música,موسیقی,Musik
+SETTINGS_HAPTICS_TOGGLE,Vibration,Vibrace,振动,कंपन,Vibración,Vibrations,الاهتزاز,কম্পন,Вибрация,Vibração,وائبریشن,Getaran
+SETTINGS_LANGUAGE_LABEL,Language,Jazyk,语言,भाषा,Idioma,Langue,اللغة,ভাষা,Язык,Idioma,زبان,Bahasa
+SETTINGS_PROFILE_HEADER,Profile,Profil,玩家,खिलाड़ी,Perfil,Profil,اللاعب,প্রোফাইল,Профиль,Perfil,پروفائل,Profil
+SETTINGS_RESET_BUTTON,Restore defaults,Obnovit výchozí,恢复默认,डिफ़ॉल्ट पर पुनर्स्थापित करें,Restablecer,Réinitialiser,إعادة الافتراضي,ডিফল্ট পুনরুদ্ধার,Сброс,Restaurar padrões,بحال کریں,Pulihkan default
+SETTINGS_RESET_DIALOG_TITLE,Restore defaults?,Obnovit výchozí?,恢复默认?,डिफ़ॉल्ट पर पुनर्स्थापित करें?,¿Restablecer?,Réinitialiser ?,استعادة الافتراضيات؟,ডিফল্ট পুনরুদ্ধার?,Сбросить?,Restaurar padrões?,بحال کریں؟,Pulihkan default?
+SETTINGS_RESET_DIALOG_TEXT,All settings will be returned to their defaults.,Všechna nastavení se vrátí na výchozí hodnoty.,所有设置将恢复到默认值。,सभी सेटिंग्स डिफ़ॉल्ट मान पर लौटा दी जाएँगी।,Todos los ajustes volverán a sus valores predeterminados.,Tous les réglages reviendront à leurs valeurs par défaut.,ستعود جميع الإعدادات إلى قيمها الافتراضية.,সকল সেটিংস ডিফল্ট মানে ফিরিয়ে দেওয়া হবে।,Все настройки будут возвращены к значениям по умолчанию.,Todas as configurações voltarão aos valores padrão.,تمام ترتیبات اپنی ڈیفالٹ قدروں پر بحال ہو جائیں گی۔,Semua pengaturan akan dikembalikan ke nilai default.
+SETTINGS_RESET_DIALOG_OK,Restore,Obnovit,恢复,पुनर्स्थापित करें,Restablecer,Réinitialiser,استعادة,পুনরুদ্ধার,Сбросить,Restaurar,بحال کریں,Pulihkan
+SETTINGS_SKILL_AT_LEAST_ONE,At least one skill must be enabled.,Alespoň jedna dovednost musí být zapnutá.,至少需要启用一项技能。,कम से कम एक कौशल सक्रिय होना चाहिए।,Debe estar activa al menos una habilidad.,Au moins une compétence doit être activée.,يجب تفعيل مهارة واحدة على الأقل.,কমপক্ষে একটি দক্ষতা সক্রিয় থাকতে হবে।,Должен быть включён хотя бы один навык.,Pelo menos uma habilidade precisa estar ativa.,کم از کم ایک مہارت فعال ہونی چاہیے۔,Setidaknya satu keterampilan harus aktif.
+RESULTS_TITLE_GOOD,Great job! 🎉,Super práce! 🎉,做得好!🎉,बहुत अच्छा!🎉,¡Bien hecho! 🎉,Bravo ! 🎉,أحسنت! 🎉,চমৎকার! 🎉,Отлично! 🎉,Excelente! 🎉,شاباش! 🎉,Bagus sekali! 🎉
+RESULTS_ACCURACY_PREFIX,Accuracy: %d %%,Přesnost: %d %%,准确率: %d %%,सटीकता: %d %%,Precisión: %d %%,Précision : %d %%,الدقة: %d %%,সঠিকতা: %d %%,Точность: %d %%,Precisão: %d %%,درستی: %d %%,Akurasi: %d %%
+RESULTS_ACCURACY_NONE,Accuracy: —,Přesnost: —,准确率: —,सटीकता: —,Precisión: —,Précision : —,الدقة: —,সঠিকতা: —,Точность: —,Precisão: —,درستی: —,Akurasi: —
+RESULTS_BEST_STREAK_PREFIX,Best streak: %d 🔥,Nejdelší série: %d 🔥,最佳连击: %d 🔥,सबसे बड़ी लगातार: %d 🔥,Mejor racha: %d 🔥,Meilleure série : %d 🔥,أطول سلسلة: %d 🔥,সর্বোচ্চ ধারা: %d 🔥,Лучшая серия: %d 🔥,Maior sequência: %d 🔥,بہترین سلسلہ: %d 🔥,Beruntun terbaik: %d 🔥
+RESULTS_BEST_STREAK_NONE,Best streak: —,Nejdelší série: —,最佳连击: —,सबसे बड़ी लगातार: —,Mejor racha: —,Meilleure série : —,أطول سلسلة: —,সর্বোচ্চ ধারা: —,Лучшая серия: —,Maior sequência: —,بہترین سلسلہ: —,Beruntun terbaik: —
+RESULTS_PLAY_AGAIN,Play again,Hrát znovu,再玩一次,फिर से खेलें,Jugar otra vez,Rejouer,العب مرة أخرى,আবার খেলুন,Ещё раз,Jogar de novo,دوبارہ کھیلیں,Main lagi
+RESULTS_MENU_BUTTON,Menu,Menu,菜单,मुख्य पृष्ठ,Menú,Menu,القائمة,মেনু,Меню,Menu,مینو,Menu
+RESULTS_PLACEHOLDER_NOTICE,⚠ No round data — preview mode.,⚠ Bez dat z herního kola — zobrazeno v režimu náhledu.,⚠ 没有回合数据 — 预览模式。,⚠ कोई राउंड डेटा नहीं — पूर्वावलोकन।,⚠ Sin datos de la ronda — vista previa.,⚠ Pas de données — aperçu uniquement.,⚠ لا توجد بيانات للجولة — وضع المعاينة.,⚠ কোনো রাউন্ড ডেটা নেই — পূর্বরূপ।,⚠ Нет данных раунда — режим предпросмотра.,⚠ Sem dados da rodada — pré-visualização.,⚠ راؤنڈ کا ڈیٹا نہیں — جھلک موڈ۔,⚠ Tidak ada data ronde — mode pratinjau.
+RESULTS_UNLOCK_PREFIX,Unlocked: %s,Odemkl jsi: %s,解锁了: %s,अनलॉक: %s,Desbloqueado: %s,Débloqué : %s,تم الفتح: %s,আনলক: %s,Открыто: %s,Desbloqueado: %s,انلاک: %s,Terbuka: %s
+STATS_TITLE,Statistics,Statistiky,统计,आँकड़े,Estadísticas,Statistiques,الإحصائيات,পরিসংখ্যান,Статистика,Estatísticas,اعداد و شمار,Statistik
+STATS_SESSIONS_PREFIX,Sessions: %d,Sezení: %d,场次: %d,सत्र: %d,Sesiones: %d,Sessions : %d,الجلسات: %d,সেশন: %d,Сеансов: %d,Sessões: %d,سیشنز: %d,Sesi: %d
+STATS_TOTAL_TIME_PREFIX,Time played: %s,Odehraný čas: %s,游戏时间: %s,खेलने का समय: %s,Tiempo jugado: %s,Temps joué : %s,وقت اللعب: %s,খেলার সময়: %s,Время игры: %s,Tempo jogado: %s,کھیلنے کا وقت: %s,Waktu bermain: %s
+STATS_TOTAL_SCORE_PREFIX,Total score: %d,Celkové skóre: %d,总分: %d,कुल अंक: %d,Puntos totales: %d,Score total : %d,مجموع النتيجة: %d,মোট স্কোর: %d,Общий счёт: %d,Pontos totais: %d,کل اسکور: %d,Skor total: %d
+STATS_MAX_SCORE_PREFIX,Best round: %d,Nejlepší kolo: %d,最佳回合: %d,सर्वश्रेष्ठ राउंड: %d,Mejor ronda: %d,Meilleure manche : %d,أفضل جولة: %d,সেরা রাউন্ড: %d,Лучший раунд: %d,Melhor rodada: %d,بہترین راؤنڈ: %d,Ronde terbaik: %d
+STATS_BEST_STREAK_PREFIX,Longest streak: %d 🔥,Nejdelší série: %d 🔥,最长连击: %d 🔥,सबसे लंबी लगातार: %d 🔥,Mayor racha: %d 🔥,Plus longue série : %d 🔥,أطول سلسلة: %d 🔥,দীর্ঘতম ধারা: %d 🔥,Самая длинная серия: %d 🔥,Maior sequência: %d 🔥,طویل ترین سلسلہ: %d 🔥,Beruntun terlama: %d 🔥
+STATS_ERROR_RATE_PREFIX,Error rate: %d %%,Chybovost: %d %%,错误率: %d %%,त्रुटि दर: %d %%,Tasa de error: %d %%,Taux d'erreur : %d %%,معدل الخطأ: %d %%,ত্রুটির হার: %d %%,Доля ошибок: %d %%,Taxa de erro: %d %%,شرح غلطی: %d %%,Tingkat kesalahan: %d %%
+STATS_ERROR_RATE_NONE,Error rate: —,Chybovost: —,错误率: —,त्रुटि दर: —,Tasa de error: —,Taux d'erreur : —,معدل الخطأ: —,ত্রুটির হার: —,Доля ошибок: —,Taxa de erro: —,شرح غلطی: —,Tingkat kesalahan: —
+STATS_PRACTICE_TITLE,Needs practice,Potřebuje procvičit,需要练习,अभ्यास की आवश्यकता,Necesita práctica,À travailler,تحتاج إلى تدريب,অনুশীলন প্রয়োজন,Нужно практиковать,Precisa praticar,مشق کی ضرورت,Perlu latihan
+STATS_SKILLS_TITLE,Skill overview,Přehled dovedností,技能总览,कौशल सूची,Resumen de habilidades,Compétences,نظرة عامة,দক্ষতা সারাংশ,Обзор навыков,Visão geral,مہارتوں کا جائزہ,Ringkasan keterampilan
+STATS_EMPTY_STATE,No data yet. Play a round and come back!,Zatím žádná data. Zahraj si kolo a vrať se!,还没有数据。先玩一回合再回来吧!,अभी कोई डेटा नहीं। एक राउंड खेलकर लौटें!,Aún no hay datos. ¡Juega una ronda y vuelve!,Pas encore de données. Joue une manche !,لا بيانات بعد. العب جولة وعد!,কোনো ডেটা নেই। একটি রাউন্ড খেলুন!,Пока нет данных. Сыграй раунд и вернись!,Sem dados ainda. Jogue uma rodada e volte!,ابھی ڈیٹا نہیں۔ ایک راؤنڈ کھیلیں!,Belum ada data. Mainkan satu ronde!
+STATS_PRACTICE_PLACEHOLDER,— not enough data yet —,— zatím málo dat —,— 数据不足 —,— पर्याप्त डेटा नहीं —,— pocos datos aún —,— pas assez de données —,— لا بيانات كافية —,— পর্যাপ্ত ডেটা নেই —,— пока мало данных —,— ainda sem dados —,— ابھی کافی ڈیٹا نہیں —,— belum cukup data —
+STATS_COL_SKILL,Skill,Dovednost,技能,कौशल,Habilidad,Compétence,المهارة,দক্ষতা,Навык,Habilidade,مہارت,Keterampilan
+STATS_COL_RATING,Rating,Rating,等级,रेटिंग,Nivel,Niveau,التقييم,রেটিং,Рейтинг,Nível,ریٹنگ,Peringkat
+STATS_COL_ACCURACY,Accuracy,Přesnost,准确率,सटीकता,Precisión,Précision,الدقة,সঠিকতা,Точность,Precisão,درستی,Akurasi
+STATS_PRACTICE_LINE_FORMAT,• %s — %d %% (%d attempts),• %s — %d %% (%d pokusů),• %s — %d %% (%d 次尝试),• %s — %d %% (%d प्रयास),• %s — %d %% (%d intentos),• %s — %d %% (%d essais),• %s — %d %% (%d محاولات),• %s — %d %% (%d প্রচেষ্টা),• %s — %d %% (%d попыток),• %s — %d %% (%d tentativas),• %s — %d %% (%d کوششیں),• %s — %d %% (%d percobaan)
+PARENT_GATE_TITLE,For grown-ups only,Pouze pro rodiče,仅限家长,केवल बड़ों के लिए,Solo para adultos,Réservé aux adultes,للكبار فقط,শুধু বড়দের জন্য,Только для взрослых,Apenas para adultos,صرف بڑوں کے لیے,Khusus orang dewasa
+PARENT_GATE_QUESTION_FORMAT,How much is %d × %d?,Kolik je %d × %d?,%d × %d 等于多少?,%d × %d कितना है?,¿Cuánto es %d × %d?,Combien font %d × %d ?,كم يساوي %d × %d؟,%d × %d কত?,Сколько будет %d × %d?,Quanto é %d × %d?,%d × %d کتنا ہے؟,Berapa %d × %d?
+PARENT_GATE_INPUT_PLACEHOLDER,answer,odpověď,答案,उत्तर,respuesta,réponse,الإجابة,উত্তর,ответ,resposta,جواب,jawaban
+PARENT_GATE_FEEDBACK_NUMBER,Please type a number.,Zadej číslo.,请输入数字。,कृपया एक संख्या दर्ज करें।,Escribe un número.,Saisis un nombre.,اكتب رقماً.,একটি সংখ্যা লিখুন।,Введи число.,Digite um número.,نمبر درج کریں۔,Ketik angka.
+PARENT_GATE_FEEDBACK_WRONG,Wrong. Try again.,Špatně. Zkus to znovu.,错误。再试一次。,गलत। फिर से प्रयास करें।,Incorrecto. Intenta de nuevo.,Faux. Réessaie.,خطأ. حاول مرة أخرى.,ভুল। আবার চেষ্টা করুন।,Неверно. Попробуй снова.,Errado. Tente de novo.,غلط۔ دوبارہ کوشش کریں۔,Salah. Coba lagi.
+PROFILE_PICKER_TITLE,Choose your player,Vyber svého hráče,选择玩家,अपना खिलाड़ी चुनें,Elige a tu jugador,Choisis ton joueur,اختر اللاعب,আপনার খেলোয়াড় নির্বাচন করুন,Выбери игрока,Escolha seu jogador,اپنا کھلاڑی منتخب کریں,Pilih pemainmu
+PROFILE_PICKER_EMPTY_TITLE,Let's create your profile,"Pojď, založ si svůj profil",来创建你的资料吧,चलो प्रोफ़ाइल बनाते हैं,Vamos a crear tu perfil,Crée ton profil,لننشئ ملفك,আপনার প্রোফাইল তৈরি করুন,Создай свой профиль,Vamos criar seu perfil,اپنا پروفائل بنائیں,Mari buat profilmu
+PROFILE_PICKER_NAME_PLACEHOLDER,Your name,Tvoje jméno,你的名字,तुम्हारा नाम,Tu nombre,Ton prénom,اسمك,তোমার নাম,Твоё имя,Seu nome,آپ کا نام,Namamu
+PROFILE_PICKER_CREATE_FIRST,Create my profile,Vytvoř první profil,创建我的资料,मेरी प्रोफ़ाइल बनाएँ,Crear mi perfil,Créer mon profil,أنشئ ملفي,আমার প্রোফাইল তৈরি করুন,Создать профиль,Criar meu perfil,میرا پروفائل بنائیں,Buat profilku
+PROFILE_PICKER_TOAST_NAME_REQUIRED,Type a name.,Zadej jméno.,请输入名字。,नाम दर्ज करें।,Escribe un nombre.,Tape un nom.,اكتب اسماً.,একটি নাম লিখুন।,Введи имя.,Digite um nome.,نام درج کریں۔,Ketik nama.
+PROFILE_PICKER_TOAST_PICK_FAILED,Profile can't be selected.,Profil nelze vybrat.,无法选择该资料。,यह प्रोफ़ाइल चुनी नहीं जा सकती।,No se puede seleccionar el perfil.,Profil non sélectionnable.,تعذّر اختيار الملف.,প্রোফাইল নির্বাচন করা যাচ্ছে না।,Профиль выбрать нельзя.,Não é possível selecionar.,پروفائل منتخب نہیں ہو سکتا۔,Profil tidak bisa dipilih.
+PROFILE_PICKER_TOAST_CREATE_FAILED,Profile can't be created.,Profil nelze vytvořit.,无法创建资料。,प्रोफ़ाइल बनाई नहीं जा सकी।,No se puede crear el perfil.,Profil non créé.,تعذّر إنشاء الملف.,প্রোফাইল তৈরি করা যায়নি।,Профиль не создан.,Não foi possível criar.,پروفائل نہیں بن سکا۔,Profil tidak bisa dibuat.
+PROFILE_MANAGER_TITLE,Profiles,Profily,玩家,खिलाड़ी,Perfiles,Profils,اللاعبون,প্রোফাইল,Профили,Perfis,پروفائلز,Profil
+PROFILE_MANAGER_NEW_SECTION,New profile,Nový profil,新建资料,नई प्रोफ़ाइल,Nuevo perfil,Nouveau profil,ملف جديد,নতুন প্রোফাইল,Новый профиль,Novo perfil,نیا پروفائل,Profil baru
+PROFILE_MANAGER_NEW_PLACEHOLDER,New player's name,Jméno nového hráče,新玩家的名字,नए खिलाड़ी का नाम,Nombre del nuevo jugador,Nom du nouveau joueur,اسم اللاعب الجديد,নতুন খেলোয়াড়ের নাম,Имя нового игрока,Nome do novo jogador,نئے کھلاڑی کا نام,Nama pemain baru
+PROFILE_MANAGER_ADD_BUTTON,Add,Přidat,添加,जोड़ें,Añadir,Ajouter,إضافة,যোগ করুন,Добавить,Adicionar,شامل کریں,Tambah
+PROFILE_MANAGER_ADD_FULL_FORMAT,Full (%d),Plno (%d),已满 (%d),भरा हुआ (%d),Completo (%d),Plein (%d),ممتلئ (%d),পূর্ণ (%d),Заполнено (%d),Cheio (%d),بھر گیا (%d),Penuh (%d)
+PROFILE_MANAGER_PICK_BUTTON,Select,Vybrat,选择,चुनें,Seleccionar,Choisir,اختيار,নির্বাচন,Выбрать,Selecionar,منتخب کریں,Pilih
+PROFILE_MANAGER_RENAME_BUTTON,Rename,Přejmenovat,重命名,नाम बदलें,Renombrar,Renommer,إعادة تسمية,নাম পরিবর্তন,Переименовать,Renomear,نام تبدیل کریں,Ganti nama
+PROFILE_MANAGER_DELETE_BUTTON,Delete,Smazat,删除,हटाएँ,Eliminar,Supprimer,حذف,মুছুন,Удалить,Excluir,حذف کریں,Hapus
+PROFILE_MANAGER_RENAME_TITLE,Rename profile,Přejmenovat profil,重命名资料,प्रोफ़ाइल का नाम बदलें,Renombrar perfil,Renommer le profil,إعادة تسمية الملف,প্রোফাইল নাম পরিবর্তন,Переименовать профиль,Renomear perfil,پروفائل کا نام بدلیں,Ganti nama profil
+PROFILE_MANAGER_RENAME_PROMPT,New name:,Nové jméno:,新名字:,नया नाम:,Nuevo nombre:,Nouveau nom :,الاسم الجديد:,নতুন নাম:,Новое имя:,Novo nome:,نیا نام:,Nama baru:
+PROFILE_MANAGER_DELETE_TITLE,Delete profile,Smazat profil,删除资料,प्रोफ़ाइल हटाएँ,Eliminar perfil,Supprimer le profil,حذف الملف,প্রোফাইল মুছুন,Удалить профиль,Excluir perfil,پروفائل حذف کریں,Hapus profil
+PROFILE_MANAGER_DELETE_TEXT_FORMAT,"Delete profile ""%s""?\nAll its data will be lost.","Opravdu smazat profil „%s""?\nVšechna jeho data zmizí.","删除资料 “%s”？\n所有数据将丢失。","प्रोफ़ाइल ""%s"" हटाएँ?\nसभी डेटा खो जाएगा।","¿Eliminar el perfil ""%s""?\nSe perderán todos los datos.","Supprimer le profil ""%s"" ?\nToutes les données seront perdues.","حذف الملف ""%s""؟\nسيتم فقدان كل بياناته.","প্রোফাইল ""%s"" মুছবেন?\nসমস্ত ডেটা হারিয়ে যাবে।","Удалить профиль «%s»?\nВсе его данные пропадут.","Excluir o perfil ""%s""?\nTodos os dados serão perdidos.","پروفائل ""%s"" حذف کریں؟\nتمام ڈیٹا ضائع ہو جائے گا۔","Hapus profil ""%s""?\nSemua datanya akan hilang."
+PROFILE_MANAGER_TOAST_PICK_FAILED,Couldn't switch profile.,Profil nelze vybrat.,无法切换资料。,प्रोफ़ाइल बदली नहीं जा सकी।,No se pudo cambiar de perfil.,Impossible de changer.,تعذّر تغيير الملف.,প্রোফাইল পরিবর্তন ব্যর্থ।,Не удалось сменить профиль.,Não foi possível trocar.,پروفائل تبدیل نہیں ہو سکا۔,Tidak bisa berganti.
+PROFILE_MANAGER_TOAST_ACTIVE_SWITCHED,Active profile switched.,Aktivní profil přepnut.,已切换玩家。,सक्रिय खिलाड़ी बदला।,Perfil cambiado.,Profil changé.,تم تغيير الملف.,সক্রিয় প্রোফাইল পরিবর্তিত।,Профиль переключён.,Perfil alterado.,پروفائل تبدیل ہو گیا۔,Profil aktif diganti.
+PROFILE_MANAGER_TOAST_NAME_REQUIRED,Type a name.,Zadej jméno.,请输入名字。,नाम दर्ज करें।,Escribe un nombre.,Tape un nom.,اكتب اسماً.,একটি নাম লিখুন।,Введи имя.,Digite um nome.,نام درج کریں۔,Ketik nama.
+PROFILE_MANAGER_TOAST_CREATE_FAILED,"Couldn't create profile (limit %d or DB unavailable).","Profil nelze vytvořit (limit %d nebo DB nedostupná).","无法创建资料（已达 %d 上限或数据库不可用）。","प्रोफ़ाइल नहीं बनी (सीमा %d या DB अनुपलब्ध)।","No se pudo crear (límite %d o BD no disponible).","Création impossible (limite %d ou BD indispo).","تعذّر الإنشاء (الحد %d أو DB غير متاحة).","তৈরি করা যায়নি (সীমা %d বা DB অনুপলব্ধ)।","Профиль не создан (лимит %d или БД недоступна).","Não foi possível criar (limite %d ou BD indisponível).","پروفائل نہیں بن سکا (حد %d یا DB دستیاب نہیں)۔","Tidak bisa dibuat (batas %d atau DB tidak tersedia)."
+PROFILE_MANAGER_TOAST_RENAME_FAILED,Rename failed.,Přejmenovat se nepodařilo.,重命名失败。,नाम नहीं बदला।,No se pudo renombrar.,Renommage échoué.,فشل إعادة التسمية.,নাম পরিবর্তন ব্যর্থ।,Не удалось переименовать.,Falha ao renomear.,نام تبدیل ناکام۔,Gagal ganti nama.
+PROFILE_MANAGER_TOAST_DELETE_FAILED,Delete failed.,Smazat se nepodařilo.,删除失败。,नहीं हटाया जा सका।,No se pudo eliminar.,Suppression échouée.,فشل الحذف.,মুছে ফেলা যায়নি।,Не удалось удалить.,Falha ao excluir.,حذف ناکام۔,Gagal menghapus.
+PROFILE_MANAGER_TOAST_CREATED_FORMAT,"Profile ""%s"" created.","Profil „%s"" vytvořen.","已创建资料 “%s”。","प्रोफ़ाइल ""%s"" बनी।","Perfil ""%s"" creado.","Profil ""%s"" créé.","تم إنشاء الملف ""%s"".","প্রোফাইল ""%s"" তৈরি।","Профиль «%s» создан.","Perfil ""%s"" criado.","پروفائل ""%s"" بن گیا۔","Profil ""%s"" dibuat."
+RULES_TITLE,Rules,Pravidla,规则,नियम,Reglas,Règles,القواعد,নিয়মাবলী,Правила,Regras,قواعد,Aturan
+LOCALE_PICKER_TITLE,Choose your language,Vyber jazyk,选择语言,भाषा चुनें,Elige tu idioma,Choisis ta langue,اختر لغتك,আপনার ভাষা নির্বাচন করুন,Выбери язык,Escolha seu idioma,اپنی زبان منتخب کریں,Pilih bahasa
+SKILL_ADD_0_10,Addition up to 10,Sčítání do 10,加法 ≤ 10,10 तक जोड़,Suma hasta 10,Addition ≤ 10,الجمع حتى 10,১০ পর্যন্ত যোগ,Сложение до 10,Soma até 10,10 تک جمع,Penjumlahan ≤ 10
+SKILL_ADD_0_20,Addition up to 20,Sčítání do 20,加法 ≤ 20,20 तक जोड़,Suma hasta 20,Addition ≤ 20,الجمع حتى 20,২০ পর্যন্ত যোগ,Сложение до 20,Soma até 20,20 تک جمع,Penjumlahan ≤ 20
+SKILL_ADD_0_100,Addition up to 100,Sčítání do 100,加法 ≤ 100,100 तक जोड़,Suma hasta 100,Addition ≤ 100,الجمع حتى 100,১০০ পর্যন্ত যোগ,Сложение до 100,Soma até 100,100 تک جمع,Penjumlahan ≤ 100
+SKILL_SUB_0_10,Subtraction up to 10,Odčítání do 10,减法 ≤ 10,10 तक घटाव,Resta hasta 10,Soustraction ≤ 10,الطرح حتى 10,১০ পর্যন্ত বিয়োগ,Вычитание до 10,Subtração até 10,10 تک منہا,Pengurangan ≤ 10
+SKILL_SUB_0_20,Subtraction up to 20,Odčítání do 20,减法 ≤ 20,20 तक घटाव,Resta hasta 20,Soustraction ≤ 20,الطرح حتى 20,২০ পর্যন্ত বিয়োগ,Вычитание до 20,Subtração até 20,20 تک منہا,Pengurangan ≤ 20
+SKILL_SUB_0_100,Subtraction up to 100,Odčítání do 100,减法 ≤ 100,100 तक घटाव,Resta hasta 100,Soustraction ≤ 100,الطرح حتى 100,১০০ পর্যন্ত বিয়োগ,Вычитание до 100,Subtração até 100,100 تک منہا,Pengurangan ≤ 100
+SKILL_MUL_X2,Times tables × 2,Násobilka × 2,乘法表 × 2,पहाड़ा × 2,Tabla del 2,Table de 2,جدول الضرب × 2,নামতা × 2,Таблица × 2,Tabuada × 2,پہاڑے × 2,Perkalian × 2
+SKILL_MUL_X3,Times tables × 3,Násobilka × 3,乘法表 × 3,पहाड़ा × 3,Tabla del 3,Table de 3,جدول الضرب × 3,নামতা × 3,Таблица × 3,Tabuada × 3,پہاڑے × 3,Perkalian × 3
+SKILL_MUL_X4,Times tables × 4,Násobilka × 4,乘法表 × 4,पहाड़ा × 4,Tabla del 4,Table de 4,جدول الضرب × 4,নামতা × 4,Таблица × 4,Tabuada × 4,پہاڑے × 4,Perkalian × 4
+SKILL_MUL_X5,Times tables × 5,Násobilka × 5,乘法表 × 5,पहाड़ा × 5,Tabla del 5,Table de 5,جدول الضرب × 5,নামতা × 5,Таблица × 5,Tabuada × 5,پہاڑے × 5,Perkalian × 5
+SKILL_MUL_X6,Times tables × 6,Násobilka × 6,乘法表 × 6,पहाड़ा × 6,Tabla del 6,Table de 6,جدول الضرب × 6,নামতা × 6,Таблица × 6,Tabuada × 6,پہاڑے × 6,Perkalian × 6
+SKILL_MUL_X7,Times tables × 7,Násobilka × 7,乘法表 × 7,पहाड़ा × 7,Tabla del 7,Table de 7,جدول الضرب × 7,নামতা × 7,Таблица × 7,Tabuada × 7,پہاڑے × 7,Perkalian × 7
+SKILL_MUL_X8,Times tables × 8,Násobilka × 8,乘法表 × 8,पहाड़ा × 8,Tabla del 8,Table de 8,جدول الضرب × 8,নামতা × 8,Таблица × 8,Tabuada × 8,پہاڑے × 8,Perkalian × 8
+SKILL_MUL_X9,Times tables × 9,Násobilka × 9,乘法表 × 9,पहाड़ा × 9,Tabla del 9,Table de 9,جدول الضرب × 9,নামতা × 9,Таблица × 9,Tabuada × 9,پہاڑے × 9,Perkalian × 9
+SKILL_MUL_X10,Times tables × 10,Násobilka × 10,乘法表 × 10,पहाड़ा × 10,Tabla del 10,Table de 10,جدول الضرب × 10,নামতা × 10,Таблица × 10,Tabuada × 10,پہاڑے × 10,Perkalian × 10
+SKILL_DIV_0_100,Division up to 100,Dělení do 100,除法 ≤ 100,100 तक भाग,División hasta 100,Division ≤ 100,القسمة حتى 100,১০০ পর্যন্ত ভাগ,Деление до 100,Divisão até 100,100 تک تقسیم,Pembagian ≤ 100
+THEME_FRUIT,Fruits,Ovoce,水果,फल,Frutas,Fruits,الفاكهة,ফল,Фрукты,Frutas,پھل,Buah-buahan
+THEME_SPACE,Space,Vesmír,太空,अंतरिक्ष,Espacio,Espace,الفضاء,মহাকাশ,Космос,Espaço,خلا,Antariksa
+THEME_BALLOONS,Party,Oslava,派对,पार्टी,Fiesta,Fête,حفلة,উৎসব,Праздник,Festa,پارٹی,Pesta

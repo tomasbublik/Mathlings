@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Crescent banana — drawn as a thick stroked path so the silhouette
+       reads at icon size. Colour palette stays in the warm-yellow family. -->
+  <path d="M28 78 Q24 38 60 22 Q72 18 90 22 Q88 30 78 30 Q56 38 50 60 Q44 84 70 100 Q56 100 44 96 Q34 90 28 78 Z"
+        fill="#F2C94C" stroke="#A87613" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Highlight along the top edge for a subtle 3D feel. -->
+  <path d="M40 50 Q60 30 86 28" fill="none" stroke="#FFE89A" stroke-width="3"
+        stroke-linecap="round" opacity="0.85"/>
+  <!-- Brown stem at the top. -->
+  <rect x="84" y="18" width="8" height="10" fill="#5A3A14" rx="2"/>
+</svg>

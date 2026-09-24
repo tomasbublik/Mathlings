@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Blueberry: deep-blue sphere with a five-point crown at the top
+       (the classic dried calyx). -->
+  <circle cx="64" cy="68" r="42" fill="#1F4789" stroke="#0F2349" stroke-width="3"/>
+  <!-- Highlight quadrant for a juicy round look. -->
+  <ellipse cx="48" cy="50" rx="10" ry="14" fill="#5A86C4" opacity="0.65"/>
+  <!-- Five-pointed star calyx — drawn as a single path. -->
+  <path d="M64 24
+           L 70 42
+           L 88 44
+           L 74 56
+           L 78 74
+           L 64 64
+           L 50 74
+           L 54 56
+           L 40 44
+           L 58 42 Z"
+        fill="#0F2349" stroke="#0F2349" stroke-width="1" stroke-linejoin="round"
+        opacity="0.55"/>
+</svg>

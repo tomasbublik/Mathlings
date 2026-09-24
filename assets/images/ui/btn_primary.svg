@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 96">
+  <!-- Rounded rectangle (primary button) -->
+  <rect x="8" y="8" width="368" height="80" rx="16" ry="16" fill="#22CC22" stroke="#008800" stroke-width="6" />
+
+  <!-- Highlight on top -->
+  <rect x="8" y="8" width="368" height="18" rx="16" ry="16" fill="#55FF55" opacity="0.4" />
+
+  <!-- Text placeholder -->
+  <text x="192" y="56" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle" fill="#FFFFFF" opacity="0.3">HRÁT</text>
+</svg>

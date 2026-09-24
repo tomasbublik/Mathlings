@@ -1,0 +1,149 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr5ttzzrdresu1"]
+
+[ext_resource type="Script" path="res://scenes/results/results.gd" id="1_results"]
+[ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_space.svg" id="2_bg"]
+
+[node name="Results" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_results")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CenterBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -260.0
+offset_right = 420.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 56
+text = "Super práce! 🎉"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="CenterBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 96
+text = "0"
+horizontal_alignment = 1
+
+[node name="StarsLabel" type="Label" parent="CenterBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 72
+horizontal_alignment = 1
+
+[node name="AccuracyLabel" type="Label" parent="CenterBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+text = "Přesnost: —"
+
+[node name="StreakLabel" type="Label" parent="CenterBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+text = "Nejdelší série: —"
+
+[node name="UnlocksContainer" type="VBoxContainer" parent="CenterBox"]
+unique_name_in_owner = true
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="PlaceholderNotice" type="Label" parent="CenterBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "⚠ Bez dat z herního kola — zobrazeno v režimu náhledu."
+horizontal_alignment = 1
+visible = false
+
+[node name="ButtonsRow" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -540.0
+offset_top = -120.0
+offset_right = 540.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+theme_override_constants/separation = 32
+
+[node name="PlayAgainButton" type="Button" parent="ButtonsRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 72)
+theme_override_font_sizes/font_size = 28
+text = "Hrát znovu"
+
+[node name="StatsButton" type="Button" parent="ButtonsRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 72)
+theme_override_font_sizes/font_size = 28
+text = "Statistiky"
+
+[node name="MenuButton" type="Button" parent="ButtonsRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 72)
+theme_override_font_sizes/font_size = 28
+text = "Menu"
+
+[node name="Toast" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1

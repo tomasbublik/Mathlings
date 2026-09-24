@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Main meteor body (circle) -->
+  <circle cx="64" cy="50" r="32" fill="#888888" stroke="#444444" stroke-width="1" />
+
+  <!-- Darker side -->
+  <circle cx="64" cy="50" r="32" fill="#666666" opacity="0.4" clip-path="polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" />
+
+  <!-- Highlight -->
+  <ellipse cx="50" cy="38" rx="10" ry="15" fill="#AAAAAA" opacity="0.7" />
+
+  <!-- Tail (triangle pointing down) -->
+  <polygon points="64,82 50,120 78,120" fill="#555555" />
+
+  <!-- Tail highlight -->
+  <polygon points="64,82 55,115 65,100" fill="#777777" opacity="0.5" />
+</svg>

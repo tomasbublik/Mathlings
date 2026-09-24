@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Triangular metal shard for space-explosion debris. White-on-transparent
+       so CPUParticles2D can tint it through the per-particle colour ramp. -->
+  <path d="M4 28 L 18 4 L 28 22 Z" fill="#FFFFFF"/>
+</svg>

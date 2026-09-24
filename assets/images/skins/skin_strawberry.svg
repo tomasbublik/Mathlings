@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Strawberry: heart-shaped body + green crown leaves + speckled seeds. -->
+  <path d="M64 30
+           C 30 30 22 60 38 92
+           C 48 110 56 116 64 116
+           C 72 116 80 110 90 92
+           C 106 60 98 30 64 30 Z"
+        fill="#E63946" stroke="#9B1C2A" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Highlight on the upper-left of the body for sheen. -->
+  <ellipse cx="48" cy="56" rx="9" ry="14" fill="#FF7A8C" opacity="0.65"/>
+  <!-- Tiny seeds sprinkled across the body — small ellipses keep the file light. -->
+  <g fill="#FFE89A">
+    <ellipse cx="56" cy="60" rx="2" ry="3"/>
+    <ellipse cx="74" cy="58" rx="2" ry="3"/>
+    <ellipse cx="46" cy="78" rx="2" ry="3"/>
+    <ellipse cx="64" cy="80" rx="2" ry="3"/>
+    <ellipse cx="82" cy="76" rx="2" ry="3"/>
+    <ellipse cx="56" cy="96" rx="2" ry="3"/>
+    <ellipse cx="74" cy="98" rx="2" ry="3"/>
+  </g>
+  <!-- Green crown of leaves — three pointed petals. -->
+  <g fill="#3F7A33" stroke="#1F4F1A" stroke-width="2" stroke-linejoin="round">
+    <path d="M50 26 Q40 18 38 30 Q48 34 56 34 Z"/>
+    <path d="M64 22 Q60 12 64 12 Q68 12 64 22 Z"/>
+    <path d="M78 26 Q88 18 90 30 Q80 34 72 34 Z"/>
+  </g>
+</svg>

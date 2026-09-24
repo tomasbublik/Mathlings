@@ -1,0 +1,189 @@
+[gd_scene load_steps=3 format=3 uid="uid://cs5ttzzrdsets1"]
+
+[ext_resource type="Script" path="res://scenes/settings/settings.gd" id="1_settings"]
+[ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_sky.svg" id="2_bg"]
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 24
+
+[node name="Title" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "Nastavení"
+
+[node name="DurationLabel" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Délka kola"
+
+[node name="DurationGroup" type="HFlowContainer" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_constants/separation = 12
+
+[node name="SpeedLabel" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Rychlost pádu"
+
+[node name="SpeedGroup" type="HFlowContainer" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_constants/separation = 12
+
+[node name="ThemeLabel" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Vzhled"
+
+[node name="ThemeGroup" type="HFlowContainer" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_constants/separation = 12
+
+[node name="SkillsLabel" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 36
+text = "Aktivní dovednosti"
+
+[node name="SkillsGrid" type="GridContainer" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+columns = 2
+theme_override_constants/h_separation = 32
+theme_override_constants/v_separation = 8
+
+[node name="ValidationLabel" type="Label" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+theme_override_colors/font_color = Color(1, 0.6, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+
+[node name="AudioLabel" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Zvuk a haptika"
+
+[node name="AudioRow" type="HFlowContainer" parent="ScrollContainer/VBox"]
+theme_override_constants/h_separation = 48
+theme_override_constants/v_separation = 16
+
+[node name="SfxToggle" type="CheckButton" parent="ScrollContainer/VBox/AudioRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 80)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "SFX"
+
+[node name="SfxPreviewButton" type="Button" parent="ScrollContainer/VBox/AudioRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 80)
+theme_override_font_sizes/font_size = 32
+text = "🔊"
+
+[node name="MusicToggle" type="CheckButton" parent="ScrollContainer/VBox/AudioRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 80)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Hudba"
+
+[node name="HapticsToggle" type="CheckButton" parent="ScrollContainer/VBox/AudioRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 80)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Vibrace"
+
+[node name="ProfileLabelHeader" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Profil"
+
+[node name="ProfileLabel" type="Label" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 30
+text = "Hráč 1"
+
+[node name="FooterBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -90.0
+offset_right = -32.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 24
+
+[node name="BackButton" type="Button" parent="FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 64)
+theme_override_font_sizes/font_size = 24
+text = "← Zpět"
+
+[node name="Spacer" type="Control" parent="FooterBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResetButton" type="Button" parent="FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 64)
+theme_override_font_sizes/font_size = 22
+text = "Obnovit výchozí"

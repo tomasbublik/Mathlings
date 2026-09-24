@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Side-on rocket: pointed nose, swept fins, small porthole, rear engine glow.
+       Drawn flat-shaded so it reads as a single shape against the Vesmír sky. -->
+
+  <!-- Body — a tall capsule. -->
+  <path d="M64 14
+           C 78 14 90 36 92 64
+           C 92 84 88 100 78 110
+           L 50 110
+           C 40 100 36 84 36 64
+           C 38 36 50 14 64 14 Z"
+        fill="#C9D1D9" stroke="#4A5366" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Right fin. -->
+  <path d="M92 70 L 116 100 L 92 100 Z"
+        fill="#E63946" stroke="#7C1D27" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Left fin. -->
+  <path d="M36 70 L 12 100 L 36 100 Z"
+        fill="#E63946" stroke="#7C1D27" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Porthole. -->
+  <circle cx="64" cy="56" r="12" fill="#5DB4E0" stroke="#1F6B8B" stroke-width="3"/>
+  <circle cx="60" cy="52" r="3" fill="#FFFFFF" opacity="0.85"/>
+
+  <!-- Engine flame at the bottom — orange + yellow gradient stack. -->
+  <ellipse cx="64" cy="116" rx="14" ry="8" fill="#FF6F2D" opacity="0.85"/>
+  <ellipse cx="64" cy="118" rx="8"  ry="5" fill="#FFE57B"/>
+</svg>

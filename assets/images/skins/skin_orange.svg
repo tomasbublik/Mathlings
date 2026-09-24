@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Orange: round body + dimpled stem + small leaf. -->
+  <circle cx="64" cy="68" r="44" fill="#F2913A" stroke="#A85317" stroke-width="3"/>
+  <!-- Subtle highlight. -->
+  <ellipse cx="46" cy="50" rx="14" ry="20" fill="#FFB970" opacity="0.7"/>
+  <!-- Stem dimple — a small darker circle at the top. -->
+  <circle cx="64" cy="26" r="6" fill="#A85317"/>
+  <rect x="60" y="14" width="8" height="14" fill="#5A3A14" rx="2"/>
+  <!-- Leaf. -->
+  <ellipse cx="84" cy="22" rx="14" ry="7" fill="#3F7A33" stroke="#1F4F1A"
+           stroke-width="1.5" transform="rotate(-25 84 22)"/>
+</svg>

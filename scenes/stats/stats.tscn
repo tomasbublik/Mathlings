@@ -1,0 +1,157 @@
+[gd_scene load_steps=3 format=3 uid="uid://cstt3zzrdsts01"]
+
+[ext_resource type="Script" path="res://scenes/stats/stats.gd" id="1_stats"]
+[ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_sky.svg" id="2_bg"]
+
+[node name="Stats" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_stats")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 24
+
+[node name="Title" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "Statistiky"
+
+[node name="ProfileName" type="Label" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 0.95, 0.6, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Hráč 1"
+
+[node name="TotalsRow" type="HFlowContainer" parent="ScrollContainer/VBox"]
+theme_override_constants/separation = 32
+
+[node name="SessionsLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 30
+text = "Sezení: —"
+
+[node name="TotalTimeLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 30
+text = "Odehraný čas: —"
+
+[node name="TotalScoreLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 30
+text = "Celkové skóre: —"
+
+[node name="MaxScoreLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 30
+text = "Nejlepší kolo: —"
+
+[node name="BestStreakLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 30
+text = "Nejdelší série: —"
+
+[node name="ErrorRateLabel" type="Label" parent="ScrollContainer/VBox/TotalsRow"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 30
+text = "Chybovost: —"
+
+[node name="PracticeTitle" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Potřebuje procvičit"
+
+[node name="PracticeList" type="VBoxContainer" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_constants/separation = 8
+
+[node name="SkillsTitle" type="Label" parent="ScrollContainer/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "Přehled dovedností"
+
+[node name="SkillsGrid" type="GridContainer" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+columns = 3
+theme_override_constants/h_separation = 32
+theme_override_constants/v_separation = 8
+
+[node name="EmptyState" type="Label" parent="ScrollContainer/VBox"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Zatím žádná data. Zahraj si kolo a vrať se!"
+visible = false
+
+[node name="FooterBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -90.0
+offset_right = -32.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BackButton" type="Button" parent="FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 64)
+theme_override_font_sizes/font_size = 24
+text = "← Zpět"

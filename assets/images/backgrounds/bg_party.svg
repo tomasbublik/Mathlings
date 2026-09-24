@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="partyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe26f"/>
+      <stop offset="45%" stop-color="#ff8ab3"/>
+      <stop offset="100%" stop-color="#66d9ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#partyGradient)"/>
+  <path d="M0 210 C260 80 420 330 680 170 C910 30 1130 280 1360 130 C1580 -10 1760 130 1920 70 L1920 0 L0 0 Z" fill="#ffffff" opacity="0.25"/>
+  <g opacity="0.75">
+    <circle cx="180" cy="180" r="18" fill="#ffffff"/>
+    <circle cx="420" cy="350" r="12" fill="#ffec5c"/>
+    <circle cx="780" cy="210" r="16" fill="#72ffb6"/>
+    <circle cx="1110" cy="390" r="12" fill="#ffffff"/>
+    <circle cx="1520" cy="260" r="18" fill="#ffec5c"/>
+    <circle cx="1710" cy="520" r="14" fill="#72ffb6"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="10" opacity="0.45" fill="none">
+    <path d="M130 760 Q190 700 250 760 T370 760"/>
+    <path d="M1320 760 Q1380 700 1440 760 T1560 760"/>
+    <path d="M690 910 Q760 840 830 910 T970 910"/>
+  </g>
+</svg>

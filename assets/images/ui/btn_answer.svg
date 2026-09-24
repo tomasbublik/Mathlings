@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 128">
+  <!-- Rounded rectangle (answer button) -->
+  <rect x="8" y="8" width="240" height="112" rx="16" ry="16" fill="#3366FF" stroke="#0033CC" stroke-width="8" />
+
+  <!-- Highlight on top -->
+  <rect x="8" y="8" width="240" height="20" rx="16" ry="16" fill="#5588FF" opacity="0.5" />
+
+  <!-- Text placeholder (just styling, text added in Godot) -->
+  <text x="128" y="70" font-family="Arial" font-size="32" font-weight="bold" text-anchor="middle" fill="#FFFFFF" opacity="0.3">12</text>
+</svg>

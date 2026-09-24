@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfruitexpl0001"]
+
+[ext_resource type="Script" path="res://scenes/game/vfx/fruit_explosion.gd" id="1_explode"]
+[ext_resource type="Texture2D" path="res://assets/images/particles/drop.svg" id="2_drop"]
+
+[node name="FruitExplosion" type="Node2D"]
+script = ExtResource("1_explode")
+
+[node name="Pulp" type="CPUParticles2D" parent="."]
+emitting = true
+amount = 40
+lifetime = 0.7
+one_shot = true
+explosiveness = 0.95
+emission_shape = 1
+emission_sphere_radius = 18.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 800)
+initial_velocity_min = 200.0
+initial_velocity_max = 350.0
+scale_amount_min = 4.0
+scale_amount_max = 8.0
+color = Color(1, 0.9, 0.5, 1)
+
+[node name="Splash" type="CPUParticles2D" parent="."]
+emitting = true
+amount = 18
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.85
+emission_shape = 1
+emission_sphere_radius = 16.0
+direction = Vector2(0, -1)
+spread = 130.0
+gravity = Vector2(0, 1200)
+initial_velocity_min = 150.0
+initial_velocity_max = 300.0
+scale_amount_min = 0.4
+scale_amount_max = 0.85
+texture = ExtResource("2_drop")
+color = Color(1, 1, 1, 0.95)

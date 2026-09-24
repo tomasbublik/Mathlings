@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Apple body (circle) -->
+  <circle cx="64" cy="64" r="40" fill="#CC0000" stroke="#990000" stroke-width="1" />
+
+  <!-- Left side shine -->
+  <ellipse cx="45" cy="50" rx="14" ry="20" fill="#FF3333" opacity="0.7" />
+
+  <!-- Stem (brown) -->
+  <rect x="61" y="20" width="6" height="16" fill="#8B4513" />
+
+  <!-- Leaf (green) -->
+  <ellipse cx="78" cy="28" rx="16" ry="10" fill="#228B22" transform="rotate(-30 78 28)" />
+
+  <!-- Leaf vein -->
+  <line x1="70" y1="28" x2="86" y2="28" stroke="#1a6b1a" stroke-width="0.5" opacity="0.6" />
+</svg>

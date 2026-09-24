@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "base_points": 10,
+  "combo_tiers": [
+    { "min_streak":  3, "multiplier": 1.25 },
+    { "min_streak":  5, "multiplier": 1.5 },
+    { "min_streak": 10, "multiplier": 2.0 }
+  ],
+  "wrong_answer_penalty": 0,
+  "miss_penalty": 0,
+  "combo_sound_streaks": [3, 5, 10]
+}
