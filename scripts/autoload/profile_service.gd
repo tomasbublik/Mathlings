@@ -1,20 +1,21 @@
 extends Node
 ## Single source of truth for "who is playing right now".
 ##
-## ProfileService runs against one of two backends, transparently:
-##   • DB (`ProfilesDao` + the SQLite addon) when DbGuard.writable(DB) is true.
-##   • Local ConfigFile fallback (`user://profiles_local.cfg`) when the
-##     SQLite addon is missing — e.g. a fresh checkout where the user
-##     hasn't run the addon installer yet. The fallback shares the rest of
-##     the per-profile layout (user://profiles/<id>/settings.cfg), so when
-##     the addon arrives later the profile dirs already exist and a manual
-##     migration is straightforward.
+## Storage (all small local files, see DESIGN §6):
+##   • `user://profiles_local.cfg` — the profile list (ConfigFile sections
+##     "profile.<id>" with `name` / `created_at`, plus [meta] next_id).
+##   • `user://profiles/<id>/settings.cfg` + `stats.cfg` — per-profile
+##     settings (SettingsStore) and round totals (SessionStatsStore).
+##   • `user://progress/profile_<id>.json` — skills, unlocks, round history
+##     and recent attempts (ProgressStore).
+##   • `user://current_profile.cfg` — the active profile id, kept outside
+##     settings.cfg so SettingsStore can pick the right file at startup.
+## Deleting a profile removes all of the above for that id.
 ##
-## The active profile id (= "who is playing") is *always* persisted in
-## `user://current_profile.cfg`, independent of the backend, so SettingsStore
-## can decide which settings.cfg path to load before any backend is available.
+## Also flushes ProgressStore when the app is paused / closed, so a killed
+## app loses at most the round in progress.
 ##
-## Reference: specs/P16_profiles.md, DESIGN §6.1 (profiles table).
+## Reference: specs/P16_profiles.md, DESIGN §6.
 
 signal active_profile_changed(profile_id: int)
 signal profile_list_changed
@@ -25,9 +26,8 @@ const MAX_PROFILES: int = 5
 ## consult it at startup without loading any settings (chicken-and-egg fix).
 const ACTIVE_STATE_PATH: String = "user://current_profile.cfg"
 
-## Local-backend store of the profile list. Used only when the SQLite addon
-## isn't installed; otherwise the DB is authoritative. ConfigFile sections
-## are named "profile.<id>" with `name` and `created_at` keys.
+## Store of the profile list. ConfigFile sections are named "profile.<id>"
+## with `name` and `created_at` keys; section "meta" holds `next_id`.
 const LOCAL_PROFILES_PATH: String = "user://profiles_local.cfg"
 
 ## Root for per-profile config directories. Each profile gets its own
@@ -52,8 +52,14 @@ func _ready() -> void:
 	_local.load(LOCAL_PROFILES_PATH)
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST \
+			or what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		ProgressStore.flush()
+
+
 # ---------------------------------------------------------------------------
-# Public surface (backend-agnostic)
+# Public surface
 # ---------------------------------------------------------------------------
 
 ## Returns the currently active profile id (0 when none is selected — caller
@@ -62,16 +68,14 @@ func active_id() -> int:
 	return _active_id
 
 
-## Returns Array[Dictionary] of profile rows. Same shape regardless of
-## backend: each row has `id`, `name`, `created_at`.
+## Returns Array[Dictionary] of profile rows, sorted by id: each row has
+## `id`, `name`, `created_at`.
 func list() -> Array:
-	if _has_db():
-		return ProfilesDao.get_all(DB)
 	return _list_local()
 
 
 ## Switches the active profile. Returns false when profile_id is invalid
-## or not found in the active backend. Emits `active_profile_changed` so
+## or unknown. Emits `active_profile_changed` so
 ## SettingsStore (and other listeners) reload from the new file path.
 func set_active(profile_id: int) -> bool:
 	if profile_id <= 0:
@@ -86,17 +90,19 @@ func set_active(profile_id: int) -> bool:
 
 ## Creates a new profile with the given display name, persists it, and
 ## creates the per-profile config directory. Returns the new profile id, or
-## -1 when at the MAX_PROFILES cap.
+## -1 when at the MAX_PROFILES cap. An empty name becomes the default player
+## name in the current language (it is a real, renameable name, so it is
+## translated once here and stored as text).
 func create(name: String) -> int:
 	var trimmed := name.strip_edges()
 	if trimmed == "":
-		trimmed = "Hráč"
+		trimmed = tr("COMMON_DEFAULT_PLAYER")
 
 	var current_count := list().size()
 	if current_count >= MAX_PROFILES:
 		return -1
 
-	var new_id: int = (_create_db(trimmed) if _has_db() else _create_local(trimmed))
+	var new_id: int = _create_local(trimmed)
 	if new_id <= 0:
 		return -1
 
@@ -113,30 +119,28 @@ func rename(profile_id: int, new_name: String) -> bool:
 	if trimmed == "":
 		return false
 
-	var ok: bool = (_rename_db(profile_id, trimmed) if _has_db()
-		else _rename_local(profile_id, trimmed))
+	var ok: bool = _rename_local(profile_id, trimmed)
 	if ok:
 		profile_list_changed.emit()
 	return ok
 
 
-## Deletes a profile. Cascades to the per-profile config directory and (in
-## the DB backend) any profile-scoped DB rows via SQL CASCADE.
+## Deletes a profile and every piece of its data: the profile-list entry,
+## the per-profile directory (settings.cfg, stats.cfg) and the progress file
+## (skills, unlocks, history, attempts — incl. .bak/.tmp).
 ##
 ## When the active profile is deleted, switches to the first remaining one
 ## (or to id=0 — caller should redirect to picker).
 func delete(profile_id: int) -> bool:
 	if profile_id <= 0:
 		return false
-	if _has_db():
-		ProfilesDao.delete(DB, profile_id)
-	else:
-		_delete_local(profile_id)
-	# Clean up the local stats file before nuking the dir. _remove_profile_dir
-	# is best-effort and would silently leave a stats.cfg behind if directory
+	_delete_local(profile_id)
+	# Clean up the stats file before nuking the dir. _remove_profile_dir is
+	# best-effort and would silently leave a stats.cfg behind if directory
 	# removal failed for any reason (locked file, permissions). Calling
 	# SessionStatsStore.clear first guarantees the file is gone.
 	SessionStatsStore.clear(profile_id)
+	ProgressStore.delete_profile(profile_id)
 	_remove_profile_dir(profile_id)
 	profile_list_changed.emit()
 
@@ -151,7 +155,7 @@ func delete(profile_id: int) -> bool:
 
 ## Returns the canonical settings.cfg path for the given profile.
 ## profile_id <= 0 falls back to the legacy single-profile location so the
-## first-run experience can boot without any backend / profile state.
+## first-run experience can boot without any profile state.
 func config_path_for(profile_id: int) -> String:
 	if profile_id <= 0:
 		return LEGACY_SETTINGS_PATH
@@ -167,7 +171,7 @@ func has_active_profile() -> bool:
 ## Idempotent migration / bootstrap. Call from Main Menu's _ready(). The
 ## first invocation:
 ##   • adopts the persisted active id when it still maps to an existing profile,
-##   • migrates legacy `user://settings.cfg` into a freshly created "Hráč 1"
+##   • migrates legacy `user://settings.cfg` into the only existing profile
 ##     when exactly one profile exists, OR
 ##   • adopts the first profile in the catalog when there's no active selection
 ##     yet (e.g. installed-then-cleared cache).
@@ -198,43 +202,16 @@ func ensure_ready() -> bool:
 		active_profile_changed.emit(_active_id)
 		return true
 
-	# No profiles found in either backend; caller should show the picker.
+	# No profiles yet; caller should show the picker.
 	return false
 
 
-# ---------------------------------------------------------------------------
-# Backend selection
-# ---------------------------------------------------------------------------
-
-## True when the live DB autoload is open AND the SQLite addon is loaded.
-## Centralised so the public methods stay readable.
-func _has_db() -> bool:
-	return DbGuard.writable(DB)
-
-
-## Looks up `profile_id` in whichever backend is active.
 func _profile_exists(profile_id: int) -> bool:
-	if _has_db():
-		return not ProfilesDao.get_by_id(DB, profile_id).is_empty()
 	return _local.has_section(_local_section(profile_id))
 
 
 # ---------------------------------------------------------------------------
-# DB backend
-# ---------------------------------------------------------------------------
-
-func _create_db(name: String) -> int:
-	if ProfilesDao.count(DB) >= MAX_PROFILES:
-		return -1
-	return ProfilesDao.insert(DB, name)
-
-
-func _rename_db(profile_id: int, name: String) -> bool:
-	return ProfilesDao.update(DB, profile_id, name)
-
-
-# ---------------------------------------------------------------------------
-# Local (ConfigFile) backend
+# Profile list (ConfigFile)
 # ---------------------------------------------------------------------------
 
 func _list_local() -> Array:
@@ -249,7 +226,7 @@ func _list_local() -> Array:
 			continue
 		rows.append({
 			"id": int(id_part),
-			"name": String(_local.get_value(section, "name", "Hráč")),
+			"name": String(_local.get_value(section, "name", tr("COMMON_DEFAULT_PLAYER"))),
 			"created_at": int(_local.get_value(section, "created_at", 0)),
 		})
 	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
@@ -285,9 +262,10 @@ func _delete_local(profile_id: int) -> void:
 		_save_local()
 
 
-## Returns the next free profile id for the local backend. We don't reuse
-## ids of deleted profiles so per-profile settings dirs (`user://profiles/<id>/`)
-## from a deleted profile never accidentally bind to a new one.
+## Returns the next free profile id and advances the persisted [meta] next_id
+## counter. Ids of deleted profiles are never reused (not even the highest
+## one), so leftovers of a deleted profile can't bind to a new player.
+## Files written before the counter existed simply start from max id + 1.
 func _next_local_id() -> int:
 	var max_id := 0
 	for section in _local.get_sections():
@@ -296,7 +274,9 @@ func _next_local_id() -> int:
 		var id_part := section.substr("profile.".length())
 		if id_part.is_valid_int():
 			max_id = maxi(max_id, int(id_part))
-	return max_id + 1
+	var next_id := maxi(max_id + 1, int(_local.get_value("meta", "next_id", 1)))
+	_local.set_value("meta", "next_id", next_id + 1)
+	return next_id
 
 
 static func _local_section(profile_id: int) -> String:

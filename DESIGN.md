@@ -21,7 +21,7 @@
 | Start-up | Cold start < 2 s to the Main Menu |
 | APK size | Target < 60 MB (AAB) |
 | Offline | Fully functional without an internet connection |
-| Storage | All data stored locally in `user://` (SQLite + ConfigFile) |
+| Storage | All data stored locally in `user://` (JSON + ConfigFile files, see §6.1) |
 | Accessibility | Minimum touch target size of 72 dp; WCAG AA contrast for text |
 | Security | No network calls, no file access outside `user://` and `res://` |
 | Localisation | Structure ready for i18n, launch locale: cs_CZ |
@@ -31,7 +31,7 @@
 
 - **Engine:** Godot **4.3+** (stable).
 - **Language:** GDScript (static typing wherever possible).
-- **Database:** SQLite via the [`godot-sqlite`](https://github.com/2shady4u/godot-sqlite) addon (single `.gdextension`).
+- **Persistence:** plain local files (JSON + ConfigFile) — no database, no GDExtension (§6.1).
 - **Version control:** Git, trunk-based on `main`, feature branches named after the WP ID (`p3-audio-manager`).
 - **Tests:** [`GUT`](https://github.com/bitwes/Gut) for unit tests in `tests/unit/`.
 - **Build:** Godot export templates, Android via Gradle; macOS via the editor.
@@ -55,16 +55,16 @@
 ├──────────────────────────────────────────────────┤
 │ Platform Services (autoloads)                    │
 │  SettingsStore, AudioManager, HapticsManager,    │
-│  DB, GameState, EventBus                         │
+│  ProfileService, GameState, EventBus             │
 ├──────────────────────────────────────────────────┤
 │ Persistence                                      │
-│  SQLite via godot-sqlite, schema v1              │
+│  ProgressStore / SessionStatsStore (files)       │
 │  scripts/persistence/*                           │
 └──────────────────────────────────────────────────┘
 ```
 
 **Key principles:**
-1. No UI node may read from or write to the DB directly → always go through a DAO in `scripts/persistence/`.
+1. No UI node may read or write persisted files directly → always go through a store in `scripts/persistence/` (or an autoload).
 2. Modules communicate **primarily via `EventBus` signals**; direct calls only where they make sense (e.g. UI → AudioManager.play_sfx).
 3. Autoloads are only façades; business logic lives in ordinary classes (better testability).
 4. All times are `int` milliseconds (never `float` seconds for persisted data).
@@ -78,7 +78,7 @@ mathlings/
 ├── .gitignore
 ├── DESIGN.md                ← this document
 ├── README.md
-├── addons/                  ← godot-sqlite (after P2)
+├── addons/                  ← gut (tests)
 ├── assets/
 │   ├── audio/{sfx,music}/
 │   ├── fonts/
@@ -91,10 +91,10 @@ mathlings/
 │   ├── stats/
 │   └── shared/              ← reusable: buttons, dialogs, parent_gate
 ├── scripts/
-│   ├── autoload/            ← SettingsStore, AudioManager, Haptics, DB, GameState, EventBus
+│   ├── autoload/            ← SettingsStore, ProfileService, AudioManager, Haptics, GameState, EventBus
 │   ├── game/                ← controllers, validators, falling entity
 │   ├── tutor/               ← SkillModel, ProblemGenerator, DifficultyController
-│   ├── persistence/         ← schema.sql, DAOs
+│   ├── persistence/         ← ProgressStore, SessionStatsStore, AtomicJsonFile
 │   └── ui/                  ← reusable UI helpers
 ├── tests/unit/              ← GUT
 └── specs/                   ← work packages for subagents
@@ -102,76 +102,71 @@ mathlings/
 
 ## 6. Data models
 
-### 6.1 SQLite schema (v1)
+### 6.1 Storage (local files, no database)
 
-```sql
--- profiles: support for several children on one tablet
-CREATE TABLE profiles (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
-    avatar_key TEXT,
-    created_at INTEGER NOT NULL    -- unix ms
-);
+Everything lives in small files under `user://` — a handful of child profiles
+on one device doesn't need a database. There is no SQLite / GDExtension.
 
--- skills: skills tracked by Elo rating
--- the key is a stable string: "add_0_20", "sub_0_100", "mul_x7", "div_0_100", ...
-CREATE TABLE skills (
-    profile_id INTEGER NOT NULL,
-    skill_key TEXT NOT NULL,
-    rating REAL NOT NULL DEFAULT 1000.0,
-    attempts INTEGER NOT NULL DEFAULT 0,
-    correct INTEGER NOT NULL DEFAULT 0,
-    last_seen_at INTEGER,
-    PRIMARY KEY (profile_id, skill_key),
-    FOREIGN KEY (profile_id) REFERENCES profiles(id)
-);
+| File | Owner | Content | Written |
+|---|---|---|---|
+| `user://profiles_local.cfg` | `ProfileService` | profile list: `[profile.<id>] name, created_at`; `[meta] next_id` | create / rename / delete |
+| `user://current_profile.cfg` | `ProfileService` | `[profile] active_id` | profile switch |
+| `user://profiles/<id>/settings.cfg` | `SettingsStore` | per-profile settings (§6.3) | on change |
+| `user://profiles/<id>/stats.cfg` | `SessionStatsStore` | running round totals: `sessions, total_duration_ms, total_score, max_score, best_streak_overall, accuracy_sum` | end of each finished round |
+| `user://progress/profile_<id>.json` | `ProgressStore` | skills, unlocks, round history, recent attempts (below) | end of round, unlock, flush |
+| `user://settings.cfg` | `SettingsStore` | legacy / "no profile yet" settings | first run only |
 
--- sessions: a single round of the game
-CREATE TABLE sessions (
-    id INTEGER PRIMARY KEY,
-    profile_id INTEGER NOT NULL,
-    started_at INTEGER NOT NULL,
-    ended_at INTEGER,
-    duration_ms INTEGER,
-    score INTEGER NOT NULL DEFAULT 0,
-    best_streak INTEGER NOT NULL DEFAULT 0,
-    accuracy REAL,                  -- 0.0-1.0
-    config_json TEXT NOT NULL,      -- configuration snapshot
-    FOREIGN KEY (profile_id) REFERENCES profiles(id)
-);
+The `.cfg` files and their paths predate the JSON store and are kept as they
+are, so existing installs keep their profiles, settings and totals.
 
--- attempts: every problem shown
-CREATE TABLE attempts (
-    id INTEGER PRIMARY KEY,
-    session_id INTEGER NOT NULL,
-    skill_key TEXT NOT NULL,
-    expression TEXT NOT NULL,       -- "7 + 5"
-    correct_answer INTEGER NOT NULL,
-    choices_json TEXT NOT NULL,     -- "[12, 13, 10]"
-    chosen_index INTEGER,           -- NULL if missed
-    correct INTEGER NOT NULL,       -- 0/1
-    reaction_ms INTEGER,            -- NULL if missed
-    shown_at INTEGER NOT NULL,
-    resolved_at INTEGER NOT NULL,
-    FOREIGN KEY (session_id) REFERENCES sessions(id)
-);
+**Progress file** (`scripts/persistence/progress_store.gd`, schema `version` 1):
 
--- unlocks: unlocked skins, backgrounds, badges
-CREATE TABLE unlocks (
-    profile_id INTEGER NOT NULL,
-    kind TEXT NOT NULL,             -- 'background' | 'skin' | 'badge'
-    key TEXT NOT NULL,
-    unlocked_at INTEGER NOT NULL,
-    PRIMARY KEY (profile_id, kind, key),
-    FOREIGN KEY (profile_id) REFERENCES profiles(id)
-);
-
-CREATE INDEX idx_attempts_session ON attempts(session_id);
-CREATE INDEX idx_attempts_skill ON attempts(skill_key);
-CREATE INDEX idx_sessions_profile ON sessions(profile_id, started_at);
+```jsonc
+{
+  "version": 1,
+  "profile_id": 3,
+  "next_session_id": 13,
+  "skills": {                       // per-skill aggregates (Elo tutor)
+    "add_0_20": {"rating": 1034.5, "attempts": 41, "correct": 35, "last_seen_at": 1714000000000}
+  },
+  "unlocks": {                      // "<kind>/<key>" -> row; kind = badge | theme | skin
+    "badge/streak_10": {"kind": "badge", "key": "streak_10", "unlocked_at": 1714000000000}
+  },
+  "sessions": [                     // finished rounds only, oldest first, max 1000
+    {"id": 12, "started_at": 0, "ended_at": 0, "duration_ms": 120000, "score": 230,
+     "best_streak": 9, "accuracy": 0.86, "config": {"duration_s": 120, "...": "..."}}
+  ],
+  "attempts": [                     // recent attempts log, oldest first, max 500
+    {"session_id": 12, "skill_key": "add_0_20", "expression": "7 + 5", "correct_answer": 12,
+     "choices": [12, 13, 10], "chosen_index": 0, "correct": true, "reaction_ms": 1800,
+     "at": 1714000000000}         // chosen_index / reaction_ms = -1 when missed
+  ]
+}
 ```
 
-Schema migrations: a `meta(key TEXT PRIMARY KEY, value TEXT)` table with a `schema_version` row.
+- Stats never depend on the capped `attempts` log: per-skill accuracy and
+  "needs practice" come from the `skills` counters, round totals from `stats.cfg`.
+- Store only stable ids (skill keys, unlock kind/key) — never display text;
+  names are translated at display time (`UnlockSystem.display_name`).
+- **Crash safety** (`AtomicJsonFile`): write `<file>.tmp`, copy the current
+  (valid) file to `<file>.bak`, rename the `.tmp` over the file. On read, a
+  missing / unparseable / non-object file falls back to `.bak`; if both are bad
+  the profile starts empty. Parsing is defensive: every field is type-coerced,
+  bad entries are dropped, nothing crashes.
+- **When it is written:** during a round, skill updates stay in memory and the
+  round's attempts are buffered in `AttemptLogger`. At round end one write stores
+  the session, its attempts and the skills; unlocks are written when earned;
+  `ProgressStore.flush()` runs on round abort and when the app is paused /
+  closed (`ProfileService._notification`). A killed app loses at most the round
+  in progress.
+- **Aborted rounds** (pause → Quit) are never stored in `sessions` / `attempts` /
+  `stats.cfg` and are not evaluated for unlocks; the skill ratings from the
+  problems the child did answer are kept.
+- **Deleting a player** removes the profile-list entry, `user://profiles/<id>/`
+  (settings + stats) and the progress file incl. `.bak` / `.tmp`. Profile ids
+  are never reused.
+- **Migrations:** bump `ProgressStore.VERSION` and convert in `_normalise()`;
+  a file from a newer build is read best-effort.
 
 ### 6.2 Skill keys (canonical)
 
@@ -236,7 +231,7 @@ See `scripts/autoload/event_bus.gd`. New signals are **added**, never removed (o
 - `SettingsStore.get_value(key: String, default) / set_value(key, value) / save()`
 - `AudioManager.play_sfx(key: String) / play_music(key, fade_ms) / stop_music(fade_ms)`
 - `HapticsManager.pulse(pattern: HapticsManager.Pattern)`
-- `DB.open() / close() / execute(sql, params) -> Array`
+- `ProgressStore.skills / record_round / unlock / skill_overview / flush / delete_profile` (static)
 - `GameState.reset_round()`
 
 ### 7.4 Audio SFX keys
@@ -421,7 +416,7 @@ ABORTED (pause menu → "Quit round"):
 
 ## 11. Testing strategy
 
-- **Unit (GUT):** ProblemGenerator (distribution, distractor validity), SkillModel (Elo update, clamp), AnswerValidator, DAOs (integration with in-memory SQLite).
+- **Unit (GUT):** ProblemGenerator (distribution, distractor validity), SkillModel (Elo update, clamp), AnswerValidator, ProgressStore / AtomicJsonFile (temp dir under `user://test_*`), UnlockSystem, round persistence through GameController.
 - **Manual smoke test:** After each WP, run Main Menu → Play → finish a round → Result.
 - **Target coverage:** ≥ 80 % of `scripts/tutor/` and `scripts/game/` (the rest of the UI is tested manually).
 

@@ -49,6 +49,8 @@ func test_sfx_pool_round_robin() -> void:
 	# Arrange
 	var indices: Array[int] = []
 
+	audio_manager._sfx_current_index = 0  # earlier tests advance the shared pool
+
 	# Act - track which player was used for 6 calls
 	for i in range(6):
 		var idx := audio_manager._sfx_current_index

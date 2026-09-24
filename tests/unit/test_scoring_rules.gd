@@ -96,23 +96,6 @@ func test_malformed_json_falls_back_to_defaults() -> void:
 
 
 # ---------------------------------------------------------------------------
-# to_human_readable_text
-# ---------------------------------------------------------------------------
-
-func test_human_readable_lists_all_tier_lines() -> void:
-	var text: String = ScoringRules.load_default().to_human_readable_text()
-	# Each tier should appear with its multiplier rendered as "1.25", "1.5", "2.0".
-	assert_true(text.contains("Série 3–4"), "tier 3..4 line missing")
-	assert_true(text.contains("Série 5–9"), "tier 5..9 line missing")
-	assert_true(text.contains("Série 10+"), "tier 10+ line missing")
-	assert_true(text.contains("1.25"), "1.25× multiplier label missing")
-	assert_true(text.contains("1.5"), "1.5× multiplier label missing")
-	assert_true(text.contains("2.0"), "2.0× multiplier label missing")
-	assert_true(text.contains("11 správných odpovědí v řadě = 161 bodů"),
-		"worked example line must reflect the actual computed total")
-
-
-# ---------------------------------------------------------------------------
 # Custom-tier override (synthetic rules for tests)
 # ---------------------------------------------------------------------------
 

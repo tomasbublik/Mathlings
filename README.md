@@ -33,7 +33,7 @@ Built with **Godot 4.3+**, runs on **Android 10+** (primarily tablets) and **mac
 │   ├── persistence/
 │   └── ui/
 ├── assets/            ← audio, fonts, images
-├── addons/            ← godot-sqlite, gut (testing)
+├── addons/            ← gut (testing)
 └── tests/unit/        ← GUT tests
 ```
 

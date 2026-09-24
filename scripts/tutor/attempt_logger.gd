@@ -1,41 +1,45 @@
 class_name AttemptLogger
-## Persists a single Problem attempt row to the `attempts` table.
-## Reference: DESIGN §6.1, specs/P9_skill_model.md
+## Buffers the attempts of the round in progress in memory. GameController
+## hands the buffer to ProgressStore.record_round() when the round ends and
+## drops it when the round is aborted, so only finished rounds are stored.
+## Reference: DESIGN §6, specs/P9_skill_model.md
 
-var _session_id: int
-var _db: Node
-
-
-## `db` may be null in unit tests — `log` becomes a no-op then.
-func _init(session_id: int, db: Node) -> void:
-	_session_id = session_id
-	_db = db
+var _buffer: Array = []
 
 
-## Writes the attempt row. `chosen_index` = -1 and `reaction_ms` = -1 indicate a miss.
+## Records one attempt. `chosen_index` = -1 and `reaction_ms` = -1 mean a miss.
 func log_attempt(
 	problem: Dictionary,
 	chosen_index: int,
 	reaction_ms: int,
-	shown_at_ms: int,
-	resolved_at_ms: int
+	_shown_at_ms: int = 0,
+	_resolved_at_ms: int = 0
 ) -> void:
-	if not DbGuard.writable(_db):
-		return
+	var was_correct: bool = chosen_index >= 0 \
+		and chosen_index == int(problem.get("correct_index", -1))
+	_buffer.append({
+		"skill_key": String(problem.get("skill_key", "")),
+		"expression": String(problem.get("expression", "")),
+		"correct_answer": int(problem.get("correct_answer", 0)),
+		"choices": Array(problem.get("choices", [])),
+		"chosen_index": chosen_index,
+		"correct": was_correct,
+		"reaction_ms": reaction_ms,
+		"at": ProgressStore.now_ms(),
+	})
 
-	var correct_answer: int = int(problem.get("correct_answer", 0))
-	var was_correct: bool = chosen_index >= 0 and chosen_index == int(problem.get("correct_index", -1))
 
-	AttemptsDao.insert(
-		_db,
-		_session_id,
-		String(problem.get("skill_key", "")),
-		String(problem.get("expression", "")),
-		correct_answer,
-		problem.get("choices", []),
-		chosen_index,
-		was_correct,
-		reaction_ms,
-		shown_at_ms,
-		resolved_at_ms
-	)
+## Attempts buffered so far (not a copy — callers must not mutate).
+func pending() -> Array:
+	return _buffer
+
+
+## Returns the buffered attempts and empties the buffer.
+func take() -> Array:
+	var out := _buffer
+	_buffer = []
+	return out
+
+
+func clear() -> void:
+	_buffer = []

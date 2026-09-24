@@ -98,12 +98,12 @@ Resolutions: `godot --path . --resolution 2400x1080` (phone),
 
 ## Known caveats (game-side, not fixed here)
 
-- The 10-in-a-row reward label is hard-coded in Czech
-  (`scripts/game/unlock_system.gd`, "Série 10 bez chyby!"), so the English
-  results shot deliberately has no reward card. Once the labels are translated,
-  re-capture `04_results` with a flawless round.
-- Without the godot-sqlite addon the "My skills" card only says
-  "Skill details appear after a few rounds." — that is what the shipping build
-  shows, so the progress shot shows it too.
+- When these shots were taken the 10-in-a-row reward label was hard-coded in
+  Czech, so the English results shot deliberately has no reward card. Reward
+  names are translated now (`UNLOCK_*` keys); `04_results` can be re-captured
+  with a flawless round.
+- These shots were taken while per-skill progress was not persisted, so the
+  "My skills" card only says "Skill details appear after a few rounds." Skills
+  are now stored (DESIGN.md §6.1); re-capture the progress shot to show them.
 
 Total size of all PNGs in this folder: about 7 MB (PNG as rendered, no lossy compression).

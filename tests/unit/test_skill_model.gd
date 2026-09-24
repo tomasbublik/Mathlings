@@ -21,7 +21,7 @@ func _rng(seed_val: int) -> RandomNumberGenerator:
 # ---------------------------------------------------------------------------
 
 func test_elo_update_correct_fast() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	var before: float = model.rating_for("add_0_20")
 	var new_rating: float = model.on_attempt("add_0_20", 1000.0, true, 1500)
 	# R=1000, D=1000, actual=1.0, expected=0.5, K=32 → delta = 16
@@ -30,7 +30,7 @@ func test_elo_update_correct_fast() -> void:
 
 
 func test_elo_update_correct_slow() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	var new_rating: float = model.on_attempt("add_0_20", 1000.0, true, 4000)
 	# actual=0.7, expected=0.5 → delta = 32 * 0.2 = 6.4
 	assert_almost_eq(new_rating, 1006.4, 0.5,
@@ -38,7 +38,7 @@ func test_elo_update_correct_slow() -> void:
 
 
 func test_elo_update_wrong() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	var new_rating: float = model.on_attempt("add_0_20", 1000.0, false, 2000)
 	# actual=0.0, expected=0.5, K=32 → delta = -16
 	assert_almost_eq(new_rating, 984.0, 0.5,
@@ -46,14 +46,14 @@ func test_elo_update_wrong() -> void:
 
 
 func test_elo_miss_counts_as_wrong() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	var new_rating: float = model.on_attempt("add_0_20", 1000.0, false, -1)
 	assert_almost_eq(new_rating, 984.0, 0.5,
 		"Miss (reaction_ms < 0) should behave as wrong answer")
 
 
 func test_elo_clamp_upper_bound() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	# Force rating high via many correct+fast against very high difficulty.
 	for i in range(500):
 		model.on_attempt("add_0_20", 2000.0, true, 500)
@@ -62,7 +62,7 @@ func test_elo_clamp_upper_bound() -> void:
 
 
 func test_elo_clamp_lower_bound() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	for i in range(500):
 		model.on_attempt("add_0_20", 500.0, false, 2000)
 	assert_true(model.rating_for("add_0_20") >= SkillModel.RATING_MIN - 0.001,
@@ -74,7 +74,7 @@ func test_k_transition_at_20_attempts() -> void:
 	# Use correct+fast where expected=0.5 for consistent deltas.
 	# 20 attempts at R=1000, D=1000 ⇒ actual=1, expected=0.5 ⇒ gains keep shrinking.
 	# Instead, verify via two identical attempts bracketed around the 20th.
-	var model_before := SkillModel.new(1, null)
+	var model_before := SkillModel.new(1)
 	# Reach attempts=19 (one short).
 	for i in range(19):
 		# Use alternating correct/wrong to keep rating near 1000 so expected ~0.5.
@@ -98,7 +98,7 @@ func test_k_transition_at_20_attempts() -> void:
 # ---------------------------------------------------------------------------
 
 func test_choose_next_prefers_weakness() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	# Seed ratings directly via on_attempt to reach roughly desired levels.
 	# Instead we rely on internal cache: use model._cache trick is brittle, so use rating_for
 	# via the API. We'll hand-craft ratings by many attempts.
@@ -130,7 +130,7 @@ func test_choose_next_prefers_weakness() -> void:
 
 
 func test_choose_next_honors_enabled() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	var enabled := PackedStringArray(["add_0_20", "mul_x5"])
 	var rng := _rng(1)
 	for i in range(2000):
@@ -140,7 +140,7 @@ func test_choose_next_honors_enabled() -> void:
 
 func test_choose_next_harder_injection() -> void:
 	# Enable add_0_10 (primary) + add_0_100 as harder step-up target within "add" family.
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	# Keep add_0_10 weak so weighted sampling almost always picks it.
 	_seed_rating(model, "add_0_10", 600.0)
 	_seed_rating(model, "add_0_100", 1400.0)
@@ -153,14 +153,14 @@ func test_choose_next_harder_injection() -> void:
 	# Harder-by-one bucket = 10% of trials, and they will redirect to add_0_100 when base pick is add_0_10.
 	# Easy-injection (15%) also picks the highest-rated (add_0_100 here).
 	# Combined add_0_100 frequency should sit comfortably above 10%.
-	var harder_frac := counts["add_0_100"] / float(n)
+	var harder_frac: float = counts["add_0_100"] / float(n)
 	assert_true(harder_frac > 0.1,
 		"add_0_100 should receive > 10%% of picks via easy+harder injection (got %.2f%%)"
 			% (harder_frac * 100.0))
 
 
 func test_choose_next_single_skill() -> void:
-	var model := SkillModel.new(1, null)
+	var model := SkillModel.new(1)
 	var enabled := PackedStringArray(["add_0_20"])
 	var rng := _rng(0)
 	for i in range(50):

@@ -18,7 +18,7 @@ func test_default_theme_key_is_in_catalog() -> void:
 func test_each_theme_has_required_metadata() -> void:
 	# Contract: every theme exposes the keys consumed by callers.
 	var required: Array[String] = [
-		"label", "background", "skins", "game_music",
+		"label_key", "background", "skins", "game_music",
 		"vertical_direction", "default_unlocked",
 	]
 	for theme_key: String in ThemeManager.THEMES.keys():
@@ -29,13 +29,13 @@ func test_each_theme_has_required_metadata() -> void:
 
 
 func test_default_unlocked_themes_are_always_available() -> void:
-	# Profile id 0 is sentinel for "no profile / no DB"; default_unlocked themes
+	# Profile id 0 is sentinel for "no profile"; default_unlocked themes
 	# must still be reachable.
 	for theme_key: String in ThemeManager.THEMES.keys():
 		var meta: Dictionary = ThemeManager.THEMES[theme_key]
 		if bool(meta.get("default_unlocked", false)):
 			assert_true(ThemeManager.is_available(theme_key, 0),
-				"default-unlocked theme '%s' must be available without DB" % theme_key)
+				"default-unlocked theme '%s' must be available without a profile" % theme_key)
 
 
 func test_is_available_rejects_unknown_themes() -> void:
@@ -43,7 +43,7 @@ func test_is_available_rejects_unknown_themes() -> void:
 
 
 func test_available_keys_includes_all_default_unlocked() -> void:
-	# Without a real DB, only default_unlocked entries are reported.
+	# Without a profile, only default_unlocked entries are reported.
 	var available := ThemeManager.available_keys(0)
 	for theme_key: String in ThemeManager.THEMES.keys():
 		var meta: Dictionary = ThemeManager.THEMES[theme_key]

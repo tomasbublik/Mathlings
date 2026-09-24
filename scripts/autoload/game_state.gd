@@ -1,6 +1,6 @@
 extends Node
 ## Session-scoped ephemeral state (current score, streak, active profile, etc.).
-## Persistent data lives in DB via DAOs.
+## Persistent data lives in files (ProgressStore, SessionStatsStore, SettingsStore).
 
 var active_profile_id: int = 0
 var current_score: int = 0

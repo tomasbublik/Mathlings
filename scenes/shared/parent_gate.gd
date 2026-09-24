@@ -48,7 +48,7 @@ func _generate_question() -> void:
 	var a: int = rng.randi_range(11, 19)
 	var b: int = rng.randi_range(11, 19)
 	_correct_answer = a * b
-	_question_label.text = "Kolik je %d × %d?" % [a, b]
+	_question_label.text = tr("PARENT_GATE_QUESTION_FORMAT") % [a, b]
 	_feedback.text = ""
 	_input.text = ""
 
@@ -83,13 +83,13 @@ func _on_text_submitted(_text: String) -> void:
 func _on_confirm() -> void:
 	var given := _input.text.strip_edges()
 	if not given.is_valid_int():
-		_feedback.text = "Zadej číslo."
+		_feedback.text = tr("PARENT_GATE_FEEDBACK_NUMBER")
 		return
 	if int(given) == _correct_answer:
 		passed.emit()
 		queue_free()
 	else:
-		_feedback.text = "Špatně. Zkus to znovu."
+		_feedback.text = tr("PARENT_GATE_FEEDBACK_WRONG")
 		_generate_question()
 
 

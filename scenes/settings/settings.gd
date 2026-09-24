@@ -122,7 +122,7 @@ func _build_theme_buttons() -> void:
 	var profile_id: int = ProfileService.active_id()
 	for theme_key: String in ThemeManager.THEMES.keys():
 		var meta: Dictionary = ThemeManager.THEMES[theme_key]
-		var label: String = tr("THEME_" + theme_key.to_upper())
+		var label: String = tr(ThemeManager.label_key(theme_key))
 		var available: bool = ThemeManager.is_available(theme_key, profile_id)
 		var btn := _make_chip(label if available else "🔒 %s" % label, _theme_group)
 		btn.custom_minimum_size = Vector2(0, 76)

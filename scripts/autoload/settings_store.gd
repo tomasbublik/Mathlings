@@ -125,7 +125,13 @@ func _on_active_profile_changed(_profile_id: int) -> void:
 ## Loads (or creates with defaults) the settings.cfg for the currently
 ## active profile. Called at boot AND on every profile switch.
 func _reload_for_active_profile() -> void:
-	_current_path = ProfileService.config_path_for(ProfileService.active_id())
+	_load_path(ProfileService.config_path_for(ProfileService.active_id()))
+
+
+## Loads (or creates with defaults) the settings file at `path` and makes it
+## the file save() writes to. Split out so tests can use an isolated file.
+func _load_path(path: String) -> void:
+	_current_path = path
 	_config = ConfigFile.new()
 	var err: int = _config.load(_current_path)
 
