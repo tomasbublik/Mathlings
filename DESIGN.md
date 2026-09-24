@@ -1,46 +1,46 @@
 # Mathlings — Design & Architecture
 
-> **Autoritativní dokument.** Pokud cokoli ve `specs/*.md` odporuje tomuto dokumentu, platí DESIGN.md a spec je třeba opravit. Sdílené kontrakty (§7) nesmí měnit žádný subagent bez souhlasu zadavatele.
+> **Authoritative document.** If anything in `specs/*.md` contradicts this document, DESIGN.md takes precedence and the spec must be corrected. The shared contracts (§7) must not be changed by any subagent without the project owner's approval.
 
 ---
 
-## 1. Cíle projektu
+## 1. Project goals
 
-- Padající matematické příklady, 3 tlačítka s odpověďmi (1 správná, 2 plausibilní špatné).
-- Cílová skupina: 1.-3. třída ZŠ (6-10 let), primárně tablet na šířku.
-- Platformy: **Android 10+** (API 29+) primárně; **macOS** pro vývoj a ladění.
-- Offline-first, žádný účet, žádná reklama, žádné IAP, žádná telemetrie do cloudu.
-- Aplikace je navenek arkádová hra, uvnitř adaptivní tutor (Elo per dovednost).
-- Jazyk UI: **čeština**; kód a identifikátory: **angličtina**.
+- Falling maths problems, 3 answer buttons (1 correct, 2 plausible wrong ones).
+- Target audience: Years 1–3 of primary school (ages 6–10), primarily tablets in landscape.
+- Platforms: **Android 10+** (API 29+) primarily; **macOS** for development and debugging.
+- Offline-first, no account, no ads, no IAP, no cloud telemetry.
+- On the outside the app is an arcade game; on the inside it is an adaptive tutor (Elo per skill).
+- UI language: **Czech**; code and identifiers: **English**.
 
 ## 2. Non-functional requirements
 
-| Kategorie | Požadavek |
+| Category | Requirement |
 |---|---|
-| Výkon | 60 FPS na střední třídě Android tabletu (Snapdragon 7xx, 4 GB RAM) |
-| Start-up | Cold start < 2 s do Main Menu |
-| Velikost APK | Cíl < 60 MB (AAB) |
-| Offline | Plně funkční bez internetu |
-| Ukládání | Veškerá data lokálně, `user://` (SQLite + ConfigFile) |
-| Přístupnost | Min. velikost dotykového tlačítka 72 dp; kontrast WCAG AA na textech |
-| Bezpečnost | Žádné síťové volání, žádné čtení souborů mimo `user://` a `res://` |
-| Lokalizace | Struktura připravena na i18n, launch: cs_CZ |
-| Rodičovská brána | Nastavení a statistiky skryté za jednoduchou matematickou otázkou |
+| Performance | 60 FPS on a mid-range Android tablet (Snapdragon 7xx, 4 GB RAM) |
+| Start-up | Cold start < 2 s to the Main Menu |
+| APK size | Target < 60 MB (AAB) |
+| Offline | Fully functional without an internet connection |
+| Storage | All data stored locally in `user://` (SQLite + ConfigFile) |
+| Accessibility | Minimum touch target size of 72 dp; WCAG AA contrast for text |
+| Security | No network calls, no file access outside `user://` and `res://` |
+| Localisation | Structure ready for i18n, launch locale: cs_CZ |
+| Parental gate | Settings and statistics hidden behind a simple maths question |
 
 ## 3. Tech stack
 
 - **Engine:** Godot **4.3+** (stable).
-- **Jazyk:** GDScript (static typing vždy, kde to jde).
-- **Databáze:** SQLite přes addon [`godot-sqlite`](https://github.com/2shady4u/godot-sqlite) (single `.gdextension`).
-- **Verzování:** Git, trunk-based na `main`, feature branches dle WP ID (`p3-audio-manager`).
-- **Testy:** [`GUT`](https://github.com/bitwes/Gut) pro unit testy v `tests/unit/`.
-- **Build:** Export template Godot, Android via gradle; macOS přes editor.
+- **Language:** GDScript (static typing wherever possible).
+- **Database:** SQLite via the [`godot-sqlite`](https://github.com/2shady4u/godot-sqlite) addon (single `.gdextension`).
+- **Version control:** Git, trunk-based on `main`, feature branches named after the WP ID (`p3-audio-manager`).
+- **Tests:** [`GUT`](https://github.com/bitwes/Gut) for unit tests in `tests/unit/`.
+- **Build:** Godot export templates, Android via Gradle; macOS via the editor.
 
-## 4. Architektura
+## 4. Architecture
 
 ```
 ┌──────────────────────────────────────────────────┐
-│ Presentation (Godot scény, UI nody, animace)     │
+│ Presentation (Godot scenes, UI nodes, animation) │
 │  scenes/main_menu, scenes/game, scenes/settings, │
 │  scenes/results, scenes/stats                    │
 ├──────────────────────────────────────────────────┤
@@ -58,27 +58,27 @@
 │  DB, GameState, EventBus                         │
 ├──────────────────────────────────────────────────┤
 │ Persistence                                      │
-│  SQLite via godot-sqlite, schema v 1             │
+│  SQLite via godot-sqlite, schema v1              │
 │  scripts/persistence/*                           │
 └──────────────────────────────────────────────────┘
 ```
 
-**Klíčové principy:**
-1. Žádný UI nod nesmí číst/psát do DB přímo → vždy přes DAO v `scripts/persistence/`.
-2. Komunikace mezi moduly **primárně přes `EventBus` signály**; přímé volání jen když dává smysl (např. UI → AudioManager.play_sfx).
-3. Autoloady jsou jen fasády; business logika v normálních třídách (lepší testovatelnost).
-4. Veškerý čas v `int` milisekundách (nikdy `float` sekundách pro persistentní data).
+**Key principles:**
+1. No UI node may read from or write to the DB directly → always go through a DAO in `scripts/persistence/`.
+2. Modules communicate **primarily via `EventBus` signals**; direct calls only where they make sense (e.g. UI → AudioManager.play_sfx).
+3. Autoloads are only façades; business logic lives in ordinary classes (better testability).
+4. All times are `int` milliseconds (never `float` seconds for persisted data).
 
-## 5. Adresářová struktura
+## 5. Directory structure
 
 ```
 mathlings/
 ├── project.godot
 ├── icon.svg
 ├── .gitignore
-├── DESIGN.md                ← tento dokument
+├── DESIGN.md                ← this document
 ├── README.md
-├── addons/                  ← godot-sqlite (po P2)
+├── addons/                  ← godot-sqlite (after P2)
 ├── assets/
 │   ├── audio/{sfx,music}/
 │   ├── fonts/
@@ -97,15 +97,15 @@ mathlings/
 │   ├── persistence/         ← schema.sql, DAOs
 │   └── ui/                  ← reusable UI helpers
 ├── tests/unit/              ← GUT
-└── specs/                   ← work packages pro subagenty
+└── specs/                   ← work packages for subagents
 ```
 
-## 6. Datové modely
+## 6. Data models
 
 ### 6.1 SQLite schema (v1)
 
 ```sql
--- profiles: podpora více dětí na jednom tabletu
+-- profiles: support for several children on one tablet
 CREATE TABLE profiles (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -113,8 +113,8 @@ CREATE TABLE profiles (
     created_at INTEGER NOT NULL    -- unix ms
 );
 
--- skills: dovednosti sledované Elo ratingem
--- klic je stabilní string: "add_0_20", "sub_0_100", "mul_x7", "div_0_100", ...
+-- skills: skills tracked by Elo rating
+-- the key is a stable string: "add_0_20", "sub_0_100", "mul_x7", "div_0_100", ...
 CREATE TABLE skills (
     profile_id INTEGER NOT NULL,
     skill_key TEXT NOT NULL,
@@ -126,7 +126,7 @@ CREATE TABLE skills (
     FOREIGN KEY (profile_id) REFERENCES profiles(id)
 );
 
--- sessions: jedno kolo hry
+-- sessions: a single round of the game
 CREATE TABLE sessions (
     id INTEGER PRIMARY KEY,
     profile_id INTEGER NOT NULL,
@@ -136,11 +136,11 @@ CREATE TABLE sessions (
     score INTEGER NOT NULL DEFAULT 0,
     best_streak INTEGER NOT NULL DEFAULT 0,
     accuracy REAL,                  -- 0.0-1.0
-    config_json TEXT NOT NULL,      -- snapshot konfigurace
+    config_json TEXT NOT NULL,      -- configuration snapshot
     FOREIGN KEY (profile_id) REFERENCES profiles(id)
 );
 
--- attempts: každý zobrazený příklad
+-- attempts: every problem shown
 CREATE TABLE attempts (
     id INTEGER PRIMARY KEY,
     session_id INTEGER NOT NULL,
@@ -148,15 +148,15 @@ CREATE TABLE attempts (
     expression TEXT NOT NULL,       -- "7 + 5"
     correct_answer INTEGER NOT NULL,
     choices_json TEXT NOT NULL,     -- "[12, 13, 10]"
-    chosen_index INTEGER,           -- NULL pokud minul
+    chosen_index INTEGER,           -- NULL if missed
     correct INTEGER NOT NULL,       -- 0/1
-    reaction_ms INTEGER,            -- NULL pokud minul
+    reaction_ms INTEGER,            -- NULL if missed
     shown_at INTEGER NOT NULL,
     resolved_at INTEGER NOT NULL,
     FOREIGN KEY (session_id) REFERENCES sessions(id)
 );
 
--- unlocks: odemčené skiny, pozadí, odznaky
+-- unlocks: unlocked skins, backgrounds, badges
 CREATE TABLE unlocks (
     profile_id INTEGER NOT NULL,
     kind TEXT NOT NULL,             -- 'background' | 'skin' | 'badge'
@@ -171,22 +171,22 @@ CREATE INDEX idx_attempts_skill ON attempts(skill_key);
 CREATE INDEX idx_sessions_profile ON sessions(profile_id, started_at);
 ```
 
-Schema migrace: tabulka `meta(key TEXT PRIMARY KEY, value TEXT)` s řádkem `schema_version`.
+Schema migrations: a `meta(key TEXT PRIMARY KEY, value TEXT)` table with a `schema_version` row.
 
-### 6.2 Skill keys (kanonicky)
+### 6.2 Skill keys (canonical)
 
-| Key | Popis | Obtížnost D (pro Elo) |
+| Key | Description | Difficulty D (for Elo) |
 |---|---|---|
 | `add_0_10` | a+b, a,b ∈ [0,10] | 900 |
-| `add_0_20` | a+b, součet ≤ 20 | 1000 |
-| `add_0_100` | a+b, součet ≤ 100 | 1100 |
+| `add_0_20` | a+b, sum ≤ 20 | 1000 |
+| `add_0_100` | a+b, sum ≤ 100 | 1100 |
 | `sub_0_10` | a-b, a,b ∈ [0,10], b≤a | 950 |
 | `sub_0_20` | a-b, a ≤ 20, b≤a | 1050 |
 | `sub_0_100` | a-b, a ≤ 100, b≤a | 1150 |
-| `mul_x2` … `mul_x10` | násobení tabulkou × k | 1000 + (k-2)*30 |
-| `div_0_100` | a/b, b ∈ [2,10], dělí beze zbytku | 1200 |
+| `mul_x2` … `mul_x10` | times table × k | 1000 + (k-2)*30 |
+| `div_0_100` | a/b, b ∈ [2,10], divides with no remainder | 1200 |
 
-> **Konvence:** klíče nemění významy. Nové obtížnosti se přidávají novým klíčem, ne úpravou existujícího.
+> **Convention:** keys never change meaning. New difficulty levels are added under a new key, never by modifying an existing one.
 
 ### 6.3 Settings (ConfigFile `user://settings.cfg`)
 
@@ -208,30 +208,30 @@ enabled = ["add_0_20","sub_0_20","mul_x2","mul_x5","mul_x10"]
 active_id = 1
 ```
 
-## 7. Sdílené kontrakty (STABILNÍ API)
+## 7. Shared contracts (STABLE API)
 
-Tyto typy/signály nesmí žádný WP měnit bez sjednocené změny všech závislostí.
+No WP may change these types/signals without a coordinated change across all dependants.
 
-### 7.1 `Problem` (strukturovaný Dictionary)
+### 7.1 `Problem` (structured Dictionary)
 
 ```gdscript
-# scripts/game/problem.gd (třída nebo typed dict - viz P1)
+# scripts/game/problem.gd (class or typed dict - see P1)
 # {
-#   "id": int,                    # autoinkrement per session
-#   "skill_key": String,          # viz §6.2
+#   "id": int,                    # auto-increment per session
+#   "skill_key": String,          # see §6.2
 #   "expression": String,         # "7 + 5"
 #   "correct_answer": int,        # 12
-#   "choices": Array[int],        # [12, 13, 10], délka vždy 3, shuffled
-#   "correct_index": int,         # index správné v choices
-#   "difficulty": float,          # D pro Elo
+#   "choices": Array[int],        # [12, 13, 10], always length 3, shuffled
+#   "correct_index": int,         # index of the correct answer in choices
+#   "difficulty": float,          # D for Elo
 # }
 ```
 
-### 7.2 EventBus signály
+### 7.2 EventBus signals
 
-Viz `scripts/autoload/event_bus.gd`. Nové signály se **přidávají**, nikdy neodstraňují (jen `@deprecated` komentář).
+See `scripts/autoload/event_bus.gd`. New signals are **added**, never removed (only marked with an `@deprecated` comment).
 
-### 7.3 Autoload API (povrch)
+### 7.3 Autoload API (surface)
 
 - `SettingsStore.get_value(key: String, default) / set_value(key, value) / save()`
 - `AudioManager.play_sfx(key: String) / play_music(key, fade_ms) / stop_music(fade_ms)`
@@ -239,61 +239,61 @@ Viz `scripts/autoload/event_bus.gd`. Nové signály se **přidávají**, nikdy n
 - `DB.open() / close() / execute(sql, params) -> Array`
 - `GameState.reset_round()`
 
-### 7.4 Audio SFX klíče
+### 7.4 Audio SFX keys
 
-| Key | Když |
+| Key | When |
 |---|---|
-| `correct` | Správná odpověď |
-| `wrong` | Špatná odpověď |
-| `miss` | Příklad dopadl na zem |
-| `tick` | Tikání v posledních 10 s |
-| `round_start` | Start kola |
-| `round_end` | Konec kola |
-| `combo_up` | Zvýšení comba (3+, 5+, 10+) |
-| `unlock` | Odemčení odznaku/skinu |
+| `correct` | Correct answer |
+| `wrong` | Wrong answer |
+| `miss` | Problem hit the ground |
+| `tick` | Ticking during the last 10 s |
+| `round_start` | Round start |
+| `round_end` | Round end |
+| `combo_up` | Combo increase (3+, 5+, 10+) |
+| `unlock` | Badge/skin unlocked |
 
-## 8. Adaptivní tutor - algoritmus
+## 8. Adaptive tutor — algorithm
 
 ### 8.1 Elo update
 
-Po každém pokusu (pro skill `s` s ratingem R a příklad s obtížností D):
+After each attempt (for skill `s` with rating R and a problem with difficulty D):
 
 ```
 expected = 1 / (1 + 10 ^ ((D - R) / 400))
-actual   = 1.0 pokud správně a reakce ≤ 3000 ms
-           0.7 pokud správně a reakce > 3000 ms
-           0.0 pokud špatně nebo minul
-K = 32 dokud attempts < 20, pak 16
+actual   = 1.0 if correct and reaction ≤ 3000 ms
+           0.7 if correct and reaction > 3000 ms
+           0.0 if wrong or missed
+K = 32 while attempts < 20, then 16
 R_new = R + K * (actual - expected)
 R_new = clamp(R_new, 600, 1800)
 ```
 
-### 8.2 Výběr další dovednosti (ProblemGenerator)
+### 8.2 Choosing the next skill (ProblemGenerator)
 
-1. Z povolených dovedností v Settings vyfiltruj aktivní.
-2. Pro každou spočti `weight = max(0, 1500 - rating)` (nízký rating ⇒ vyšší váha).
-3. Normalizuj na pravděpodobnosti.
-4. S pravděpodobností **0.15** injektuj **snadnou** (nejvyšší rating) - zabraňuje frustraci.
-5. S pravděpodobností **0.10** injektuj **o stupeň těžší** - podporuje růst.
-6. Jinak vyber dle vah.
+1. Filter the active skills from those enabled in Settings.
+2. For each, compute `weight = max(0, 1500 - rating)` (low rating ⇒ higher weight).
+3. Normalise into probabilities.
+4. With probability **0.15**, inject an **easy** one (highest rating) — prevents frustration.
+5. With probability **0.10**, inject **one step harder** — encourages growth.
+6. Otherwise, pick according to the weights.
 
-### 8.3 Generování 3 odpovědí
+### 8.3 Generating the 3 answers
 
-1 správná + 2 **plausibilní** špatné. Distraktory volíme z těchto heuristik (dle operace):
+1 correct + 2 **plausible** wrong answers. Distractors are chosen using these heuristics (depending on the operation):
 
-- Sčítání: ±1, ±2, cifrová chyba (záměna jednotek/desítek), správný výsledek ±10.
-- Odčítání: prohození operandů, ±1, zapomenutá výpůjčka.
-- Násobilka: sousední násobek (`a*(b±1)`), nebo `a+b` (typická chyba).
-- Dělení: sousední kvocient, `a-b`.
+- Addition: ±1, ±2, digit error (swapping units/tens), correct result ±10.
+- Subtraction: swapped operands, ±1, forgotten borrow.
+- Times tables: neighbouring multiple (`a*(b±1)`), or `a+b` (a typical mistake).
+- Division: neighbouring quotient, `a-b`.
 
-Distraktory nesmí být:
-- Stejné jako správná odpověď.
-- Záporné (pro 1.-2. třídu).
-- Duplicitní mezi sebou.
+Distractors must not be:
+- Equal to the correct answer.
+- Negative (for Years 1–2).
+- Duplicates of each other.
 
-Pokud heuristika selže, fallback: `correct ± random(1..5)`.
+If the heuristics fail, fall back to `correct ± random(1..5)`.
 
-### 8.4 Adaptivní rychlost
+### 8.4 Adaptive speed
 
 ```
 base_speed_px_s = 120
@@ -302,37 +302,37 @@ rating_mult    = 1.0 + (avg_rating - 1000) / 1000   ; clamp [0.7, 1.6]
 speed = base * streak_mult * rating_mult
 ```
 
-Při 3+ chybách v řadě: `speed *= 0.8` dokud není 2x správně.
+After 3+ mistakes in a row: `speed *= 0.8` until 2 correct answers in a row.
 
-## 9. Herní smyčka (GameController)
+## 9. Game loop (GameController)
 
 ```
 STATE_MACHINE: IDLE → COUNTDOWN → PLAYING → ENDING → RESULT
 
 IDLE:
-  - čeká na start z MainMenu
+  - waits for the start signal from MainMenu
 
 COUNTDOWN (3 s):
-  - zobrazí "3, 2, 1, START!"
-  - přehraje round_start SFX
-  - vytvoří sessions row, emituje round_started
+  - shows "3, 2, 1, GO!"
+  - plays the round_start SFX
+  - creates the sessions row, emits round_started
 
 PLAYING:
-  - loop: spawn problem → animace pád → klik nebo miss → log → další
-  - každou frame update timer; když ≤ 0 → ENDING
-  - max 1 aktivní problem najednou (MVP)
+  - loop: spawn problem → falling animation → tap or miss → log → next
+  - update the timer every frame; when ≤ 0 → ENDING
+  - max 1 active problem at a time (MVP)
 
 ENDING:
-  - stop spawn, nechat doletět aktuální (nebo skrýt)
-  - vypočítat summary (accuracy, best_streak, final_score)
-  - update sessions row, emituje round_ended
-  - spáruje dovednosti co posunuly rating, zkontroluje odemknutí
+  - stop spawning, let the current one finish falling (or hide it)
+  - compute the summary (accuracy, best_streak, final_score)
+  - update the sessions row, emit round_ended
+  - pair up the skills whose rating moved, check for unlocks
 
 RESULT:
-  - přechod na scenes/results
+  - transition to scenes/results
 ```
 
-## 10. UI wireframy (ASCII)
+## 10. UI wireframes (ASCII)
 
 ### 10.1 Main Menu
 
@@ -342,14 +342,14 @@ RESULT:
 │                 MATHLINGS                          │
 │                                                    │
 │           ┌──────────────────┐                     │
-│           │     HRÁT! ▶       │                    │
+│           │     PLAY! ▶      │                     │
 │           └──────────────────┘                     │
 │                                                    │
 │           ┌──────────────────┐                     │
-│           │   Statistiky 📊  │                     │
+│           │  Statistics 📊   │                     │
 │           └──────────────────┘                     │
 │                                                    │
-│  profil: Vojta 👦       nastavení⚙    rodič🔒      │
+│  profile: Alex 👦       settings⚙    parent🔒      │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -357,11 +357,11 @@ RESULT:
 
 ```
 ┌────────────────────────────────────────────────────┐
-│ 🏆 Skóre: 120       série: 🔥x3      ⏱ 1:23        │
+│ 🏆 Score: 120       streak: 🔥x3      ⏱ 1:23       │
 │ ═══════════════════════════════════════            │
 │                                                    │
 │            ╭────────╮                              │
-│            │  7+5   │  ← padá dolů                 │
+│            │  7+5   │  ← falling down              │
 │            ╰────────╯                              │
 │                                                    │
 │                                                    │
@@ -377,16 +377,16 @@ RESULT:
 
 ```
 ┌────────────────────────────────────────────────────┐
-│                  Super práce! 🎉                   │
+│                  Great job! 🎉                     │
 │                                                    │
-│              Skóre: 240 ⭐⭐⭐                      │
-│              Přesnost: 87 %                        │
-│              Nejdelší série: 12 🔥                 │
+│              Score: 240 ⭐⭐⭐                      │
+│              Accuracy: 87 %                        │
+│              Longest streak: 12 🔥                 │
 │                                                    │
-│     Odemkl jsi: Téma Vesmír 🚀                     │
+│     You unlocked: Space theme 🚀                   │
 │                                                    │
 │   ┌──────────┐    ┌──────────┐    ┌──────────┐    │
-│   │ Hrát znovu│   │ Statistiky│   │  Menu     │    │
+│   │Play again│    │Statistics│    │   Menu   │    │
 │   └──────────┘    └──────────┘    └──────────┘    │
 └────────────────────────────────────────────────────┘
 ```
@@ -395,41 +395,41 @@ RESULT:
 
 ```
 ┌────────────────────────────────────────────────────┐
-│        Pouze pro rodiče                            │
+│        Parents only                                │
 │                                                    │
-│        Kolik je  17 × 8 ?                          │
+│        What is  17 × 8 ?                           │
 │                                                    │
 │        ┌─────────────┐                             │
 │        │             │                             │
 │        └─────────────┘                             │
 │                                                    │
-│             [Potvrdit]                             │
+│             [Confirm]                              │
 └────────────────────────────────────────────────────┘
 ```
 
-## 11. Testovací strategie
+## 11. Testing strategy
 
-- **Unit (GUT):** ProblemGenerator (distribuce, validita distraktorů), SkillModel (Elo update, clamp), AnswerValidator, DAOs (integrace s in-memory SQLite).
-- **Ruční smoke:** Po každém WP spusť Main Menu → Hrát → ukončit kolo → Result.
-- **Cílové pokrytí:** ≥ 80 % `scripts/tutor/` a `scripts/game/` (zbytek UI testujeme ručně).
+- **Unit (GUT):** ProblemGenerator (distribution, distractor validity), SkillModel (Elo update, clamp), AnswerValidator, DAOs (integration with in-memory SQLite).
+- **Manual smoke test:** After each WP, run Main Menu → Play → finish a round → Result.
+- **Target coverage:** ≥ 80 % of `scripts/tutor/` and `scripts/game/` (the rest of the UI is tested manually).
 
 ## 12. Build & deployment
 
-- **macOS dev:** Otevři `project.godot` v Godot editoru 4.3+.
-- **Android export:** Nainstaluj export templates, nakonfiguruj Android SDK, debug keystore. AAB pro release.
-- **CI (později):** GitHub Actions workflow `.github/workflows/build.yml` — export Android + unit testy.
+- **macOS dev:** Open `project.godot` in the Godot 4.3+ editor.
+- **Android export:** Install the export templates, configure the Android SDK and a debug keystore. AAB for release.
+- **CI (later):** GitHub Actions workflow `.github/workflows/build.yml` — Android export + unit tests.
 
-## 13. Otevřené otázky / rozhodnuto později
+## 13. Open questions / to be decided later
 
-- [ ] Grafický styl - konkrétní art direction (může být placeholder → finální v P12).
-- [ ] Hudba - vlastní vs. CC0 pack.
-- [ ] Přidání časových výzev a turnajů (v2).
-- [ ] Podpora dvou dětí na stejném tabletu (profily jsou připraveny, UX později).
+- [ ] Visual style — specific art direction (can be a placeholder → final in P12).
+- [ ] Music — custom vs. a CC0 pack.
+- [ ] Adding timed challenges and tournaments (v2).
+- [ ] Support for two children on the same tablet (profiles are ready, UX later).
 
 ## 14. Glossary
 
-- **WP** = Work Package (`specs/Pxx_*.md`), jednotka práce pro subagenta.
-- **Skill** = jednoznačně pojmenovaná dovednost sledovaná Elo ratingem.
-- **Distractor** = jedna ze dvou špatných odpovědí v trojici.
-- **Streak** = počet správných odpovědí za sebou v aktuálním kole.
-- **Combo** = multiplier bodů odvozený od streak (1× / 1.5× / 2× / 3×).
+- **WP** = Work Package (`specs/Pxx_*.md`), a unit of work for a subagent.
+- **Skill** = a uniquely named ability tracked by an Elo rating.
+- **Distractor** = one of the two wrong answers in the set of three.
+- **Streak** = the number of consecutive correct answers in the current round.
+- **Combo** = a points multiplier derived from the streak (1× / 1.5× / 2× / 3×).

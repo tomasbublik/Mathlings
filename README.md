@@ -1,54 +1,54 @@
 # Mathlings
 
-Arkádová matematická hra pro děti (1.-3. třída ZŠ) s adaptivním tutorem v pozadí.
-Postavená na **Godot 4.3+**, běží na **Android 10+** (tablet primárně) a **macOS** pro vývoj.
+An arcade maths game for children (Years 1–3 of primary school) with an adaptive tutor running behind the scenes.
+Built with **Godot 4.3+**, runs on **Android 10+** (primarily tablets) and **macOS** for development.
 
-## Rychlý start (macOS dev)
+## Quick start (macOS development)
 
-1. **Nainstaluj Godot 4.3+**:
+1. **Install Godot 4.3+**:
    ```
    brew install --cask godot
    ```
-   nebo stáhni z [godotengine.org](https://godotengine.org/download) (Standard edition, GDScript stačí).
+   or download it from [godotengine.org](https://godotengine.org/download) (the Standard edition is enough — GDScript only).
 
-2. **Otevři projekt**:
-   - Spusť Godot, klikni `Import`, vyber `project.godot` v tomto repu.
-   - Nebo z CLI: `open -a Godot project.godot`.
+2. **Open the project**:
+   - Launch Godot, click `Import` and select `project.godot` in this repository.
+   - Or from the CLI: `open -a Godot project.godot`.
 
-3. **Spusť**: F5 nebo tlačítko ▶ vpravo nahoře. Měla by se objevit placeholder MainMenu scéna.
+3. **Run**: press F5 or the ▶ button in the top-right corner. The MainMenu scene should appear.
 
-## Struktura
+## Structure
 
 ```
 .
-├── DESIGN.md          ← autoritativní architektura a kontrakty
-├── specs/             ← work packages (Pxx) pro subagenty
+├── DESIGN.md          ← authoritative architecture and contracts
+├── specs/             ← work packages (Pxx) for subagents
 │   └── README.md      ← dependency graph + model tier matrix
 ├── project.godot
-├── scenes/            ← .tscn scény
+├── scenes/            ← .tscn scenes
 ├── scripts/
-│   ├── autoload/      ← singletony (registered v project.godot)
+│   ├── autoload/      ← singletons (registered in project.godot)
 │   ├── game/
 │   ├── tutor/
 │   ├── persistence/
 │   └── ui/
-├── assets/            ← audio, fonty, obrázky (placeholder nejdřív)
+├── assets/            ← audio, fonts, images
 ├── addons/            ← godot-sqlite, gut (testing)
-└── tests/unit/        ← GUT testy
+└── tests/unit/        ← GUT tests
 ```
 
-## Vývoj paralelně s více agenty
+## Parallel development with multiple agents
 
-Projekt je rozdělen do **work packages** (`specs/Pxx_*.md`). Každý WP je nezávislý balík práce navržený tak, aby ho zpracoval jeden subagent v jednom sezení bez nutnosti číst ostatní WP.
+The project is split into **work packages** (`specs/Pxx_*.md`). Each WP is a self-contained unit of work designed to be completed by a single subagent in a single session, without needing to read the other WPs.
 
-**Začni zde:** [`specs/README.md`](specs/README.md) — obsahuje dependency graph, wave ordering a doporučený model tier (Haiku / Sonnet / Opus) pro každý WP.
+**Start here:** [`specs/README.md`](specs/README.md) — contains the dependency graph, wave ordering and the recommended model tier (Haiku / Sonnet / Opus) for each WP.
 
-Doporučený postup prvního sprintu:
-1. Wave 1 (P1-P6) paralelně v samostatných sezeních nebo worktree.
-2. Wave 2 (P7, P8a/b/c, P9) paralelně po dokončení Wave 1.
-3. Wave 3 (P10) serial — spojuje všechno.
+Recommended approach for the first sprint:
+1. Wave 1 (P1–P6) in parallel, in separate sessions or worktrees.
+2. Wave 2 (P7, P8a/b/c, P9) in parallel once Wave 1 is finished.
+3. Wave 3 (P10) serially — ties everything together.
 
-## Automated Testing
+## Automated testing
 
 The project ships with a two-layer validation loop. Run it after every change — no Android deploy required:
 
@@ -91,24 +91,24 @@ The project follows [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATC
 Single source of truth: `project.godot::application/config/version`.
 The Main Menu reads it at runtime (see `scripts/ui/version_info.gd`) and
 shows `vX.Y.Z` in the bottom-right corner. Debug builds append `+debug` to
-prevent confusing them with release APKs in screenshots.
+avoid confusing them with release APKs in screenshots.
 
 To release a new version:
 
 1. Bump `application/config/version` in `project.godot`.
 2. Mirror the same value in `export_presets.cfg::version/name`.
-3. Bump `version/code` in `export_presets.cfg` by **+1** (Play Store hard requirement).
+3. Bump `version/code` in `export_presets.cfg` by **+1** (a hard Play Store requirement).
 4. Commit: `chore: bump version to vX.Y.Z`.
 5. Tag: `git tag vX.Y.Z && git push --tags`.
-6. Re-export APK / AAB.
+6. Re-export the APK / AAB.
 
 ## Android export (P15)
 
-Konfigurace je v `export_presets.cfg` (profil `Android`, package `com.mathlings.app`,
-arm64-v8a, min SDK 29, jediná oprávnění: `VIBRATE`, `WAKE_LOCK`). Orientace je zamčena
-na `sensor_landscape` v `project.godot`.
+The configuration lives in `export_presets.cfg` (`Android` profile, package `com.mathlings.app`,
+arm64-v8a, min SDK 29, only permissions: `VIBRATE`, `WAKE_LOCK`). Orientation is locked
+to `sensor_landscape` in `project.godot`.
 
-### Jednorázový setup (macOS)
+### One-off setup (macOS)
 
 ```bash
 brew install --cask android-commandlinetools
@@ -116,10 +116,10 @@ brew install openjdk@17
 sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 ```
 
-V Godotu: `Editor Settings → Export → Android` — nastav cesty k JDK a Android SDK.
-`Editor → Manage Export Templates → Download` pro příslušnou verzi Godotu.
+In Godot: `Editor Settings → Export → Android` — set the paths to the JDK and Android SDK.
+`Editor → Manage Export Templates → Download` for the matching Godot version.
 
-### Debug keystore (jednorázově, ~/.android/debug.keystore)
+### Debug keystore (one-off, ~/.android/debug.keystore)
 
 ```bash
 keytool -keyalg RSA -genkeypair -alias androiddebugkey \
@@ -128,25 +128,25 @@ keytool -keyalg RSA -genkeypair -alias androiddebugkey \
     -validity 10000
 ```
 
-### Release keystore (před prvním release buildem)
+### Release keystore (before the first release build)
 
 ```bash
 keytool -v -genkey -keystore ./release.keystore -alias mathlings \
     -keyalg RSA -validity 10000
 ```
 
-Cestu k `release.keystore` + heslo nastav v editoru
-`Project → Export → Android → Options → Keystore/Release` (neukládá se do Gitu;
-patří do `export_credentials.cfg`, který je v `.gitignore`).
+Set the path to `release.keystore` and its password in the editor under
+`Project → Export → Android → Options → Keystore/Release` (not stored in Git;
+it belongs in `export_credentials.cfg`, which is in `.gitignore`).
 
 ### Build
 
 ```bash
 godot --headless --export-release "Android" build/mathlings.aab
-# nebo pro debug APK:
+# or, for a debug APK:
 godot --headless --export-debug "Android" build/mathlings.apk
 ```
 
 ## Licence
 
-_(TBD — zvolit před release)_
+_(TBD — to be chosen before release)_
