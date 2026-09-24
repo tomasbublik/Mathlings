@@ -102,50 +102,48 @@ To release a new version:
 5. Tag: `git tag vX.Y.Z && git push --tags`.
 6. Re-export the APK / AAB.
 
-## Android export (P15)
+## Android export
 
-The configuration lives in `export_presets.cfg` (`Android` profile, package `com.mathlings.app`,
-arm64-v8a, min SDK 29, only permissions: `VIBRATE`, `WAKE_LOCK`). Orientation is locked
-to `sensor_landscape` in `project.godot`.
+Two presets in `export_presets.cfg` (package `com.mathlings.app`, arm64-v8a,
+target SDK 36, only permissions: `VIBRATE`, `WAKE_LOCK`):
+
+| Preset | Output | Use |
+|---|---|---|
+| `Android` | debug APK | quick installs on a test device |
+| `Android Play` | signed release AAB (Gradle build) | Google Play upload |
+
+`Android Play` excludes `tests/`, `tools/` and `addons/gut/` from the bundle.
 
 ### One-off setup (macOS)
 
 ```bash
-brew install --cask android-commandlinetools
-brew install openjdk@17
-sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+brew install --cask godot android-commandlinetools
+sdkmanager --sdk_root="$HOME/Library/Android/sdk" "platform-tools" "build-tools;34.0.0" "platforms;android-34"
 ```
 
-In Godot: `Editor Settings → Export → Android` — set the paths to the JDK and Android SDK.
-`Editor → Manage Export Templates → Download` for the matching Godot version.
+Then in Godot: `Editor → Manage Export Templates → Download and Install`, and
+`Editor Settings → Export → Android` — JDK 17 and `~/Library/Android/sdk`.
 
-### Debug keystore (one-off, ~/.android/debug.keystore)
+### Debug build → device
 
 ```bash
-keytool -keyalg RSA -genkeypair -alias androiddebugkey \
-    -keypass android -keystore ~/.android/debug.keystore \
-    -storepass android -dname "CN=Android Debug,O=Android,C=US" \
-    -validity 10000
+godot --headless --path . --export-debug "Android" build/mathlings.apk
+adb install -r build/mathlings.apk
 ```
 
-### Release keystore (before the first release build)
+### Release build → Google Play
 
 ```bash
-keytool -v -genkey -keystore ./release.keystore -alias mathlings \
-    -keyalg RSA -validity 10000
+tools/build_release.sh        # → build/mathlings.aab, signed with the upload key
 ```
 
-Set the path to `release.keystore` and its password in the editor under
-`Project → Export → Android → Options → Keystore/Release` (not stored in Git;
-it belongs in `export_credentials.cfg`, which is in `.gitignore`).
-
-### Build
-
-```bash
-godot --headless --export-release "Android" build/mathlings.aab
-# or, for a debug APK:
-godot --headless --export-debug "Android" build/mathlings.apk
-```
+The upload keystore and its password live **outside the repo** in
+`~/.android/mathlings/` (`mathlings-upload.jks` + `credentials.env`); the script
+passes them to Godot via `GODOT_ANDROID_KEYSTORE_RELEASE_*` environment
+variables. Back that folder up somewhere safe (password manager / encrypted
+drive) — Play App Signing lets Google reset a lost *upload* key, but it takes
+days. The Gradle template (`android/`) is generated and gitignored; the script
+reinstalls it when the Godot version changes.
 
 ## Licence
 
