@@ -27,69 +27,100 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 64.0
-offset_top = 64.0
-offset_right = -64.0
-offset_bottom = -64.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = -32.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
 theme_override_constants/separation = 32
+alignment = 1
 
 [node name="TitleLabel" type="Label" parent="ContentVBox"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 56
-text = "Vyber svého hráče"
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "PROFILE_PICKER_TITLE"
 horizontal_alignment = 1
+autowrap_mode = 3
 
-[node name="ProfileList" type="VBoxContainer" parent="ContentVBox"]
+[node name="ProfileList" type="HFlowContainer" parent="ContentVBox"]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 24
 alignment = 1
-theme_override_constants/separation = 16
 
-[node name="EmptyState" type="VBoxContainer" parent="ContentVBox"]
+[node name="EmptyState" type="PanelContainer" parent="ContentVBox"]
 unique_name_in_owner = true
 visible = false
-alignment = 1
-theme_override_constants/separation = 16
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="EmptyNameInput" type="LineEdit" parent="ContentVBox/EmptyState"]
+[node name="VBox" type="VBoxContainer" parent="ContentVBox/EmptyState"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Badge" type="PanelContainer" parent="ContentVBox/EmptyState/VBox"]
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"BadgeSunny"
+
+[node name="Glyph" type="Label" parent="ContentVBox/EmptyState/VBox/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+theme_override_font_sizes/font_size = 52
+text = "👋"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EmptyHint" type="Label" parent="ContentVBox/EmptyState/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "PROFILE_PICKER_EMPTY_HINT"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EmptyNameInput" type="LineEdit" parent="ContentVBox/EmptyState/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(420, 80)
-theme_override_font_sizes/font_size = 32
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+placeholder_text = "PROFILE_PICKER_NAME_PLACEHOLDER"
 alignment = 1
 max_length = 24
-placeholder_text = "Tvoje jméno"
 
-[node name="EmptyCreateButton" type="Button" parent="ContentVBox/EmptyState"]
+[node name="EmptyCreateButton" type="Button" parent="ContentVBox/EmptyState/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(420, 92)
-theme_override_font_sizes/font_size = 32
-text = "Vytvoř první profil"
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_type_variation = &"PlayButton"
+theme_override_font_sizes/font_size = 34
+text = "PROFILE_PICKER_CREATE_FIRST"
 
-[node name="Toast" type="Label" parent="."]
+[node name="ToastPanel" type="PanelContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -240.0
-offset_top = -160.0
-offset_right = 240.0
-offset_bottom = -100.0
+offset_top = -130.0
+offset_bottom = -70.0
 grow_horizontal = 2
 grow_vertical = 0
-modulate = Color(1, 1, 1, 0)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 30
+mouse_filter = 2
+theme_type_variation = &"ToastPanel"
+
+[node name="Toast" type="Label" parent="ToastPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ToastLabel"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="KeyboardAvoider" type="Node" parent="." node_paths=PackedStringArray("target", "keep_visible")]
 script = ExtResource("3_kbavoid")
