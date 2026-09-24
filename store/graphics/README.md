@@ -19,19 +19,21 @@ limits (each side 320–3840 px, aspect ratio ≤ 2:1).
 1. `01_menu` — main menu with the Mathling mascot and the Play button.
 2. `02_gameplay` — mid-round: a falling sum, three colourful answer buttons, streak + ×1.5 combo sticker.
 3. `03_burst` — the moment a correct answer pops the fruit (+15 ×1.5 points, mint flash).
-4. `04_results` — results: 3 stars, cheering mascot, accuracy and best streak, confetti.
-5. `05_stats` — "My progress" with a week of play.
+4. `04_results` — results: 3 stars, cheering mascot, accuracy and best streak, confetti
+   and the "New reward!" card (10 in a row, no mistakes).
+5. `05_stats` — "My progress" scrolled to "Let's practise these" and the "My skills"
+   bars (two skills mastered, two in progress; tablets show a third mastered skill).
 6. `06_space` — the space theme.
 7. `07_party` — the party theme (balloons float up).
 
 Play accepts up to 8 phone screenshots; drop 07 if you prefer the 6-shot story.
 
 Tablets (7" and 10") use the same key screens: menu, gameplay, results, progress.
-The Czech set (`phone_cs/`) has the same story; its results screen also shows the
-"Nová odměna!" reward card (10-in-a-row badge).
+The Czech set (`phone_cs/`) has the same story (results with the "Nová odměna!" card).
 
 All screenshots are real, unedited frames of the game (profile names "Mia" / "Ema"
-are neutral example names; the play history on the progress screen was seeded).
+are neutral example names; the play history and per-skill numbers on the progress
+screen were seeded).
 
 ## Regenerating
 
@@ -73,37 +75,36 @@ design) that ran against a scratch copy of the project with an `override.cfg`
 (`application/config/use_custom_user_dir=true` + an extra autoload), so the
 desktop user data of the real project was never touched. Per run it:
 
-1. creates a profile ("Mia" for en, "Ema" for cs), sets the locale, turns sound off,
-   sets the round length to 5 min (a real Settings option, so there are
-   enough problems to find a clean burst frame; the setting is restored to 2 min) and seeds six earlier
-   rounds into `SessionStatsStore`;
-2. opens the main menu (blanks the "+debug" version label) and captures it;
-3. starts `game.tscn` with the fruit theme and answers through the scene's own
+1. creates a profile ("Mia" for en, "Ema" for cs) via `ProfileService`, sets the
+   locale, turns sound off, sets the round length to 5 min (a real Settings
+   option, so there are enough problems to find a clean burst frame; restored
+   to 2 min afterwards) and the enabled skills (add/sub to 20, ×2, ×5; tablets
+   also ×10); seeds six earlier 2-minute rounds on six earlier days into both
+   `SessionStatsStore.record_session` (stat tiles) and
+   `ProgressStore.record_round` (round history), and unlocks the space and
+   party themes on earlier days (`ProgressStore.unlock`) so the results screen
+   shows only the streak reward;
+2. seeds per-skill aggregates with `ProgressStore.set_skill` (+ `flush`):
+   add to 20 61/64, ×2 47/51, (×10 44/46), subtraction to 20 41/56, ×5 26/38;
+3. opens the main menu (blanks the "+debug" version label) and captures it;
+4. starts `game.tscn` with the fruit theme and answers through the scene's own
    answer handler (`_on_answer_pressed` with the controller's `correct_index`)
-   until a ×1.5 combo is running, captures the falling problem, then keeps
-   answering until the next spawned problem shows the previous answer on the
-   same button (so the mint "correct" button matches the exploding sum) and
-   captures the burst; the rest of the round is fast-forwarded with
-   `Engine.time_scale`; in English one answer in nine is wrong so the best
-   streak stays below 10 (see the note below), in Czech one in fourteen
-   (best streak 13, so the 10-in-a-row reward appears);
-4. captures the results screen ~1.9 s in (stars landed, confetti falling),
-   then "My progress", then a space-theme and a party-theme round; a round
-   paused by the desktop window losing focus is resumed automatically;
-5. converts every frame to RGB8 and saves it.
+   until a ×1.5 combo is running; trivial problems (an operand 0/1, result < 3)
+   are answered and skipped so the captured problem is meaningful; captures the
+   falling problem, then keeps answering until the next spawned problem shows
+   the previous answer on the same button (mint "correct" button matches the
+   exploding sum) and captures the burst; the rest of the round is
+   fast-forwarded with `Engine.time_scale`, one answer in fourteen wrong
+   (best streak ≥ 10, so the "10 in a row" reward card appears);
+5. captures the results screen ~1.9 s in (stars landed, confetti falling);
+   re-applies the seeded skill numbers (the real round also updates them),
+   opens "My progress" and scrolls it to the end (practice + skills cards);
+   then a space-theme and a party-theme round; a round paused by the desktop
+   window losing focus is resumed automatically;
+6. converts every frame to RGB8 and saves it.
 
 Resolutions: `godot --path . --resolution 2400x1080` (phone),
 `1920x1200` (7"), `2560x1600` (10"). Tablet files are the phone story's
 01/02/04/05 frames, renumbered 01–04.
-
-## Known caveats (game-side, not fixed here)
-
-- When these shots were taken the 10-in-a-row reward label was hard-coded in
-  Czech, so the English results shot deliberately has no reward card. Reward
-  names are translated now (`UNLOCK_*` keys); `04_results` can be re-captured
-  with a flawless round.
-- These shots were taken while per-skill progress was not persisted, so the
-  "My skills" card only says "Skill details appear after a few rounds." Skills
-  are now stored (DESIGN.md §6.1); re-capture the progress shot to show them.
 
 Total size of all PNGs in this folder: about 7 MB (PNG as rendered, no lossy compression).
