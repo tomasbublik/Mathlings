@@ -131,7 +131,7 @@ func _make_card(profile: Dictionary) -> PanelContainer:
 
 	var rename := Button.new()
 	rename.theme_type_variation = &"IconButton"
-	rename.text = "✏️"
+	rename.text = "✏"
 	rename.tooltip_text = tr("PROFILE_MANAGER_RENAME_BUTTON")
 	rename.custom_minimum_size = Vector2(72, 64)
 	rename.add_theme_font_size_override("font_size", Palette.FONT_BODY)
@@ -140,7 +140,7 @@ func _make_card(profile: Dictionary) -> PanelContainer:
 
 	var delete := Button.new()
 	delete.theme_type_variation = &"DangerButton"
-	delete.text = "🗑️"
+	delete.text = "🗑"
 	delete.tooltip_text = tr("PROFILE_MANAGER_DELETE_BUTTON")
 	delete.custom_minimum_size = Vector2(72, 64)
 	delete.add_theme_font_size_override("font_size", Palette.FONT_BODY)

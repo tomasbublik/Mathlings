@@ -22,7 +22,7 @@ const TILE_SPECS: Dictionary = {
 	"StatsButton": ["📊", "BadgeSky", "STATS_TITLE"],
 	"ProfilesButton": ["👥", "BadgePink", "PROFILE_MANAGER_TITLE"],
 	"RulesButton": ["💡", "BadgeSunny", "RULES_TITLE"],
-	"SettingsButton": ["⚙️", "BadgeMint", "SETTINGS_TITLE"],
+	"SettingsButton": ["⚙", "BadgeMint", "SETTINGS_TITLE"],
 }
 
 @onready var _background: TextureRect = $Background

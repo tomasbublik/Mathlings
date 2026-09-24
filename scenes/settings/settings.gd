@@ -22,7 +22,7 @@ const SPEED_GLYPHS: Dictionary = {
 const SKILL_GROUPS: Array = [
 	["add_", "➕", "BadgeMint"],
 	["sub_", "➖", "BadgeSky"],
-	["mul_", "✖️", "BadgePink"],
+	["mul_", "✖", "BadgePink"],
 	["div_", "➗", "BadgeSunny"],
 ]
 
@@ -136,7 +136,7 @@ func _build_theme_buttons() -> void:
 		_theme_buttons[theme_key] = btn
 
 
-## One row per operation (➕ ➖ ✖️ ➗): a badge followed by the chips.
+## One row per operation (➕ ➖ ✖ ➗): a badge followed by the chips.
 func _build_skill_chips() -> void:
 	var skills := ProblemGenerator.supported_skills()
 	for group: Array in SKILL_GROUPS:
@@ -280,7 +280,7 @@ func _on_skill_toggled(on: bool, skill_key: String) -> void:
 
 
 func _flash_validation(msg: String) -> void:
-	_validation_label.text = "⚠️ " + msg
+	_validation_label.text = "⚠ " + msg
 	_validation_label.add_theme_color_override("font_color", Palette.CORAL_DARK)
 	_validation_label.modulate.a = 1.0
 	_validation_label.visible = true

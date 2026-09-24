@@ -104,7 +104,7 @@ func _populate_tiles(totals: Dictionary) -> void:
 		accuracy_text = "%d %%" % int(round((1.0 - err) * 100.0))
 
 	_add_tile("🎮", "BadgeGrape", str(sessions), "STATS_TILE_SESSIONS")
-	_add_tile("⏱️", "BadgeSky",
+	_add_tile("⏱", "BadgeSky",
 		_format_duration(int(totals.get("total_duration_ms", 0))), "STATS_TILE_TIME")
 	_add_tile("⭐", "BadgeSunny", str(int(totals.get("total_score", 0))), "STATS_TILE_TOTAL")
 	_add_tile("🏆", "BadgeMint", str(int(totals.get("max_score", 0))), "STATS_TILE_BEST")

@@ -98,7 +98,7 @@ theme_type_variation = &"BadgeSky"
 [node name="Glyph" type="Label" parent="Scroll/Column/Cards/RoundCard/VBox/DurationHead/Badge"]
 layout_mode = 2
 theme_type_variation = &"BadgeLabel"
-text = "⏱️"
+text = "⏱"
 horizontal_alignment = 1
 vertical_alignment = 1
 
