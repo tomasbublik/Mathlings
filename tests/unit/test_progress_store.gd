@@ -298,6 +298,16 @@ func test_skills_needing_practice() -> void:
 	assert_eq(ProgressStore.skills_needing_practice(P1, 3, 50), [])
 
 
+func test_mastered_skills_are_not_suggested_for_practice() -> void:
+	ProgressStore.set_skill(P1, "add_0_10", 1200.0, 20, 20)  # 100 %
+	ProgressStore.set_skill(P1, "add_0_20", 1150.0, 39, 38)  # 97 %
+	ProgressStore.set_skill(P1, "mul_x2", 1000.0, 10, 9)     # 90 % = mastered
+	assert_eq(ProgressStore.skills_needing_practice(P1), [])
+	ProgressStore.set_skill(P1, "sub_0_20", 1000.0, 10, 6)   # 60 %
+	assert_eq(ProgressStore.skills_needing_practice(P1).map(
+		func(r: Dictionary) -> String: return r["skill_key"]), ["sub_0_20"])
+
+
 func test_distinct_play_days() -> void:
 	var day := 24 * 3600 * 1000
 	ProgressStore.record_round(P1, _round(1, 1700000000000), [])

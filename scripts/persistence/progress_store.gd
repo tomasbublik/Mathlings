@@ -232,12 +232,18 @@ static func skill_overview(profile_id: int) -> Array:
 	return out
 
 
-## Up to `limit` skills with ≥ `min_attempts` attempts, lowest accuracy first
-## (ties: lower rating first).
+## Accuracy from which a skill counts as mastered and is never suggested
+## for practice (the stats screen hides the card when nothing is left).
+const MASTERED_ACCURACY: float = 0.9
+
+
+## Up to `limit` not-yet-mastered skills with ≥ `min_attempts` attempts,
+## lowest accuracy first (ties: lower rating first).
 static func skills_needing_practice(profile_id: int, limit: int = 3,
 		min_attempts: int = 5) -> Array:
 	var rows: Array = skill_overview(profile_id).filter(func(r: Dictionary) -> bool:
-		return int(r["attempts"]) >= min_attempts)
+		return int(r["attempts"]) >= min_attempts \
+			and float(r["accuracy"]) < MASTERED_ACCURACY)
 	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		if not is_equal_approx(float(a["accuracy"]), float(b["accuracy"])):
 			return float(a["accuracy"]) < float(b["accuracy"])
