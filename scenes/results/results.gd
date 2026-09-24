@@ -41,6 +41,7 @@ const CONFETTI_COLORS: Array[Color] = [
 @onready var _stats_button: Button = %StatsButton
 @onready var _menu_button: Button = %MenuButton
 @onready var _toast: Label = %Toast
+@onready var _mascot: Mascot = %Mascot
 
 
 func _ready() -> void:
@@ -105,6 +106,7 @@ func _render_placeholder() -> void:
 	_score_label.text = "0"
 	_accuracy_label.text = "—"
 	_streak_label.text = "—"
+	_mascot.set_mood(Mascot.MOOD_IDLE)
 
 
 func _render_result(result: Dictionary) -> void:
@@ -125,11 +127,26 @@ func _render_result(result: Dictionary) -> void:
 	_animate_unlocks(unlocks, STARS_START_S + STAR_STEP_S * 3.0 + 0.3)
 	if stars >= 2:
 		_burst_confetti.call_deferred()
+	_react_mascot(stars)
 
 
 # ---------------------------------------------------------------------------
 # Animation
 # ---------------------------------------------------------------------------
+
+## The Mathling mirrors the round: cheers for 3 stars, grins for 1–2 and
+## stays encouraging (thinking, never sad) for 0. It hops once the last
+## star has landed.
+func _react_mascot(stars: int) -> void:
+	match stars:
+		3: _mascot.set_mood(Mascot.MOOD_CHEER)
+		0: _mascot.set_mood(Mascot.MOOD_THINK)
+		_: _mascot.set_mood(Mascot.MOOD_HAPPY)
+	if stars > 0:
+		get_tree().create_timer(STARS_START_S + STAR_STEP_S * stars).timeout.connect(
+			func() -> void:
+				if is_instance_valid(_mascot):
+					_mascot.play_bounce())
 
 ## Title drops in, card and buttons rise + fade in, staggered.
 func _animate_entrance() -> void:

@@ -32,6 +32,7 @@ func _init() -> void:
 	_scrollbars()
 	_toggles()
 	_extra_game()
+	_extra_menus()
 
 	DirAccess.make_dir_recursive_absolute(OUT_PATH.get_base_dir())
 	var err := ResourceSaver.save(theme, OUT_PATH)
@@ -365,7 +366,124 @@ func _extra_game() -> void:
 	theme.set_font_size("font_size", "ScoreValueLabel", 110)
 	theme.set_color("font_color", "ScoreValueLabel", Palette.GRAPE)
 
+	# StatValueLabel is defined in _extra_menus() (shared with Stats/Rules).
+# Menu screens (main menu, settings, stats, rules, profiles, locale)
+# ---------------------------------------------------------------------------
+##   Button:         PillButton (small white pill — profile chip, links),
+##                   IconButton (square white candy for a single glyph),
+##                   TileButton (white menu tile, icon above text)
+##   PanelContainer: ToastPanel (dark pill for toasts), Badge<Colour>
+##                   (round tinted bubble behind an emoji / initial:
+##                   BadgeGrape, BadgeSunny, BadgeCoral, BadgeMint,
+##                   BadgeSky, BadgePink), CardSoft (flat tinted inner card)
+##   Label:          ToastLabel, StatValueLabel (big number on stat tiles),
+##                   BadgeLabel (glyph inside a badge), AvatarLabel (white
+##                   initial on a coloured avatar)
+##   ProgressBar:    Meter (grape) + MeterMint, MeterSunny, MeterCoral
+func _extra_menus() -> void:
+	var display: Font = theme.get_font("font", "Button")
+	var bold: Font = theme.get_font("font", "LineEdit")
+
+	# --- Buttons -----------------------------------------------------------
+	for v in ["PillButton", "IconButton", "TileButton"]:
+		theme.set_type_variation(v, "Button")
+	_button_set("PillButton", Palette.SURFACE, Palette.SURFACE_EDGE, Palette.GRAPE, 36)
+	theme.set_font_size("font_size", "PillButton", Palette.FONT_BODY)
+	_set_side_margins("PillButton", 22)
+
+	_button_set("IconButton", Palette.SURFACE, Palette.SURFACE_EDGE, Palette.GRAPE)
+	theme.set_font_size("font_size", "IconButton", Palette.FONT_HEADING)
+	_set_side_margins("IconButton", 12)
+
+	_button_set("TileButton", Palette.SURFACE, Palette.SURFACE_EDGE, Palette.INK, Palette.RADIUS_L)
+	theme.set_font_size("font_size", "TileButton", Palette.FONT_BODY)
+
+	# --- Panels ------------------------------------------------------------
+	var toast := StyleBoxFlat.new()
+	toast.bg_color = Color(Palette.INK, 0.92)
+	toast.set_corner_radius_all(40)
+	toast.corner_detail = 10
+	toast.content_margin_left = 32
+	toast.content_margin_right = 32
+	toast.content_margin_top = 14
+	toast.content_margin_bottom = 16
+	toast.shadow_color = Palette.SHADOW
+	toast.shadow_size = 10
+	toast.shadow_offset = Vector2(0, 4)
+	theme.set_type_variation("ToastPanel", "PanelContainer")
+	theme.set_stylebox("panel", "ToastPanel", toast)
+
+	var badges := {
+		"BadgeGrape": Palette.GRAPE_LIGHT,
+		"BadgeSunny": Palette.SUNNY.lerp(Color.WHITE, 0.72),
+		"BadgeCoral": Palette.CORAL.lerp(Color.WHITE, 0.75),
+		"BadgeMint": Palette.MINT.lerp(Color.WHITE, 0.75),
+		"BadgeSky": Palette.SKY.lerp(Color.WHITE, 0.75),
+		"BadgePink": Palette.PINK.lerp(Color.WHITE, 0.72),
+	}
+	for badge_name: String in badges:
+		var b := StyleBoxFlat.new()
+		b.bg_color = badges[badge_name]
+		b.set_corner_radius_all(200)
+		b.corner_detail = 16
+		b.set_content_margin_all(8)
+		theme.set_type_variation(badge_name, "PanelContainer")
+		theme.set_stylebox("panel", badge_name, b)
+
+	var soft := StyleBoxFlat.new()
+	soft.bg_color = Palette.GRAPE_LIGHT.lerp(Color.WHITE, 0.35)
+	soft.set_corner_radius_all(Palette.RADIUS_M)
+	soft.corner_detail = 10
+	soft.set_content_margin_all(18)
+	theme.set_type_variation("CardSoft", "PanelContainer")
+	theme.set_stylebox("panel", "CardSoft", soft)
+
+	# --- Labels ------------------------------------------------------------
+	theme.set_type_variation("ToastLabel", "Label")
+	theme.set_font("font", "ToastLabel", bold)
+	theme.set_font_size("font_size", "ToastLabel", Palette.FONT_BODY)
+	theme.set_color("font_color", "ToastLabel", Color.WHITE)
+
 	theme.set_type_variation("StatValueLabel", "Label")
 	theme.set_font("font", "StatValueLabel", display)
-	theme.set_font_size("font_size", "StatValueLabel", 44)
+	theme.set_font_size("font_size", "StatValueLabel", 46)
 	theme.set_color("font_color", "StatValueLabel", Palette.INK)
+
+	theme.set_type_variation("BadgeLabel", "Label")
+	theme.set_font_size("font_size", "BadgeLabel", 28)
+
+	theme.set_type_variation("AvatarLabel", "Label")
+	theme.set_font("font", "AvatarLabel", display)
+	theme.set_font_size("font_size", "AvatarLabel", 64)
+	theme.set_color("font_color", "AvatarLabel", Color.WHITE)
+	theme.set_color("font_shadow_color", "AvatarLabel", Color(0, 0, 0, 0.18))
+	theme.set_constant("shadow_offset_x", "AvatarLabel", 0)
+	theme.set_constant("shadow_offset_y", "AvatarLabel", 4)
+
+	# --- Meters ------------------------------------------------------------
+	var fills := {
+		"Meter": Palette.GRAPE,
+		"MeterMint": Palette.MINT,
+		"MeterSunny": Palette.SUNNY,
+		"MeterCoral": Palette.CORAL,
+	}
+	for meter_name: String in fills:
+		var bg := StyleBoxFlat.new()
+		bg.bg_color = Palette.GRAPE_LIGHT
+		bg.set_corner_radius_all(12)
+		bg.corner_detail = 8
+		var fg := bg.duplicate() as StyleBoxFlat
+		fg.bg_color = fills[meter_name]
+		theme.set_type_variation(meter_name, "ProgressBar")
+		theme.set_stylebox("background", meter_name, bg)
+		theme.set_stylebox("fill", meter_name, fg)
+		theme.set_font_size("font_size", meter_name, Palette.FONT_CAPTION)
+		theme.set_color("font_color", meter_name, Palette.INK)
+
+
+## Narrows the left/right content margins of every state of a button type.
+func _set_side_margins(type: String, margin: int) -> void:
+	for st in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
+		var sb := theme.get_stylebox(st, type) as StyleBoxFlat
+		sb.content_margin_left = margin
+		sb.content_margin_right = margin

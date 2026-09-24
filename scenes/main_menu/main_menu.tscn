@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0mxyzmmmenu1"]
+[gd_scene load_steps=4 format=3 uid="uid://b0mxyzmmmenu1"]
 
 [ext_resource type="Script" path="res://scenes/main_menu/main_menu.gd" id="1_main"]
 [ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_sky.svg" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/shared/mascot.tscn" id="3_mascot"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -21,134 +22,137 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Logo" type="Label" parent="."]
-unique_name_in_owner = true
+[node name="Layout" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -400.0
-offset_top = 80.0
-offset_right = 400.0
-offset_bottom = 200.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 96
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="Column" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="Layout/Column"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ProfileChip" type="Button" parent="Layout/Column/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_type_variation = &"PillButton"
+text = "👤  Hi!"
+
+[node name="TopSpacer" type="Control" parent="Layout/Column/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="VersionLabel" type="Label" parent="Layout/Column/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"CaptionLabel"
+text = "v0.0.0"
+
+[node name="Logo" type="Label" parent="Layout/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroLabel"
 text = "Mathlings"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonsVBox" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -192.0
-offset_top = -60.0
-offset_right = 192.0
-offset_bottom = 180.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 24
-
-[node name="PlayButton" type="Button" parent="ButtonsVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(384, 96)
-theme_override_font_sizes/font_size = 40
-text = "HRÁT! ▶"
-
-[node name="StatsButton" type="Button" parent="ButtonsVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(384, 72)
-theme_override_font_sizes/font_size = 28
-text = "Statistiky 📊"
-
-[node name="ProfilesButton" type="Button" parent="ButtonsVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(384, 72)
-theme_override_font_sizes/font_size = 28
-text = "Profily 👥"
-
-[node name="RulesButton" type="Button" parent="ButtonsVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(384, 72)
-theme_override_font_sizes/font_size = 28
-text = "Pravidla 📋"
-
-[node name="BottomBar" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 32.0
-offset_top = -96.0
-offset_right = -32.0
-offset_bottom = -24.0
-grow_horizontal = 2
-grow_vertical = 0
-alignment = 2
-theme_override_constants/separation = 24
-
-[node name="ProfileBadge" type="Label" parent="BottomBar"]
+[node name="HeroRow" type="BoxContainer" parent="Layout/Column"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 24
-text = "profil: Hráč 1"
-vertical_alignment = 1
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+alignment = 1
 
-[node name="SettingsButton" type="Button" parent="BottomBar"]
+[node name="MascotSlot" type="Control" parent="Layout/Column/HeroRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 72)
-theme_override_font_sizes/font_size = 24
-text = "Nastavení ⚙"
+custom_minimum_size = Vector2(260, 260)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
 
-[node name="Toast" type="Label" parent="."]
+[node name="Mascot" parent="Layout/Column/HeroRow/MascotSlot" instance=ExtResource("3_mascot")]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="Layout/Column/HeroRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"PlayButton"
+text = "PLAY! ▶"
+
+[node name="Tiles" type="GridContainer" parent="Layout/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
+
+[node name="StatsButton" type="Button" parent="Layout/Column/Tiles"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 136)
+layout_mode = 2
+theme_type_variation = &"TileButton"
+
+[node name="ProfilesButton" type="Button" parent="Layout/Column/Tiles"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 136)
+layout_mode = 2
+theme_type_variation = &"TileButton"
+
+[node name="RulesButton" type="Button" parent="Layout/Column/Tiles"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 136)
+layout_mode = 2
+theme_type_variation = &"TileButton"
+
+[node name="SettingsButton" type="Button" parent="Layout/Column/Tiles"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 136)
+layout_mode = 2
+theme_type_variation = &"TileButton"
+
+[node name="ToastPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 200.0
-offset_bottom = -140.0
+offset_top = -210.0
+offset_bottom = -150.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 36
+mouse_filter = 2
+theme_type_variation = &"ToastPanel"
+
+[node name="Toast" type="Label" parent="ToastPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ToastLabel"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="VersionLabel" type="Label" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -118.0
-offset_right = -16.0
-offset_bottom = -100.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 0.7)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 18
-text = "v0.0.0"
-horizontal_alignment = 2

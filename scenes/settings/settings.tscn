@@ -21,169 +21,333 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 14.0
+offset_right = -24.0
+offset_bottom = 104.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 80)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "COMMON_BACK"
+theme_type_variation = &"IconButton"
+text = "←"
+
+[node name="Title" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "SETTINGS_TITLE"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="HeaderBalance" type="Control" parent="Header"]
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 32.0
-offset_top = 32.0
-offset_right = -32.0
-offset_bottom = -110.0
+offset_top = 112.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+[node name="Column" type="MarginContainer" parent="Scroll"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 40
+
+[node name="Cards" type="VBoxContainer" parent="Scroll/Column"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="Title" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 48
-text = "Nastavení"
+[node name="RoundCard" type="PanelContainer" parent="Scroll/Column/Cards"]
+layout_mode = 2
 
-[node name="DurationLabel" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Délka kola"
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/Cards/RoundCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
 
-[node name="DurationGroup" type="HFlowContainer" parent="ScrollContainer/VBox"]
+[node name="DurationHead" type="HBoxContainer" parent="Scroll/Column/Cards/RoundCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/Cards/RoundCard/VBox/DurationHead"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeSky"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/Cards/RoundCard/VBox/DurationHead/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "⏱️"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/Cards/RoundCard/VBox/DurationHead"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "SETTINGS_DURATION_LABEL"
+
+[node name="DurationGroup" type="HFlowContainer" parent="Scroll/Column/Cards/RoundCard/VBox"]
 unique_name_in_owner = true
-theme_override_constants/separation = 12
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
 
-[node name="SpeedLabel" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Rychlost pádu"
+[node name="SpeedHead" type="HBoxContainer" parent="Scroll/Column/Cards/RoundCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
 
-[node name="SpeedGroup" type="HFlowContainer" parent="ScrollContainer/VBox"]
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/Cards/RoundCard/VBox/SpeedHead"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeCoral"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/Cards/RoundCard/VBox/SpeedHead/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "🚀"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/Cards/RoundCard/VBox/SpeedHead"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "SETTINGS_SPEED_LABEL"
+
+[node name="SpeedGroup" type="HFlowContainer" parent="Scroll/Column/Cards/RoundCard/VBox"]
 unique_name_in_owner = true
-theme_override_constants/separation = 12
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
 
-[node name="ThemeLabel" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Vzhled"
+[node name="SkillsCard" type="PanelContainer" parent="Scroll/Column/Cards"]
+layout_mode = 2
 
-[node name="ThemeGroup" type="HFlowContainer" parent="ScrollContainer/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/Cards/SkillsCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="SkillsHead" type="HBoxContainer" parent="Scroll/Column/Cards/SkillsCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/Cards/SkillsCard/VBox/SkillsHead"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeGrape"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/Cards/SkillsCard/VBox/SkillsHead/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "🧮"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/Cards/SkillsCard/VBox/SkillsHead"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+text = "SETTINGS_SKILLS_LABEL"
+
+[node name="SkillsBox" type="VBoxContainer" parent="Scroll/Column/Cards/SkillsCard/VBox"]
 unique_name_in_owner = true
-theme_override_constants/separation = 12
+layout_mode = 2
+theme_override_constants/separation = 14
 
-[node name="SkillsLabel" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 36
-text = "Aktivní dovednosti"
-
-[node name="SkillsGrid" type="GridContainer" parent="ScrollContainer/VBox"]
+[node name="ValidationLabel" type="Label" parent="Scroll/Column/Cards/SkillsCard/VBox"]
 unique_name_in_owner = true
-columns = 2
-theme_override_constants/h_separation = 32
+visible = false
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+horizontal_alignment = 1
+
+[node name="ThemeCard" type="PanelContainer" parent="Scroll/Column/Cards"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/Cards/ThemeCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ThemeHead" type="HBoxContainer" parent="Scroll/Column/Cards/ThemeCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/Cards/ThemeCard/VBox/ThemeHead"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgePink"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/Cards/ThemeCard/VBox/ThemeHead/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "🎨"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/Cards/ThemeCard/VBox/ThemeHead"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "SETTINGS_THEME_LABEL"
+
+[node name="ThemeGroup" type="HFlowContainer" parent="Scroll/Column/Cards/ThemeCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+[node name="AudioCard" type="PanelContainer" parent="Scroll/Column/Cards"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/Cards/AudioCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="AudioHead" type="HBoxContainer" parent="Scroll/Column/Cards/AudioCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/Cards/AudioCard/VBox/AudioHead"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeMint"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/Cards/AudioCard/VBox/AudioHead/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "🔊"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/Cards/AudioCard/VBox/AudioHead"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+text = "SETTINGS_AUDIO_LABEL"
+
+[node name="SfxPreviewButton" type="Button" parent="Scroll/Column/Cards/AudioCard/VBox/AudioHead"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 64)
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"IconButton"
+text = "🔔"
+
+[node name="AudioRow" type="HFlowContainer" parent="Scroll/Column/Cards/AudioCard/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 40
 theme_override_constants/v_separation = 8
 
-[node name="ValidationLabel" type="Label" parent="ScrollContainer/VBox"]
+[node name="SfxToggle" type="CheckButton" parent="Scroll/Column/Cards/AudioCard/VBox/AudioRow"]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0)
-theme_override_colors/font_color = Color(1, 0.6, 0.3, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+text = "SETTINGS_SFX_TOGGLE"
 
-[node name="AudioLabel" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Zvuk a haptika"
-
-[node name="AudioRow" type="HFlowContainer" parent="ScrollContainer/VBox"]
-theme_override_constants/h_separation = 48
-theme_override_constants/v_separation = 16
-
-[node name="SfxToggle" type="CheckButton" parent="ScrollContainer/VBox/AudioRow"]
+[node name="MusicToggle" type="CheckButton" parent="Scroll/Column/Cards/AudioCard/VBox/AudioRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 80)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
-text = "SFX"
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+text = "SETTINGS_MUSIC_TOGGLE"
 
-[node name="SfxPreviewButton" type="Button" parent="ScrollContainer/VBox/AudioRow"]
+[node name="HapticsToggle" type="CheckButton" parent="Scroll/Column/Cards/AudioCard/VBox/AudioRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
-theme_override_font_sizes/font_size = 32
-text = "🔊"
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+text = "SETTINGS_HAPTICS_TOGGLE"
 
-[node name="MusicToggle" type="CheckButton" parent="ScrollContainer/VBox/AudioRow"]
+[node name="LanguageCard" type="PanelContainer" parent="Scroll/Column/Cards"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Scroll/Column/Cards/LanguageCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LanguageHead" type="HBoxContainer" parent="Scroll/Column/Cards/LanguageCard/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Column/Cards/LanguageCard/VBox/LanguageHead"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+theme_type_variation = &"BadgeSky"
+
+[node name="Glyph" type="Label" parent="Scroll/Column/Cards/LanguageCard/VBox/LanguageHead/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+text = "🌍"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Heading" type="Label" parent="Scroll/Column/Cards/LanguageCard/VBox/LanguageHead"]
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "SETTINGS_LANGUAGE_LABEL"
+
+[node name="LanguageGroup" type="HFlowContainer" parent="Scroll/Column/Cards/LanguageCard/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 80)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
-text = "Hudba"
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
 
-[node name="HapticsToggle" type="CheckButton" parent="ScrollContainer/VBox/AudioRow"]
+[node name="ProfileCard" type="PanelContainer" parent="Scroll/Column/Cards"]
+layout_mode = 2
+
+[node name="Row" type="HBoxContainer" parent="Scroll/Column/Cards/ProfileCard"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 80)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 28
-text = "Vibrace"
+layout_mode = 2
+theme_override_constants/separation = 18
 
-[node name="ProfileLabelHeader" type="Label" parent="ScrollContainer/VBox"]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/font_size = 34
-text = "Profil"
-
-[node name="ProfileLabel" type="Label" parent="ScrollContainer/VBox"]
-unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 30
-text = "Hráč 1"
-
-[node name="FooterBar" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 32.0
-offset_top = -90.0
-offset_right = -32.0
-offset_bottom = -24.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 24
-
-[node name="BackButton" type="Button" parent="FooterBar"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 64)
-theme_override_font_sizes/font_size = 24
-text = "← Zpět"
-
-[node name="Spacer" type="Control" parent="FooterBar"]
+[node name="ProfileText" type="VBoxContainer" parent="Scroll/Column/Cards/ProfileCard/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 0
 
-[node name="ResetButton" type="Button" parent="FooterBar"]
+[node name="ProfileHeading" type="Label" parent="Scroll/Column/Cards/ProfileCard/Row/ProfileText"]
+layout_mode = 2
+theme_type_variation = &"CaptionLabel"
+text = "SETTINGS_PROFILE_HEADER"
+
+[node name="ProfileLabel" type="Label" parent="Scroll/Column/Cards/ProfileCard/Row/ProfileText"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 64)
-theme_override_font_sizes/font_size = 22
-text = "Obnovit výchozí"
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+text = "Player 1"
+text_overrun_behavior = 3
+
+[node name="PlayersButton" type="Button" parent="Scroll/Column/Cards/ProfileCard/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"SecondaryButton"
+text = "PROFILE_MANAGER_TITLE"
+
+[node name="ResetButton" type="Button" parent="Scroll/Column/Cards"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"GhostButton"
+text = "SETTINGS_RESET_BUTTON"
