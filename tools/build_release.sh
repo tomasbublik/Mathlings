@@ -39,7 +39,8 @@ if [[ ! -f "$PROJECT/android/.build_version" ]] ||
 fi
 
 "$GODOT" --headless --path "$PROJECT" --import >/dev/null 2>&1 || true
-"$GODOT" --headless --path "$PROJECT" "${TEMPLATE_FLAG[@]}" \
+# ${arr[@]+...} keeps bash 3.2 (macOS) happy under `set -u` when empty.
+"$GODOT" --headless --path "$PROJECT" ${TEMPLATE_FLAG[@]+"${TEMPLATE_FLAG[@]}"} \
     --export-release "Android Play" "$OUT"
 
 if [[ ! -f "$OUT" ]]; then
