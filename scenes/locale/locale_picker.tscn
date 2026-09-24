@@ -21,33 +21,59 @@ texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 64.0
-offset_top = 48.0
-offset_right = -64.0
-offset_bottom = -32.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
 
-[node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
+[node name="Center" type="CenterContainer" parent="Scroll"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 16
+size_flags_vertical = 3
 
-[node name="TitleLabel" type="Label" parent="ScrollContainer/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Scroll/Center"]
 unique_name_in_owner = true
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 48
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Top" type="BoxContainer" parent="Scroll/Center/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Badge" type="PanelContainer" parent="Scroll/Center/VBox/Top"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"BadgeSky"
+
+[node name="Glyph" type="Label" parent="Scroll/Center/VBox/Top/Badge"]
+layout_mode = 2
+theme_type_variation = &"BadgeLabel"
+theme_override_font_sizes/font_size = 50
+text = "🌍"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Scroll/Center/VBox/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
 text = "Choose your language"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="LocaleList" type="VBoxContainer" parent="ScrollContainer/VBox"]
+[node name="LocaleList" type="GridContainer" parent="Scroll/Center/VBox"]
 unique_name_in_owner = true
-alignment = 1
-theme_override_constants/separation = 12
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 4
