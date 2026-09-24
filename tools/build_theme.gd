@@ -31,6 +31,7 @@ func _init() -> void:
 	_panels(fonts)
 	_scrollbars()
 	_toggles()
+	_extra_game()
 
 	DirAccess.make_dir_recursive_absolute(OUT_PATH.get_base_dir())
 	var err := ResourceSaver.save(theme, OUT_PATH)
@@ -294,3 +295,63 @@ func _toggles() -> void:
 		theme.set_constant("h_separation", t, 16)
 		for st in ["normal", "hover", "pressed", "hover_pressed", "focus", "disabled"]:
 			theme.set_stylebox(st, t, StyleBoxEmpty.new())
+
+
+# ---------------------------------------------------------------------------
+# Game + results extras
+# ---------------------------------------------------------------------------
+
+## Variations used by the in-game HUD, falling problems and results screen:
+##   PanelContainer: HudChip (white pill), RewardCard (white card with a
+##                   sunny rim, for unlock toasts)
+##   Label: HudValueLabel (bold number inside a HudChip), CountdownLabel
+##          (giant 3-2-1 sticker), ProblemLabel (expression on a falling
+##          skin), ScoreValueLabel (results count-up), StatValueLabel
+func _extra_game() -> void:
+	var display: Font = theme.get_font("font", "HeroLabel")
+
+	var chip := StyleBoxFlat.new()
+	chip.bg_color = Palette.SURFACE
+	chip.border_color = Palette.SURFACE_EDGE
+	chip.border_width_bottom = 5
+	chip.set_corner_radius_all(40)
+	chip.corner_detail = 10
+	chip.anti_aliasing = true
+	chip.content_margin_left = 12
+	chip.content_margin_right = 22
+	chip.content_margin_top = 4
+	chip.content_margin_bottom = 4 + 5
+	chip.shadow_color = Palette.SHADOW
+	chip.shadow_size = 8
+	chip.shadow_offset = Vector2(0, 4)
+	theme.set_type_variation("HudChip", "PanelContainer")
+	theme.set_stylebox("panel", "HudChip", chip)
+
+	var reward := _card(Palette.SURFACE)
+	reward.border_color = Palette.SUNNY
+	reward.set_border_width_all(4)
+	reward.border_width_bottom = 8
+	reward.content_margin_top = 12
+	reward.content_margin_bottom = 14
+	reward.content_margin_left = 16
+	reward.content_margin_right = 24
+	theme.set_type_variation("RewardCard", "PanelContainer")
+	theme.set_stylebox("panel", "RewardCard", reward)
+
+	theme.set_type_variation("HudValueLabel", "Label")
+	theme.set_font("font", "HudValueLabel", display)
+	theme.set_font_size("font_size", "HudValueLabel", 34)
+	theme.set_color("font_color", "HudValueLabel", Palette.INK)
+
+	_sticker("CountdownLabel", display, 200, 30)
+	_sticker("ProblemLabel", display, 68, 16)
+
+	theme.set_type_variation("ScoreValueLabel", "Label")
+	theme.set_font("font", "ScoreValueLabel", display)
+	theme.set_font_size("font_size", "ScoreValueLabel", 110)
+	theme.set_color("font_color", "ScoreValueLabel", Palette.GRAPE)
+
+	theme.set_type_variation("StatValueLabel", "Label")
+	theme.set_font("font", "StatValueLabel", display)
+	theme.set_font_size("font_size", "StatValueLabel", 44)
+	theme.set_color("font_color", "StatValueLabel", Palette.INK)
