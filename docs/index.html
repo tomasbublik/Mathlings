@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="referrer" content="no-referrer">
+<title>Mathlings</title>
+<meta name="description" content="Mathlings – a colourful, adaptive maths arcade game for children aged 6–9. No ads, no purchases, fully offline.">
+<style>
+  :root {
+    --bg: #fbf8ff;
+    --surface: #ffffff;
+    --text: #231d33;
+    --muted: #5d5670;
+    --accent: #6b3fd4;
+    --accent-ink: #ffffff;
+    --accent-soft: #efe7ff;
+    --border: #e3dcf2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17131f;
+      --surface: #211b2d;
+      --text: #efeaf8;
+      --muted: #b3aac6;
+      --accent: #b99cff;
+      --accent-ink: #17131f;
+      --accent-soft: #2e2442;
+      --border: #3a3050;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+  .logo {
+    width: 72px; height: 72px; border-radius: 22px; background: var(--accent);
+    color: var(--accent-ink); display: grid; place-items: center;
+    font-weight: 800; font-size: 2rem; margin-bottom: 1rem;
+  }
+  h1 { font-size: 2.2rem; line-height: 1.15; margin: 0 0 .5rem; }
+  .lede { font-size: 1.15rem; color: var(--muted); margin: 0 0 2rem; }
+  .cards { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); margin-bottom: 2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.1rem; }
+  .card strong { display: block; margin-bottom: .2rem; }
+  .card span { color: var(--muted); font-size: .95rem; }
+  a { color: var(--accent); }
+  .button {
+    display: inline-block; background: var(--accent); color: var(--accent-ink);
+    padding: .7rem 1.2rem; border-radius: 999px; text-decoration: none; font-weight: 700;
+  }
+  footer { margin-top: 3rem; color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true">M</div>
+  <h1>Mathlings</h1>
+  <p class="lede">A colourful maths arcade game for children aged 6–9. Sums fall from the sky, your child taps the right answer, and a gentle adaptive tutor keeps the challenge just right.</p>
+
+  <div class="cards">
+    <div class="card"><strong>Addition to division</strong><span>Adding and subtracting up to 100, times tables 2–10, division up to 100.</span></div>
+    <div class="card"><strong>Adapts as they play</strong><span>More practice where it’s needed, easy wins for confidence, auto speed.</span></div>
+    <div class="card"><strong>Safe for families</strong><span>No ads, no purchases, no accounts, no internet access, no data collection.</span></div>
+    <div class="card"><strong>12 languages</strong><span>English, Čeština, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português, Русский, اردو, Bahasa Indonesia.</span></div>
+  </div>
+
+  <p><a class="button" href="privacy-policy.html">Privacy policy</a></p>
+  <p><a href="privacy-policy.html#cs" hreflang="cs">Zásady ochrany soukromí (česky)</a></p>
+
+  <footer>
+    <p>Mathlings by {{DEVELOPER_NAME}} · <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></p>
+  </footer>
+</main>
+</body>
+</html>
