@@ -46,22 +46,36 @@ func _init() -> void:
 ## playful display face; Nunito covers body text plus Cyrillic that Baloo
 ## lacks; anything in fonts/fallback/ (CJK, Arabic, Bengali…) is chained
 ## behind both so every locale renders real glyphs instead of tofu.
+##
+## Fallback files are wrapped in a FontVariation at the same weight as the
+## face they back up, so variable fallbacks (Baloo Bhaijaan 2, Baloo Da 2)
+## render bold like the primary text instead of at their Regular default.
+## Baloo 2 also backs up body text: Nunito has no Devanagari (Hindi).
 func _build_fonts() -> Dictionary:
-	var extra: Array[Font] = []
+	var files: Array[FontFile] = []
 	if DirAccess.dir_exists_absolute(FALLBACK_DIR):
 		for f in DirAccess.get_files_at(FALLBACK_DIR):
 			if f.get_extension().to_lower() in ["ttf", "otf"]:
-				extra.append(load(FALLBACK_DIR + f) as Font)
+				files.append(load(FALLBACK_DIR + f) as FontFile)
 
 	var nunito: FontFile = load(FONT_DIR + "Nunito.ttf")
 	var baloo: FontFile = load(FONT_DIR + "Baloo2.ttf")
 
-	var body := _variation(nunito, 650, extra)
-	var body_bold := _variation(nunito, 800, extra)
+	var body := _variation(nunito, 650, _fallbacks_at(650, files, baloo))
+	var body_bold := _variation(nunito, 800, _fallbacks_at(800, files, baloo))
 	var display_fallbacks: Array[Font] = [body_bold]
-	display_fallbacks.append_array(extra)
+	display_fallbacks.append_array(_fallbacks_at(700, files))
 	var display := _variation(baloo, 700, display_fallbacks)
 	return {"body": body, "body_bold": body_bold, "display": display}
+
+
+func _fallbacks_at(weight: int, files: Array[FontFile], first: FontFile = null) -> Array[Font]:
+	var out: Array[Font] = []
+	if first != null:
+		out.append(_variation(first, weight, []))
+	for f in files:
+		out.append(_variation(f, weight, []))
+	return out
 
 
 func _variation(base: FontFile, weight: int, fallbacks: Array[Font]) -> FontVariation:
