@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><defs>
+<radialGradient id="bodyGrad" cx="0.40" cy="0.32" r="0.75">
+  <stop offset="0" stop-color="#A07BFF"/>
+  <stop offset="0.55" stop-color="#7C4DFF"/>
+  <stop offset="1" stop-color="#6A3BF2"/>
+</radialGradient>
+<clipPath id="bodyClip"><path d="M128,72 C176,72 212,108 214,156 C216,198 184,224 128,224 C72,224 40,198 42,156 C44,108 80,72 128,72 Z"/></clipPath></defs>
+<g stroke="#4321A8" stroke-width="6" fill="#5B2FD9">
+  <ellipse cx="98" cy="222" rx="22" ry="12"/>
+  <ellipse cx="158" cy="222" rx="22" ry="12"/>
+</g>
+<path d="M128,72 C176,72 212,108 214,156 C216,198 184,224 128,224 C72,224 40,198 42,156 C44,108 80,72 128,72 Z" fill="#5B2FD9"/>
+<g clip-path="url(#bodyClip)">
+  <ellipse cx="128" cy="140" rx="96" ry="78" fill="url(#bodyGrad)"/>
+  <ellipse cx="92" cy="104" rx="26" ry="14" fill="#FFFFFF" opacity="0.35" transform="rotate(-28 92 104)"/>
+  <circle cx="120" cy="88" r="5" fill="#FFFFFF" opacity="0.45"/>
+</g>
+<path d="M128,72 C176,72 212,108 214,156 C216,198 184,224 128,224 C72,224 40,198 42,156 C44,108 80,72 128,72 Z" fill="none" stroke="#4321A8" stroke-width="6" stroke-linejoin="round"/>
+<g fill="#FF7AC6" opacity="0.6">
+  <ellipse cx="74" cy="164" rx="14" ry="9"/>
+  <ellipse cx="182" cy="164" rx="14" ry="9"/>
+</g></svg>

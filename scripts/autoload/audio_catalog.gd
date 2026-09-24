@@ -13,6 +13,7 @@ const SFX := {
 	"combo_up":        "res://assets/audio/sfx/combo_up.wav",
 	"unlock":          "res://assets/audio/sfx/unlock.wav",
 	"tap":             "res://assets/audio/sfx/tap.wav",
+	"giggle":          "res://assets/audio/sfx/giggle.wav",  # mascot tapped
 	# Theme-specific success sounds. The catalog references the files; if
 	# they're missing on disk AudioManager logs a warning and no-ops, so
 	# missing assets degrade gracefully.

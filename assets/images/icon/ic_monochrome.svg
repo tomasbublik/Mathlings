@@ -1,29 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432">
-  <!-- Adaptive icon monochrome layer (Android 13+ themed icons).
-       The launcher tints this single-color silhouette to match the
-       user's wallpaper-derived theme. White-on-transparent is the
-       canonical input format. -->
-
-  <g fill="#FFFFFF">
-    <!-- Bear body -->
-    <ellipse cx="216" cy="304" rx="106" ry="86"/>
-    <!-- Legs -->
-    <ellipse cx="158" cy="378" rx="34" ry="22"/>
-    <ellipse cx="274" cy="378" rx="34" ry="22"/>
-    <!-- Head -->
-    <g transform="rotate(-8 216 168)">
-      <circle cx="158" cy="118" r="26"/>
-      <circle cx="274" cy="118" r="26"/>
-      <circle cx="216" cy="168" r="74"/>
-    </g>
-    <!-- Tablet (slightly inset, just a silhouette) -->
-    <rect x="80" y="280" width="272" height="116" rx="14" ry="14"/>
-    <!-- Paws -->
-    <ellipse cx="92"  cy="338" rx="22" ry="16"/>
-    <ellipse cx="340" cy="338" rx="22" ry="16"/>
-    <!-- Thought bubble -->
-    <circle cx="356" cy="118" r="34"/>
-    <circle cx="328" cy="160" r="10"/>
-    <circle cx="316" cy="180" r="6"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432" width="432" height="432">
+<!-- Adaptive icon monochrome layer (Android 13+ themed icons): white Mathling silhouette, face cut out. -->
+<defs><mask id="face" maskUnits="userSpaceOnUse" x="0" y="0" width="432" height="432"><rect width="432" height="432" fill="#FFFFFF"/><g transform="translate(88.00 94.00) scale(1.0)"><g fill="#000000"><ellipse cx="101" cy="130" rx="16" ry="21"/><ellipse cx="155" cy="130" rx="16" ry="21"/><path d="M110,157 Q128,161 146,157 Q144,182 128,182 Q112,182 110,157 Z"/></g><g fill="#FFFFFF"><circle cx="106" cy="122" r="6"/><circle cx="160" cy="122" r="6"/></g></g></mask></defs>
+<g mask="url(#face)"><g transform="translate(88.00 94.00) scale(1.0)"><path d="M128,76 C126,58 132,44 144,34" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/><g fill="#FFFFFF"><rect x="128.5" y="21.5" width="39" height="13" rx="6.5"/><rect x="141.5" y="8.5" width="13" height="39" rx="6.5"/><path d="M128,72 C176,72 212,108 214,156 C216,198 184,224 128,224 C72,224 40,198 42,156 C44,108 80,72 128,72 Z"/><ellipse cx="98" cy="222" rx="24" ry="14"/><ellipse cx="158" cy="222" rx="24" ry="14"/><ellipse cx="26" cy="128" rx="15" ry="26" transform="rotate(-48 26 128)"/><ellipse cx="230" cy="128" rx="15" ry="26" transform="rotate(48 230 128)"/></g></g></g>
 </svg>

@@ -1,45 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432">
-  <!-- Adaptive icon background layer (432x432).
-       Sky gradient on top half, grassy meadow on bottom — matches the
-       in-game "fruit" theme palette so the launcher icon feels continuous
-       with the menu background. -->
-
-  <defs>
-    <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#87CEEB"/>
-      <stop offset="100%" stop-color="#E0F6FF"/>
-    </linearGradient>
-    <linearGradient id="grassGradient" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#7BC95C"/>
-      <stop offset="100%" stop-color="#4A8B3D"/>
-    </linearGradient>
-  </defs>
-
-  <!-- Sky -->
-  <rect width="432" height="432" fill="url(#skyGradient)"/>
-
-  <!-- Distant clouds -->
-  <g fill="#FFFFFF" opacity="0.85">
-    <ellipse cx="78"  cy="92"  rx="36" ry="14"/>
-    <ellipse cx="108" cy="86"  rx="28" ry="12"/>
-    <ellipse cx="334" cy="120" rx="42" ry="16"/>
-    <ellipse cx="368" cy="112" rx="30" ry="13"/>
-  </g>
-
-  <!-- Sun -->
-  <circle cx="362" cy="62" r="30" fill="#FFE57B" opacity="0.85"/>
-  <circle cx="362" cy="62" r="22" fill="#FFD24A"/>
-
-  <!-- Grass -->
-  <path d="M0 296 Q108 270 216 282 T432 296 L432 432 L0 432 Z" fill="url(#grassGradient)"/>
-
-  <!-- Grass blades for texture -->
-  <g fill="#3F7A33" opacity="0.55">
-    <path d="M40 328  l4 -16 l4 16 z"/>
-    <path d="M88 318  l4 -18 l4 18 z"/>
-    <path d="M156 332 l4 -16 l4 16 z"/>
-    <path d="M268 322 l4 -18 l4 18 z"/>
-    <path d="M340 330 l4 -16 l4 16 z"/>
-    <path d="M392 318 l4 -18 l4 18 z"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 432" width="432" height="432">
+<!-- Adaptive icon background (432x432): SUNNY radial gradient, soft sunburst, white plus signs. -->
+<defs>
+<radialGradient id="sun" cx="0.5" cy="0.42" r="0.72">
+  <stop offset="0" stop-color="#FFE38A"/>
+  <stop offset="0.55" stop-color="#FFC53D"/>
+  <stop offset="1" stop-color="#FFA928"/>
+</radialGradient></defs>
+<rect width="432" height="432" fill="url(#sun)"/><path d="M216,200 L633.7,156.1 L633.7,243.9 Z M216,200 L599.7,370.8 L555.8,446.9 Z M216,200 L462.9,539.8 L386.8,583.7 Z M216,200 L259.9,617.7 L172.1,617.7 Z M216,200 L45.2,583.7 L-30.9,539.8 Z M216,200 L-123.8,446.9 L-167.7,370.8 Z M216,200 L-201.7,243.9 L-201.7,156.1 Z M216,200 L-167.7,29.2 L-123.8,-46.9 Z M216,200 L-30.9,-139.8 L45.2,-183.7 Z M216,200 L172.1,-217.7 L259.9,-217.7 Z M216,200 L386.8,-183.7 L462.9,-139.8 Z M216,200 L555.8,-46.9 L599.7,29.2 Z" fill="#FFFFFF" opacity="0.16"/><circle cx="216" cy="206" r="150" fill="#FFFFFF" opacity="0.22"/><g fill="#FFFFFF" opacity="0.55"><rect x="56" y="85.06" width="28" height="5.88" rx="2.94"/><rect x="67.06" y="74" width="5.88" height="28" rx="2.94"/><rect x="349" y="81.69" width="22" height="4.62" rx="2.31"/><rect x="357.69" y="73" width="4.62" height="22" rx="2.31"/><rect x="48" y="327.9" width="20" height="4.2" rx="2.1"/><rect x="55.9" y="320" width="4.2" height="20" rx="2.1"/><rect x="364" y="337.06" width="28" height="5.88" rx="2.94"/><rect x="375.06" y="326" width="5.88" height="28" rx="2.94"/><rect x="104" y="390.32" width="16" height="3.36" rx="1.68"/><rect x="110.32" y="384" width="3.36" height="16" rx="1.68"/><rect x="322" y="398.32" width="16" height="3.36" rx="1.68"/><rect x="328.32" y="392" width="3.36" height="16" rx="1.68"/><rect x="32" y="206.32" width="16" height="3.36" rx="1.68"/><rect x="38.32" y="200" width="3.36" height="16" rx="1.68"/><rect x="387" y="212.11" width="18" height="3.78" rx="1.89"/><rect x="394.11" y="205" width="3.78" height="18" rx="1.89"/></g>
 </svg>
