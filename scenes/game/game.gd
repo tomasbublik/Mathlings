@@ -16,6 +16,11 @@ const RESULTS_SCENE: String = "res://scenes/results/results.tscn"
 
 ## Pastel blend used for the "?" placeholder buttons before the first problem.
 const PLACEHOLDER_BLEND: float = 0.45
+## Answers register on touch-down and a correct answer spawns the next
+## problem synchronously, so Android's duplicate delivery of the same tap
+## (touch + emulated mouse) used to land on the *new* problem as a phantom
+## wrong answer. Presses this soon after an answer are ignored.
+const ANSWER_DEBOUNCE_MS: int = 250
 ## Combo badge colours per HudFormat.combo_tier().
 const COMBO_FILLS: Array[Color] = [Palette.SUNNY, Palette.PINK, Palette.GRAPE]
 const COMBO_EDGES: Array[Color] = [Palette.SUNNY_DARK, Palette.PINK_DARK, Palette.GRAPE_DARK]
@@ -43,6 +48,7 @@ const COMBO_TEXT: Array[Color] = [Palette.INK, Color.WHITE, Color.WHITE]
 var _controller: GameController
 var _current_entity: FallingProblem = null
 var _current_entity_shown_at_ms: int = 0
+var _last_answer_ms: int = -ANSWER_DEBOUNCE_MS
 var _vertical_direction: int = 1
 var _last_combo_multiplier: float = 1.0
 var _rng := RandomNumberGenerator.new()
@@ -222,6 +228,10 @@ func _on_entity_landed(problem_id: int) -> void:
 
 
 func _on_answer_pressed(index: int) -> void:
+	var now: int = Time.get_ticks_msec()
+	if now - _last_answer_ms < ANSWER_DEBOUNCE_MS:
+		return
+	_last_answer_ms = now
 	_enable_answers(false)
 	_squish_button(_answer_buttons[index])
 	var elapsed: int = Time.get_ticks_msec() - _current_entity_shown_at_ms
