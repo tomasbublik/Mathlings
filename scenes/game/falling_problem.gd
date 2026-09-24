@@ -30,6 +30,7 @@ var _vertical_direction: int = 1
 var _problem_id: int = 0
 var _resolved: bool = false
 var _splash_color: Color = DEFAULT_SPLASH_COLOR
+var _base_scale: float = 1.0
 
 @onready var _skin: Sprite2D = $Skin
 @onready var _expression: Label = $Expression
@@ -41,6 +42,13 @@ var _splash_color: Color = DEFAULT_SPLASH_COLOR
 ## every fruit pops in its own juice colour.
 func set_splash_color(color: Color) -> void:
 	_splash_color = color
+
+
+## Uniform size multiplier for the whole entity (skin + expression); the
+## game scales up on tall portrait canvases. Exit animations are relative.
+func set_display_scale(s: float) -> void:
+	_base_scale = s
+	scale = Vector2(s, s)
 
 
 ## Initializes the entity. `problem` is a Problem Dictionary (DESIGN §7.1).
@@ -83,7 +91,7 @@ func explode_correct() -> void:
 	_spawn_explosion_for_current_theme(_splash_color)
 
 	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(self, "scale", Vector2(1.6, 1.6), 0.25) \
+	tween.tween_property(self, "scale", Vector2(1.6, 1.6) * _base_scale, 0.25) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "modulate:a", 0.0, 0.35) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
@@ -99,9 +107,9 @@ func explode_wrong() -> void:
 	_spawn_vfx_in_parent(WRONG_VFX)
 
 	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(self, "scale", Vector2(0.3, 0.3), 0.3) \
+	tween.tween_property(self, "scale", Vector2(0.3, 0.3) * _base_scale, 0.3) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(self, "position:y", position.y + 200.0, 0.3) \
+	tween.tween_property(self, "position:y", position.y + 200.0 * _base_scale, 0.3) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(self, "modulate:a", 0.0, 0.3)
 	tween.chain().tween_callback(queue_free)
@@ -111,7 +119,7 @@ func explode_wrong() -> void:
 func splash() -> void:
 	_spawn_vfx_in_parent(MISS_VFX)
 	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(self, "scale", Vector2(1.4, 0.25), 0.3) \
+	tween.tween_property(self, "scale", Vector2(1.4, 0.25) * _base_scale, 0.3) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "modulate:a", 0.0, 0.4)
 	tween.chain().tween_callback(queue_free)
