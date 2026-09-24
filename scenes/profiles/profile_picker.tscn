@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cprofpick0001"]
+[gd_scene load_steps=4 format=3 uid="uid://cprofpick0001"]
 
 [ext_resource type="Script" path="res://scenes/profiles/profile_picker.gd" id="1_picker"]
 [ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_sky.svg" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/keyboard_avoider.gd" id="3_kbavoid"]
 
 [node name="ProfilePicker" type="Control"]
 layout_mode = 3
@@ -89,3 +90,8 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
+
+[node name="KeyboardAvoider" type="Node" parent="." node_paths=PackedStringArray("target", "keep_visible")]
+script = ExtResource("3_kbavoid")
+target = NodePath("../ContentVBox")
+keep_visible = NodePath("../ContentVBox/EmptyState")

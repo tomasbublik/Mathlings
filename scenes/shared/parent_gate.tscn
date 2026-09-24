@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cpg8wzzrdparg"]
+[gd_scene load_steps=3 format=3 uid="uid://cpg8wzzrdparg"]
 
 [ext_resource type="Script" path="res://scenes/shared/parent_gate.gd" id="1_gate"]
+[ext_resource type="Script" path="res://scripts/ui/keyboard_avoider.gd" id="2_kbavoid"]
 
 [node name="ParentGate" type="CanvasLayer"]
 layer = 10
@@ -84,3 +85,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(160, 72)
 theme_override_font_sizes/font_size = 28
 text = "Potvrdit"
+
+[node name="KeyboardAvoider" type="Node" parent="." node_paths=PackedStringArray("target", "keep_visible")]
+script = ExtResource("2_kbavoid")
+target = NodePath("../Panel")
+keep_visible = NodePath("../Panel/Margin/VBox/Buttons")

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cprofmgr00001"]
+[gd_scene load_steps=4 format=3 uid="uid://cprofmgr00001"]
 
 [ext_resource type="Script" path="res://scenes/profiles/profile_manager.gd" id="1_mgr"]
 [ext_resource type="Texture2D" path="res://assets/images/backgrounds/bg_sky.svg" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/keyboard_avoider.gd" id="3_kbavoid"]
 
 [node name="ProfileManager" type="Control"]
 layout_mode = 3
@@ -112,3 +113,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 64)
 theme_override_font_sizes/font_size = 24
 text = "← Zpět"
+
+[node name="KeyboardAvoider" type="Node" parent="." node_paths=PackedStringArray("target", "keep_visible")]
+script = ExtResource("3_kbavoid")
+target = NodePath("../ScrollContainer")
+keep_visible = NodePath("../ScrollContainer/VBox/AddRow")

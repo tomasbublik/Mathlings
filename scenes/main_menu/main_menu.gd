@@ -2,7 +2,9 @@ extends Control
 ## Main menu scene — entry point for the app.
 ## - "Hrát!" → scenes/game/game.tscn (or toast "Brzy!" if missing).
 ## - "Statistiky" → scenes/stats/stats.tscn (or toast).
-## - "Nastavení" → ParentGate → scenes/settings/settings.tscn.
+## - "Nastavení" → scenes/settings/settings.tscn.
+## ParentGate is currently not used (it annoyed more than it protected);
+## scenes/shared/parent_gate.* is kept for when a better guard is designed.
 ## - Profile badge reads SettingsStore + DB (fallback "Hráč 1").
 ## Reference: DESIGN §10.1, specs/P8a_main_menu.md
 
@@ -166,11 +168,6 @@ func _on_play_pressed() -> void:
 
 
 func _on_stats_pressed() -> void:
-	var gate := ParentGate.open(self)
-	gate.passed.connect(_on_stats_gate_passed)
-
-
-func _on_stats_gate_passed() -> void:
 	if ResourceLoader.exists(STATS_SCENE):
 		get_tree().change_scene_to_file(STATS_SCENE)
 	else:
@@ -178,7 +175,6 @@ func _on_stats_gate_passed() -> void:
 
 
 func _on_rules_pressed() -> void:
-	# Rules screen is read-only and child-safe — no Parent Gate.
 	if ResourceLoader.exists(RULES_SCENE):
 		get_tree().change_scene_to_file(RULES_SCENE)
 	else:
@@ -186,12 +182,6 @@ func _on_rules_pressed() -> void:
 
 
 func _on_profiles_pressed() -> void:
-	# CRUD over profiles (delete, rename, ...) is grown-up territory; gate it.
-	var gate := ParentGate.open(self)
-	gate.passed.connect(_on_profiles_gate_passed)
-
-
-func _on_profiles_gate_passed() -> void:
 	if ResourceLoader.exists(PROFILES_SCENE):
 		get_tree().change_scene_to_file(PROFILES_SCENE)
 	else:
@@ -199,11 +189,6 @@ func _on_profiles_gate_passed() -> void:
 
 
 func _on_settings_pressed() -> void:
-	var gate := ParentGate.open(self)
-	gate.passed.connect(_on_settings_gate_passed)
-
-
-func _on_settings_gate_passed() -> void:
 	if ResourceLoader.exists(SETTINGS_SCENE):
 		get_tree().change_scene_to_file(SETTINGS_SCENE)
 	else:
